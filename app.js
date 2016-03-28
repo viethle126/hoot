@@ -1,11 +1,15 @@
 var express = require('express');
 var jSonParser = require('body-parser').json();
 var _ = require('underscore');
+debugger;
 var app = express();
 
 var users = require('./users.js');
 var random = require('./random.js');
+debugger;
 random.begin(); // generate random tweets for all users
+
+debugger;
 
 function sendLine(handle) {
   var tweets = [];

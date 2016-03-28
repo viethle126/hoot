@@ -6,6 +6,10 @@ body {
   display: none !important;
 }
 
+button[data-follow-text]:after {
+  content: attr(data-follow-text);
+}
+
 #masthead {
   padding-top: 20px;
   height: 200px;
