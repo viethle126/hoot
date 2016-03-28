@@ -199,7 +199,7 @@ var users = {
       email: 'schlomo@hoot.com',
       password: 'hoot'
     },
-    name: 'Schlomo Kofman',
+    name: 'Shlomo Kofman',
     handle: 'espressohoarder',
     tweets: [],
     followers: [],
