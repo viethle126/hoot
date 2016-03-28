@@ -54,15 +54,15 @@ function wantLine(user, where) {
 
   xhr.addEventListener('load', function() {
     var tweets = JSON.parse(xhr.responseText);
-    tweets.forEach(function(element, index, array) {
-      addTweet(tweets[index].name, tweets[index].meta, tweets[index].content);
+    tweets.reverse().forEach(function(element, index, array) {
+      var meta = tweets[index].handle + ' - ' + tweets[index].date;
+      addTweet(tweets[index].name, meta, tweets[index].content);
     })
   })
 }
 
 document.getElementById('menu').addEventListener('click', function(e) {
   if (e.target.id === 'home' || e.target.parentNode.id === 'home') {
-    console.log('Clicked');
     var home = document.getElementById('home');
     if (home.getAttribute('data-active') === 'false') {
       home.setAttribute('data-active', 'true');

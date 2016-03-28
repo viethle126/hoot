@@ -3,7 +3,7 @@
 <head lang="en-us">
   <meta charset="utf-8">
   <title>hoot</title>
-  <link rel="stylesheet" type="text/css" href="../semantic/dist/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="./semantic/dist/semantic.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/default.css">
 </head>
@@ -21,19 +21,19 @@
   <div class="ui attached borderless stackable menu" id="menu">
     <div class="ui container">
       <a class="item">
-        <img class="ui image mini spaced" src="images/logo.png"> Hoot
+        <img class="ui image mini spaced" src="images/logo.png">Hoot
       </a>
-      <a class="item">
-        <i class="home icon"></i> Home
+      <a class="item" id="home" data-active="false">
+        <i class="home icon"></i>Home
       </a>
-      <a class="item">
-        <i class="alarm icon"></i> Notifications
+      <a class="item" id="notifications">
+        <i class="alarm icon"></i>Notifications
       </a>
-      <a class="item">
-        <i class="heart icon"></i> Favorites
+      <a class="item" id="favorites">
+        <i class="heart icon"></i>Favorites
       </a>
-      <a class="item">
-        <i class="mail icon"></i> Messages
+      <a class="item" id="messages">
+        <i class="mail icon"></i>Messages
       </a>
       <div class="right item">
         <div class="ui icon input">
@@ -101,7 +101,7 @@
       </div>
       <!-- your timeline -->
       <div>
-        <div class="ui segment divided items">
+        <div class="ui segment divided items" id="your-timeline">
           <!-- begin tweets -->
           <div class="item">
             <div class="ui tiny image">
@@ -161,7 +161,7 @@
     </div>
   </div>
   <script src="http://code.jquery.com/jquery-1.12.2.js"></script>
-  <script src="../semantic/dist/semantic.min.js"></script>
-  <script src="default.js"></script>
+  <script src="./semantic/dist/semantic.min.js"></script>
+  <script src="./js/default.js"></script>
 </body>
 </html>
