@@ -97,7 +97,7 @@ function card(data, where) {
   var segment = elemClass('div', 'ui basic center aligned segment');
   var follow = elemClass('button', 'ui basic blue button');
   var add = elemClass('i', 'add user icon');
-  var unfollow = elemClass('button', 'ui basic blue  button');
+  var unfollow = elemClass('button', 'ui basic blue button');
   var remove = elemClass('i', 'remove user icon');
   var extra = elemClass('div', 'extra content');
   var followingLink = document.createElement('a');
@@ -136,6 +136,7 @@ function card(data, where) {
   card.appendChild(imageDiv);
   card.appendChild(content);
   card.appendChild(extra);
+  card.setAttribute('data-card-handle', data.handle)
 
   if (data.follow === true) {
     follow.classList.add('hidden');
@@ -190,7 +191,43 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
 });
 
-document.getElementById('visit-card');
+document.getElementById('visit-card').addEventListener('click', function(e) {
+  if (e.target.dataset.followText) {
+    var action = e.target.dataset.followText
+    var who = e.target.parentNode;
+    var follow = e.target.parentNode.childNodes[0];
+    var unfollow = e.target.parentNode.childNodes[1];
+    while (!who.dataset.cardHandle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-card-handle');
+
+    if (action === 'Follow') {
+      var data = { handle: who, home: 'viethle126' }
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/follow', true);
+      xhr.setRequestHeader('Content-type', 'application/json');
+      xhr.send(JSON.stringify(data));
+
+      xhr.addEventListener('load', function() {
+        follow.classList.add('hidden');
+        unfollow.classList.remove('hidden');
+      })
+    }
+    if (action === 'Unfollow') {
+      var data = { handle: who, home: 'viethle126' }
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/unfollow', true);
+      xhr.setRequestHeader('Content-type', 'application/json');
+      xhr.send(JSON.stringify(data));
+
+      xhr.addEventListener('load', function() {
+        unfollow.classList.add('hidden');
+        follow.classList.remove('hidden');
+      })
+    }
+  }
+})
 
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
