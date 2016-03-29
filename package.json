@@ -1,0 +1,31 @@
+{
+  "name": "hoot",
+  "version": "1.0.0",
+  "description": "Twitter, but not",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/viethle126/hoot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viethle126/hoot/issues"
+  },
+  "homepage": "https://github.com/viethle126/hoot#readme",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "semantic-ui": "^2.1.8",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-nodemon": "^2.0.6"
+  }
+}
