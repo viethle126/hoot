@@ -63,6 +63,7 @@ function addTweet(data, where) {
   item.appendChild(imageDiv);
   item.appendChild(content);
   item.setAttribute('data-hoot-id', data.id);
+  item.setAttribute('data-handle', data.handle);
   timeline.appendChild(item);
 }
 

@@ -129,6 +129,20 @@ app.post('/hoot', jSonParser, function(req, res) {
   res.send();
 })
 
+app.post('/addFavorite', jSonParser, function(req, res) {
+  var handle = req.body.handle;
+  var id = req.body.id;
+  var me = req.body.me;
+  var hoot = {};
+  users[handle].tweets.forEach(function(element, index, array) {
+    if (element.id === id) {
+      users[me].favorites.push(element);
+      return;
+    }
+  })
+  app.send();
+})
+
 app.use(express.static('public'));
 
 app.listen(8080, function() {
