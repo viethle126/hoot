@@ -48,6 +48,7 @@ function sendLine(handle, homeuser) {
     var fixed = military(users[handle].tweets[index].date);
     tweets.push({
       name: users[handle].name,
+      id: users[handle].tweets[index].id,
       handle: users[handle].handle,
       date: users[handle].tweets[index].date,
       content: users[handle].tweets[index].content,
@@ -61,6 +62,7 @@ function sendLine(handle, homeuser) {
         var fixed = military(reference.tweets[index].date);
         tweets.push({
           name: reference.name,
+          id: reference.tweets[index].id,
           handle: reference.handle,
           date: reference.tweets[index].date,
           content: reference.tweets[index].content,
@@ -112,8 +114,6 @@ app.post('/unfollow', jSonParser, function(req, res) {
 })
 
 app.post('/hoot', jSonParser, function(req, res) {
-  console.log(req.body);
-  console.log(id);
   id++
   var handle = req.body.handle;
   var content = req.body.content;
@@ -126,7 +126,6 @@ app.post('/hoot', jSonParser, function(req, res) {
     mentions: [],
     retweet: []
   })
-  console.log(users.viethle126.tweets[users.viethle126.tweets.length - 1])
   res.send();
 })
 

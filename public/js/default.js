@@ -41,11 +41,15 @@ function addTweet(data, where) {
   var para = document.createElement('p');
   var paraText = document.createTextNode(data.content);
   var extra = elemClass('div', 'extra');
+  var retweetLink = document.createElement('a');
   var retweet = elemClass('i', 'retweet icon');
+  var favLink = document.createElement('a');
   var fav = elemClass('i', 'heart icon');
 
-  extra.appendChild(retweet);
-  extra.appendChild(fav);
+  retweetLink.appendChild(retweet);
+  favLink.appendChild(fav);
+  extra.appendChild(retweetLink);
+  extra.appendChild(favLink);
   para.appendChild(paraText);
   desc.appendChild(para);
   span.appendChild(spanText);
@@ -58,6 +62,7 @@ function addTweet(data, where) {
   imageDiv.appendChild(image);
   item.appendChild(imageDiv);
   item.appendChild(content);
+  item.setAttribute('data-hoot-id', data.id);
   timeline.appendChild(item);
 }
 
