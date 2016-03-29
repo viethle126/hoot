@@ -16,7 +16,6 @@
       <a class="ui right floated inverted button">Log in</a>
     </div>
   </div>
-
   <!-- nav bar -->
   <div class="ui attached borderless stackable menu" id="menu">
     <div class="ui container">
@@ -48,77 +47,124 @@
     <!-- left container  -->
     <div class="four wide column">
       <!-- your card -->
-      <div class="ui card">
-        <div class="image">
-          <img src="images/viethle126.jpg">
-        </div>
-        <div class="content">
-          <div class="header">Viet Le</div>
-          <div class="meta">
-            <span class="date">@viethle126</span>
-          </div>
-          <div class="description">
-            <a>
-              <i class="write square icon"></i>
-              20 Hoots
-            </a>
-          </div>
-        </div>
-        <div class="extra content">
-          <a>
-            <i class="user icon"></i>
-            1 Following
-          </a>
-          <span class="right floated">
-            <a>
-              <i class="users icon"></i>
-              1 Follower
-            </a>
-          </span>
-        </div>
+      <div class="ui card" id="card">
       </div>
       <!-- other card -->
-      <div class="ui card">
-        <div class="image">
-          <img src="images/espressohoarder.jpg">
-        </div>
-        <div class="content">
-          <div class="header">Schlomo Kofman</div>
-          <div class="meta">
-            <span class="date">@espressohoarder</span>
-          </div>
-          <div class="description">
-            <i class="write square icon"></i>
-            20 Hoots
-            <div class="ui basic center aligned segment">
-              <button class="ui basic button" data-follow-text="Following">
-                <i class="add user icon"></i>
-              </button>
-              <button class="ui basic button">
-                <i class="remove user icon"></i>
-              </button>
-            </div>
-            <a id="visit">TEST: visit this user's timeline</a>
-          </div>
-        </div>
-        <div class="extra content">
-          <a>
-            <i class="user icon"></i>
-            1 Following
-          </a>
-          <span class="right floated">
-            <a>
-              <i class="users icon"></i>
-              1 Follower
-            </a>
-          </span>
-        </div>
+      <div class="ui card hidden" id="visit-card">
       </div>
       <!-- trending -->
       <div>
       </div>
       <!-- recommended -->
       <div>
+      </div>
+      <!-- temporary user list -->
+      <div class="ui segment" id="userlist">Temporary User List
+        <div class="ui middle aligned selection list">
+          <div class="item" id="alysiasaquil">
+            <img class="ui avatar image" src="/images/alysiasaquil.jpg">
+            <div class="content">
+              <div class="header">Alysia</div>
+            </div>
+          </div>
+          <div class="item" id="ajames91">
+            <img class="ui avatar image" src="/images/ajames91.jpg">
+            <div class="content">
+              <div class="header">Andrew</div>
+            </div>
+          </div>
+          <div class="item" id="arunpaulgopal">
+            <img class="ui avatar image" src="/images/arunpaulgopal.jpg">
+            <div class="content">
+              <div class="header">Arun</div>
+            </div>
+          </div>
+          <div class="item" id="bgnewuch">
+            <img class="ui avatar image" src="/images/bgnewuch.jpg">
+            <div class="content">
+              <div class="header">Ben</div>
+            </div>
+          </div>
+          <div class="item" id="brianwalen">
+            <img class="ui avatar image" src="/images/brianwalen.jpg">
+            <div class="content">
+              <div class="header">Brian</div>
+            </div>
+          </div>
+          <div class="item" id="metcalfec">
+            <img class="ui avatar image" src="/images/metcalfec.jpg">
+            <div class="content">
+              <div class="header">Chris</div>
+            </div>
+          </div>
+          <div class="item" id="coreysl">
+            <img class="ui avatar image" src="/images/coreysl.jpg">
+            <div class="content">
+              <div class="header">Corey</div>
+            </div>
+          </div>
+          <div class="item" id="nanhyunchul">
+            <img class="ui avatar image" src="/images/nanhyunchul.jpg">
+            <div class="content">
+              <div class="header">Hyun</div>
+            </div>
+          </div>
+          <div class="item" id="jnguyen">
+            <img class="ui avatar image" src="/images/jnguyen.jpg">
+            <div class="content">
+              <div class="header">Justin</div>
+            </div>
+          </div>
+          <div class="item" id="little78926">
+            <img class="ui avatar image" src="/images/little78926.jpg">
+            <div class="content">
+              <div class="header">John</div>
+            </div>
+          </div>
+          <div class="item" id="mikefield">
+            <img class="ui avatar image" src="/images/mikefield.jpg">
+            <div class="content">
+              <div class="header">Mike</div>
+            </div>
+          </div>
+          <div class="item" id="treezrppl2">
+            <img class="ui avatar image" src="/images/treezrppl2.jpg">
+            <div class="content">
+              <div class="header">Nathan</div>
+            </div>
+          </div>
+          <div class="item" id="niralpokal">
+            <img class="ui avatar image" src="/images/niralpokal.jpg">
+            <div class="content">
+              <div class="header">Niral</div>
+            </div>
+          </div>
+          <div class="item" id="ronperris">
+            <img class="ui avatar image" src="/images/ronperris.jpg">
+            <div class="content">
+              <div class="header">Ron</div>
+            </div>
+          </div>
+          <div class="item" id="espressohoarder">
+            <img class="ui avatar image" src="/images/espressohoarder.jpg">
+            <div class="content">
+              <div class="header">Shlomo</div>
+            </div>
+          </div>
+          <div class="item" id="tputs001">
+            <img class="ui avatar image" src="/images/tputs001.jpg">
+            <div class="content">
+              <div class="header">Tom</div>
+            </div>
+          </div>
+          <div class="item" id="zane">
+            <img class="ui avatar image" src="/images/zane.jpg">
+            <div class="content">
+              <div class="header">Zane</div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
     <!-- end left container -->
@@ -135,43 +181,7 @@
       </div>
       <!-- your timeline -->
       <div>
-        <div class="ui segment divided items" id="your-timeline">
-          <div class="item">
-            <div class="ui tiny image">
-              <img src="images/viethle126.jpg">
-            </div>
-            <div class="content">
-              <div class="header">Viet Le</div>
-              <div class="meta">
-                <span>@viethle126 - 3/20/16</span>
-              </div>
-              <div class="description">
-                <p>Random hoot goes here</p>
-              </div>
-              <div class="extra">
-                <i class="retweet icon"></i>
-                <i class="heart icon"></i>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="ui tiny image">
-              <img src="images/viethle126.jpg">
-            </div>
-            <div class="content">
-              <div class="header">Viet Le</div>
-              <div class="meta">
-                <span>@viethle126 - 3/20/16</span>
-              </div>
-              <div class="description">
-                <p>Random hoot goes here</p>
-              </div>
-              <div class="extra">
-                <i class="retweet icon"></i>
-                <i class="heart icon"></i>
-              </div>
-            </div>
-          </div>
+        <div class="ui segment divided items hidden" id="your-timeline">
         </div>
       </div>
       <!-- your hoots -->
