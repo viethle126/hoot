@@ -40,7 +40,6 @@ function sendLine(handle, homeuser) {
   if (homeuser === true) {
     users[handle].following.forEach(function(element, index, array) {
       var reference = users[element];
-      console.log(reference.handle);
       reference.tweets.forEach(function(element, index, array) {
         var fixed = military(reference.tweets[index].date);
         tweets.push({
@@ -83,6 +82,7 @@ app.post('/follow', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var me = req.body.home;
   users[me].following.push(handle);
+  users[handle].followers.push(me);
   res.send();
 })
 
@@ -90,6 +90,7 @@ app.post('/unfollow', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var me = req.body.home;
   users[me].following.splice(users[me].following.indexOf(handle), 1);
+  users[handle].followers.splice(users[handle].followers.indexOf(me), 1);
   res.send();
 })
 
