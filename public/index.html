@@ -19,19 +19,19 @@
   <!-- nav bar -->
   <div class="ui attached borderless stackable menu" id="menu">
     <div class="ui container">
-      <a class="item">
+      <a class="item" id="hoot" data-active="false">
         <img class="ui image mini spaced" src="images/logo.png">Hoot
       </a>
       <a class="item" id="home" data-active="false">
         <i class="home icon"></i>Home
       </a>
-      <a class="item" id="notifications">
+      <a class="item" id="notifications" data-active="false">
         <i class="alarm icon"></i>Notifications
       </a>
-      <a class="item" id="favorites">
+      <a class="item" id="favorites" data-active="false">
         <i class="heart icon"></i>Favorites
       </a>
-      <a class="item" id="messages">
+      <a class="item" id="messages" data-active="false">
         <i class="mail icon"></i>Messages
       </a>
       <div class="right item">
@@ -171,18 +171,18 @@
     <!-- right container -->
     <div class="twelve wide column">
       <!-- write hoot -->
-      <div class="ui segment" id="new-hoot">
+      <div class="ui segment hidden" id="new-hoot">
         <div class="ui form">
           <div class="field">
             <label>
               <h3 class="ui violet header">What's on your mind?</h3>
             </label>
-            <textarea rows="3"></textarea>
+            <textarea rows="3" id="hoot-content"></textarea>
           </div>
-          <button class="ui violet button" type="submit">Hoot</button>
-          <button class="ui basic violet button" type="submit">Cancel</button>
+          <button class="ui violet button" type="submit" id="submit-hoot">Hoot</button>
+          <button class="ui basic violet button" type="submit" id="cancel-hoot">Cancel</button>
         </div>
-        <div class="ui success message">
+        <div class="ui success message" id="after-hoot">
           <div class="header">Hoot submitted!</div>
           <p>P.S. You can't delete any hoots yet...</p>
         </div>

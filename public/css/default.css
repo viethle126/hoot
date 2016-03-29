@@ -23,3 +23,7 @@ button[data-follow-text]:after {
   margin-right: auto;
   max-width: 1200px;
 }
+
+#visit-card {
+  margin-top: 0px;
+}
