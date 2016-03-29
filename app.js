@@ -1,21 +1,34 @@
 var express = require('express');
 var jSonParser = require('body-parser').json();
 var _ = require('underscore');
-debugger;
 var app = express();
-
+// custom modules
 var users = require('./users.js');
 var random = require('./random.js');
-debugger;
-random.begin(); // generate random tweets for all users
+var id = random.begin(); // generate random tweets for all users, return id
 
-debugger;
+function military(date) {
+  var fixed = date;
+  if (fixed[3] === '/') {
+    fixed = fixed.slice(0, 2) + '0' + fixed.slice(2)
+  }
+  if (fixed[fixed.length - 7] === ' ') {
+    fixed = fixed.slice(0, 10) + '0' + fixed.slice(fixed.length - 6);
+  }
+  if (fixed[fixed.length - 2] === 'a' && fixed[10] + fixed[11] === '12') {
+    fixed = fixed.slice(0, 10) + '00' + fixed.slice(fixed.length - 5);
+  }
+  if (fixed[fixed.length - 2] === 'p' && fixed[10] + fixed[11] !== '12') {
+    var military = String(Number(fixed.slice(10, 12)) + 12);
+    fixed = fixed.slice(0, 10) + military + fixed.slice(fixed.length - 5);
+  }
+  return fixed;
+}
 
-function sendLine(handle) {
+function sendLine(handle, homeuser) {
   var tweets = [];
   users[handle].tweets.forEach(function(element, index, array) {
-    var fixed = users[handle].tweets[index].date;
-    if (fixed[3] === '/') { fixed = fixed.slice(0, 2) + '0' + fixed.slice(2) }
+    var fixed = military(users[handle].tweets[index].date);
     tweets.push({
       name: users[handle].name,
       handle: users[handle].handle,
@@ -24,13 +37,46 @@ function sendLine(handle) {
       sort: fixed
     })
   })
+  if (homeuser === true) {
+    users[handle].following.forEach(function(element, index, array) {
+      var reference = users[element];
+      reference.tweets.forEach(function(element, index, array) {
+        var fixed = military(reference.tweets[index].date);
+        tweets.push({
+          name: reference.name,
+          handle: reference.handle,
+          date: reference.tweets[index].date,
+          content: reference.tweets[index].content,
+          sort: fixed
+        })
+      })
+    })
+  }
   tweets = _.sortBy(tweets, 'sort');
   return tweets;
 }
 
 app.post('/timeline', jSonParser, function(req, res) {
-  res.send(sendLine(req.body.handle));
-});
+  res.send(sendLine(req.body.handle, req.body.home));
+})
+
+app.post('/card', jSonParser, function(req, res) {
+  var user = req.body.handle;
+  var me = req.body.home;
+  var youFollow = false;
+  if (users[user].followers.indexOf(me) !== -1) { youFollow = true }
+  // use req.body.home to check follow status later
+  var data = {
+    name: users[user].name,
+    handle: users[user].handle,
+    tweets: users[user].tweets.length,
+    followers: users[user].followers.length,
+    following: users[user].following.length,
+    follow: youFollow,
+    me: me
+  }
+  res.send(data);
+})
 
 app.use(express.static('public'));
 
