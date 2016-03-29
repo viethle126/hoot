@@ -13,6 +13,7 @@ function random() {
   var nowDate = now.getDate();
   var nowHours = now.getHours();
   var nowMinutes = now.getMinutes();
+  var id = 0;
 
   function capitalize(string) {
     return string[0].toUpperCase() + string.slice(1);
@@ -75,16 +76,22 @@ function random() {
   }
 
   function tweet(who, quantity) {
-    quantity--
+    quantity--;
+    id++
     users[who].tweets.push({
       user: who,
+      id: id,
       date: date(),
       content: content(),
       tags: [],
       mentions: [],
       retweet: []
     })
-    if (quantity > 0) { tweet(who, quantity) }
+    if (quantity > 0) {
+      tweet(who, quantity, id);
+    } else {
+      return id;
+    }
   }
 
   function follow(who, array, count) {
@@ -109,10 +116,11 @@ function random() {
       tweet(prop, quantity);
       follow(prop, clone, count);
     }
+    return id
   }
 
   return {
-    begin: begin,
+    begin: begin
   }
 }
 
