@@ -169,8 +169,7 @@ function resetMenu(array) {
 document.getElementById('menu').addEventListener('click', function(e) {
   var what = e.target
   var menu = document.getElementById('menu').childNodes[1].childNodes;
-  var items = [];
-  items.push(menu[1], menu[3], menu[5], menu[7], menu[9]);
+  var items = [menu[1], menu[3], menu[5], menu[7], menu[9]];
   while (!what.id) {
     what = what.parentNode;
   }
@@ -203,25 +202,57 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
   if (what.id === 'hoot') {
     var hoot = items[0];
-    var form = document.getElementById('new-hoot');
+    var segment = document.getElementById('new-hoot');
+    var form = document.getElementById('hoot-form');
     if (hoot.getAttribute('data-active') === 'false') {
       resetMenu(items);
       hoot.setAttribute('data-active', 'true');
       hoot.classList.add('active');
+      segment.classList.remove('hidden');
       form.classList.remove('hidden');
       return;
     }
     if (hoot.getAttribute('data-active') === 'true') {
       resetMenu(items);
-      hoot.setAttribute('data-active', 'false');
-      hoot.classList.remove('active');
-      form.classList.add('hidden');
+      segment.classList.add('hidden');
       return;
     } else {
       return;
     }
   }
 });
+
+document.getElementById('new-hoot').addEventListener('click', function(e) {
+  if (e.target.id === 'cancel-hoot') {
+    var menu = document.getElementById('menu').childNodes[1].childNodes;
+    var items = [menu[1], menu[3], menu[5], menu[7], menu[9]];
+    document.getElementById('hoot-content').value = '';
+    document.getElementById('new-hoot').classList.add('hidden');
+    resetMenu(items);
+    return;
+  }
+  if (e.target.id === 'submit-hoot') {
+    var data = {
+      content: document.getElementById('hoot-content').value,
+      handle: 'viethle126'
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/hoot', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      document.getElementById('hoot-form').classList.add('hidden');
+      document.getElementById('after-hoot').classList.remove('hidden');
+      document.getElementById('hoot-content').value = '';
+      wantLine('viethle126', 'your-timeline', true);
+      setTimeout(function() {
+        document.getElementById('new-hoot').classList.add('hidden');
+        document.getElementById('after-hoot').classList.add('hidden');
+      }, 5000);
+    })
+  }
+})
 
 document.getElementById('visit-card').addEventListener('click', function(e) {
   if (e.target.dataset.followText) {

@@ -25,6 +25,23 @@ function military(date) {
   return fixed;
 }
 
+function format() {
+  var now = Date();
+  var month = '';
+  var hours = now.slice(16, 18);
+  var min = now.slice(19, 21);
+  var ampm = '';
+  var day = now.slice(8, 10);
+  if (now.slice(4, 7) === 'Mar') { month = 3 }
+  if (now.slice(4, 7) + now[6] === 'Apr') { month = 4 }
+  if (hours < 12) { ampm = 'am' }
+  if (hours >= 12) { ampm = 'pm' }
+  if (hours > 12) { hours -= 12 }
+  if (hours == '00') { hours = 12 }
+  var fixed = month + '/' + day + '/2016 ' + hours + ':' + min + ampm;
+  return fixed;
+}
+
 function sendLine(handle, homeuser) {
   var tweets = [];
   users[handle].tweets.forEach(function(element, index, array) {
@@ -94,8 +111,27 @@ app.post('/unfollow', jSonParser, function(req, res) {
   res.send();
 })
 
+app.post('/hoot', jSonParser, function(req, res) {
+  console.log(req.body);
+  console.log(id);
+  id++
+  var handle = req.body.handle;
+  var content = req.body.content;
+  users[handle].tweets.push({
+    user: users[handle].name,
+    id: id,
+    date: format(),
+    content: content,
+    tags: [],
+    mentions: [],
+    retweet: []
+  })
+  console.log(users.viethle126.tweets[users.viethle126.tweets.length - 1])
+  res.send();
+})
+
 app.use(express.static('public'));
 
 app.listen(8080, function() {
   console.log('Connect to the server on http://localhost:8080');
-  })
+})
