@@ -3,7 +3,7 @@
 <head lang="en-us">
   <meta charset="utf-8">
   <title>hoot</title>
-  <link rel="stylesheet" type="text/css" href="./semantic/dist/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="./dist/semantic.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="./css/default.css">
 </head>
@@ -171,7 +171,21 @@
     <!-- right container -->
     <div class="twelve wide column">
       <!-- write hoot -->
-      <div>
+      <div class="ui segment" id="new-hoot">
+        <div class="ui form">
+          <div class="field">
+            <label>
+              <h3 class="ui violet header">What's on your mind?</h3>
+            </label>
+            <textarea rows="3"></textarea>
+          </div>
+          <button class="ui violet button" type="submit">Hoot</button>
+          <button class="ui basic violet button" type="submit">Cancel</button>
+        </div>
+        <div class="ui success message">
+          <div class="header">Hoot submitted!</div>
+          <p>P.S. You can't delete any hoots yet...</p>
+        </div>
       </div>
       <!-- following -->
       <div>
@@ -204,7 +218,7 @@
     </div>
   </div>
   <script src="http://code.jquery.com/jquery-1.12.2.js"></script>
-  <script src="./semantic/dist/semantic.min.js"></script>
+  <script src="./dist/semantic.min.js"></script>
   <script src="./js/default.js"></script>
 </body>
 </html>
