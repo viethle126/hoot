@@ -244,6 +244,18 @@ document.getElementById('menu').addEventListener('click', function(e) {
     var form = document.getElementById('hoot-form');
     if (hoot.getAttribute('data-active') === 'false') {
       resetMenu(items);
+      // hiding rehoot elements
+      var header = document.getElementById('new');
+      var rehootHeader = document.getElementById('rehoot');
+      var stacked = document.getElementById('rehoot-here');
+      var submit = document.getElementById('submit-hoot');
+      var rehoot = document.getElementById('submit-rehoot');
+      header.classList.remove('hidden');
+      rehootHeader.classList.add('hidden');
+      stacked.classList.add('hidden');
+      submit.classList.remove('hidden');
+      rehoot.classList.add('hidden');
+      // show hoot form
       hoot.setAttribute('data-active', 'true');
       hoot.classList.add('active');
       segment.classList.remove('hidden');
@@ -283,7 +295,8 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
       document.getElementById('hoot-form').classList.add('hidden');
       document.getElementById('after-hoot').classList.remove('hidden');
       document.getElementById('hoot-content').value = '';
-      wantLine('viethle126', 'your-timeline', true, 'tweets');
+      show('your-timeline');
+      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
       setTimeout(function() {
         document.getElementById('new-hoot').classList.add('hidden');
         document.getElementById('after-hoot').classList.add('hidden');
@@ -331,6 +344,45 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
 })
 // event listener: home timeline
 document.getElementById('your-timeline').addEventListener('click', function(e) {
+  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
+    // show rehoot elements
+    var header = document.getElementById('new');
+    var rehootHeader = document.getElementById('rehoot');
+    var stacked = document.getElementById('rehoot-here');
+    var submit = document.getElementById('submit-hoot');
+    var rehoot = document.getElementById('submit-rehoot');
+    header.classList.add('hidden');
+    rehootHeader.classList.remove('hidden');
+    stacked.classList.remove('hidden');
+    submit.classList.add('hidden');
+    rehoot.classList.remove('hidden');
+    // show hoot form
+    var hoot = document.getElementById('menu').childNodes[1].childNodes[1];
+    var segment = document.getElementById('new-hoot');
+    var form = document.getElementById('hoot-form');
+    hoot.setAttribute('data-active', 'true');
+    hoot.classList.add('active');
+    segment.classList.remove('hidden');
+    form.classList.remove('hidden');
+
+    var item = e.target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: item.getAttribute('data-handle'),
+      id: item.getAttribute('data-hoot-id')
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/rehoot', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      var payload = JSON.parse(xhr.responseText);
+      console.log(payload);
+    })
+  }
   if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
     var target = e.target;
     var heart = e.target;
