@@ -151,6 +151,33 @@ app.post('/rehoot', jSonParser, function(req, res) {
   res.send(payload);
 })
 
+app.post('/addRehoot', jSonParser, function(req, res) {
+  id++
+  var rehoot = {};
+  var rehootId = Number(req.body.rehootId);
+  var rehootHandle = req.body.rehootHandle;
+  users[rehootHandle].tweets.forEach(function(element, index, array) {
+    if (element.id === rehootId) {
+      rehoot = element;
+      return;
+    }
+  })
+  var handle = req.body.handle;
+  var content = req.body.content;
+  users[handle].tweets.push({
+    name: users[handle].name,
+    handle: handle,
+    id: id,
+    date: format(),
+    content: content,
+    tags: [],
+    mentions: [],
+    retweet: rehoot
+  })
+  console.log(users[handle].tweets[users[handle].tweets.length - 1]);
+  res.send();
+})
+
 app.post('/addFavorite', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
