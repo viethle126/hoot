@@ -79,7 +79,8 @@ function random() {
     quantity--;
     id++
     users[who].tweets.push({
-      user: who,
+      name: users[who].name,
+      handle: who,
       id: id,
       date: date(),
       content: content(),

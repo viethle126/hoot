@@ -48,13 +48,13 @@ function sendLine(handle, homeuser) {
   var type = 'tweets';
   if (handle === 'favorites') { handle = 'viethle126', type = 'favorites' }
   users[handle][type].forEach(function(element, index, array) {
-    var fixed = military(users[handle][type][index].date);
+    var fixed = military(element.date);
     tweets.push({
-      name: users[handle].name,
-      id: users[handle][type][index].id,
-      handle: users[handle].handle,
-      date: users[handle][type][index].date,
-      content: users[handle][type][index].content,
+      name: element.name,
+      id: element.id,
+      handle: element.handle,
+      date: element.date,
+      content: element.content,
       sort: fixed
     })
   })
@@ -62,13 +62,14 @@ function sendLine(handle, homeuser) {
     users[handle].following.forEach(function(element, index, array) {
       var reference = users[element];
       reference.tweets.forEach(function(element, index, array) {
-        var fixed = military(reference.tweets[index].date);
+        var fixed = military(element.date);
+        // if user[fav] index of this object ... fav yes
         tweets.push({
-          name: reference.name,
-          id: reference.tweets[index].id,
-          handle: reference.handle,
-          date: reference.tweets[index].date,
-          content: reference.tweets[index].content,
+          name: element.name,
+          id: element.id,
+          handle: element.handle,
+          date: element.date,
+          content: element.content,
           sort: fixed
         })
       })
