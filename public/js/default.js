@@ -171,6 +171,24 @@ function resetMenu(array) {
     element.classList.remove('active');
   })
 }
+// show content
+function show(element) {
+  var content = [];
+  content.push(document.getElementById('new-hoot'));
+  content.push(document.getElementById('your-timeline'));
+  content.push(document.getElementById('visit-timeline'));
+  content.push(document.getElementById('fav-timeline'));
+  content.forEach(function(element, index, array) {
+    element.classList.add('hidden');
+  })
+  document.getElementById(element).classList.remove('hidden');
+}
+// show card
+function showCard(element) {
+  document.getElementById('card').classList.add('hidden');
+  document.getElementById('visit-card').classList.add('hidden');
+  document.getElementById(element).classList.remove('hidden');
+}
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
   var what = e.target
@@ -181,8 +199,6 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
   if (what.id === 'home') {
     var home = items[1];
-    var timeline = document.getElementById('your-timeline');
-    var visit = document.getElementById('visit-timeline');
     var you = document.getElementById('card');
     var card = document.getElementById('visit-card');
 
@@ -190,17 +206,18 @@ document.getElementById('menu').addEventListener('click', function(e) {
       resetMenu(items);
       home.setAttribute('data-active', 'true');
       home.classList.add('active');
-      timeline.classList.remove('hidden');
+      show('your-timeline');
+      showCard('card');
       wantLine('viethle126', 'your-timeline', true);
     }
     if (home.getAttribute('data-active') === 'visiting') {
       resetMenu(items);
       home.setAttribute('data-active', 'true');
       home.classList.add('active');
-      visit.classList.add('hidden');
       card.classList.add('hidden');
-      timeline.classList.remove('hidden');
       you.classList.remove('hidden');
+      show('your-timeline');
+      showCard('card');
       wantLine('viethle126', 'your-timeline', true);
     } else {
       return;
@@ -208,12 +225,11 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
   if (what.id === 'favorites') {
     var fav = items[3];
-    var line = document.getElementById('fav-timeline');
     if (fav.getAttribute('data-active') === 'false') {
       resetMenu(items);
       fav.setAttribute('data-active', 'true');
       fav.classList.add('active');
-      line.classList.remove('hidden');
+      show('fav-timeline');
       wantLine('favorites', 'fav-timeline', false);
     }
   }
@@ -348,8 +364,7 @@ document.getElementById('userlist').addEventListener('click', function(e) {
   home.classList.remove('active');
   yours.classList.add('hidden');
   visit.classList.remove('hidden');
-  you.classList.add('hidden');
-  card.classList.remove('hidden');
+  showCard('visit-card')
   wantLine(who.id, 'visit-timeline', false);
   wantCard(who.id, 'visit-card', 'viethle126');
 })
