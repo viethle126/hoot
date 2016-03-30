@@ -143,10 +143,21 @@ app.post('/addFavorite', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   var me = req.body.home;
-  var hoot = {};
   users[handle].tweets.forEach(function(element, index, array) {
-    if (element.id === id) {
+    if (element.id === id && users[me].favorites.indexOf(element) === -1) {
       users[me].favorites.push(element);
+      return;
+    }
+  })
+  res.send();
+})
+
+app.post('/removeFavorite', jSonParser, function(req, res) {
+  var handle = req.body.handle;
+  var id = Number(req.body.id);
+  users[handle].favorites.forEach(function(element, index, array) {
+    if (element.id === id) {
+      array.splice(index);
       return;
     }
   })

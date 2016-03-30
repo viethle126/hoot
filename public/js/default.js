@@ -46,6 +46,10 @@ function addTweet(data, where) {
   var favLink = elemAttribute('a', 'data-fav', 'false');
   var fav = elemClass('i', 'empty heart icon');
 
+  if (data.fav === true) {
+    fav.setAttribute('class', 'heart icon');
+    favLink.setAttribute('data-fav', 'true')
+  }
   retweetLink.appendChild(retweet);
   favLink.appendChild(fav);
   extra.appendChild(retweetLink);
@@ -324,7 +328,57 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
     }
   }
 })
-// event listener: add to favorites
+// event listener: home timeline
+document.getElementById('your-timeline').addEventListener('click', function(e) {
+  if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
+    var target = e.target;
+    var heart = e.target;
+    if (target.dataset.fav) { heart = target.childNodes[0] }
+    if (!target.dataset.fav) { target = target.parentNode }
+    var item = target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: item.getAttribute('data-handle'),
+      id: item.getAttribute('data-hoot-id'),
+      home: 'viethle126'
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/addFavorite', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      heart.setAttribute('class', 'heart icon');
+      target.setAttribute('data-fav', 'true');
+    })
+  }
+  if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
+    var target = e.target;
+    var heart = e.target;
+    if (target.dataset.fav) { heart = target.childNodes[0] }
+    if (!target.dataset.fav) { target = target.parentNode }
+    var item = target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: 'viethle126',
+      id: item.getAttribute('data-hoot-id'),
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/removeFavorite', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      heart.setAttribute('class', 'empty heart icon');
+      target.setAttribute('data-fav', 'false');
+    })
+  }
+})
+// event listener: visit timeline
 document.getElementById('visit-timeline').addEventListener('click', function(e) {
   var target = e.target;
   if (target.dataset.fav || target.parentNode.dataset.fav) {
