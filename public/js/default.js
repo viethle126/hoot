@@ -67,9 +67,9 @@ function addTweet(data, where) {
   timeline.appendChild(item);
 }
 // request timeline
-function wantLine(user, where, homeuser) {
+function wantLine(user, where, homeuser, type) {
   clear(where);
-  var data = { handle: user, home: homeuser }
+  var data = { handle: user, home: homeuser, type: type }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/timeline', true);
   xhr.setRequestHeader('Content-type', 'application/json');
@@ -208,7 +208,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
       home.classList.add('active');
       show('your-timeline');
       showCard('card');
-      wantLine('viethle126', 'your-timeline', true);
+      wantLine('viethle126', 'your-timeline', true, 'tweets');
     }
     if (home.getAttribute('data-active') === 'visiting') {
       resetMenu(items);
@@ -218,7 +218,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
       you.classList.remove('hidden');
       show('your-timeline');
       showCard('card');
-      wantLine('viethle126', 'your-timeline', true);
+      wantLine('viethle126', 'your-timeline', true, 'tweets');
     } else {
       return;
     }
@@ -230,7 +230,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
       fav.setAttribute('data-active', 'true');
       fav.classList.add('active');
       show('fav-timeline');
-      wantLine('favorites', 'fav-timeline', false);
+      wantLine('favorites', 'fav-timeline', false, 'favorites');
     }
   }
   if (what.id === 'hoot') {
@@ -278,7 +278,7 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
       document.getElementById('hoot-form').classList.add('hidden');
       document.getElementById('after-hoot').classList.remove('hidden');
       document.getElementById('hoot-content').value = '';
-      wantLine('viethle126', 'your-timeline', true);
+      wantLine('viethle126', 'your-timeline', true, 'tweets');
       setTimeout(function() {
         document.getElementById('new-hoot').classList.add('hidden');
         document.getElementById('after-hoot').classList.add('hidden');
@@ -365,7 +365,7 @@ document.getElementById('userlist').addEventListener('click', function(e) {
   yours.classList.add('hidden');
   visit.classList.remove('hidden');
   showCard('visit-card')
-  wantLine(who.id, 'visit-timeline', false);
+  wantLine(who.id, 'visit-timeline', false, 'tweets');
   wantCard(who.id, 'visit-card', 'viethle126');
 })
 // on load: create home card

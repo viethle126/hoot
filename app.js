@@ -43,34 +43,40 @@ function format() {
   return fixed;
 }
 // return an array of hoots
-function sendLine(handle, homeuser) {
+function sendLine(handle, homeuser, type) {
   var tweets = [];
-  var type = 'tweets';
-  if (handle === 'favorites') { handle = 'viethle126', type = 'favorites' }
-  users[handle][type].forEach(function(element, index, array) {
+  var user = handle;
+  var whichUser = user;
+  var type = type;
+  if (type === 'favorites') { whichUser = 'viethle126' }
+  users[whichUser][type].forEach(function(element, index, array) {
     var fixed = military(element.date);
+    var fav = (users[whichUser].favorites.indexOf(element));
+    if (fav !== -1) { fav = true }
     tweets.push({
       name: element.name,
       id: element.id,
       handle: element.handle,
       date: element.date,
       content: element.content,
-      sort: fixed
+      sort: fixed,
+      fav: fav
     })
   })
   if (homeuser === true) {
-    users[handle].following.forEach(function(element, index, array) {
-      var reference = users[element];
-      reference.tweets.forEach(function(element, index, array) {
+    users[whichUser].following.forEach(function(element, index, array) {
+      users[element].tweets.forEach(function(element, index, array) {
         var fixed = military(element.date);
-        // if user[fav] index of this object ... fav yes
+        var fav = (users[whichUser].favorites.indexOf(element));
+        if (fav !== -1) { fav = true }
         tweets.push({
           name: element.name,
           id: element.id,
           handle: element.handle,
           date: element.date,
           content: element.content,
-          sort: fixed
+          sort: fixed,
+          fav: fav
         })
       })
     })
@@ -80,7 +86,7 @@ function sendLine(handle, homeuser) {
 }
 
 app.post('/timeline', jSonParser, function(req, res) {
-  res.send(sendLine(req.body.handle, req.body.home));
+  res.send(sendLine(req.body.handle, req.body.home, req.body.type));
 })
 
 app.post('/card', jSonParser, function(req, res) {
