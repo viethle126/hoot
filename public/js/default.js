@@ -212,7 +212,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
       home.classList.add('active');
       show('your-timeline');
       showCard('card');
-      wantLine('viethle126', 'your-timeline', true, 'tweets');
+      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
     }
     if (home.getAttribute('data-active') === 'visiting') {
       resetMenu(items);
@@ -222,7 +222,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
       you.classList.remove('hidden');
       show('your-timeline');
       showCard('card');
-      wantLine('viethle126', 'your-timeline', true, 'tweets');
+      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
     } else {
       return;
     }
@@ -234,7 +234,8 @@ document.getElementById('menu').addEventListener('click', function(e) {
       fav.setAttribute('data-active', 'true');
       fav.classList.add('active');
       show('fav-timeline');
-      wantLine('favorites', 'fav-timeline', false, 'favorites');
+      showCard('card');
+      wantLine('favorites', 'fav-timeline', 'viethle126', 'favorites');
     }
   }
   if (what.id === 'hoot') {
@@ -380,8 +381,11 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
 })
 // event listener: visit timeline
 document.getElementById('visit-timeline').addEventListener('click', function(e) {
-  var target = e.target;
-  if (target.dataset.fav || target.parentNode.dataset.fav) {
+  if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
+    var target = e.target;
+    var heart = e.target;
+    if (target.dataset.fav) { heart = target.childNodes[0] }
+    if (!target.dataset.fav) { target = target.parentNode }
     var item = target.parentNode;
     while (!item.dataset.handle) {
       item = item.parentNode;
@@ -397,7 +401,57 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
     xhr.send(JSON.stringify(data));
 
     xhr.addEventListener('load', function() {
-      e.target.setAttribute('class', 'heart icon');
+      heart.setAttribute('class', 'heart icon');
+      target.setAttribute('data-fav', 'true');
+    })
+  }
+  if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
+    var target = e.target;
+    var heart = e.target;
+    if (target.dataset.fav) { heart = target.childNodes[0] }
+    if (!target.dataset.fav) { target = target.parentNode }
+    var item = target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: 'viethle126',
+      id: item.getAttribute('data-hoot-id'),
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/removeFavorite', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      heart.setAttribute('class', 'empty heart icon');
+      target.setAttribute('data-fav', 'false');
+    })
+  }
+})
+// event listener: favorites
+document.getElementById('fav-timeline').addEventListener('click', function(e) {
+  if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
+    var target = e.target;
+    var heart = e.target;
+    if (target.dataset.fav) { heart = target.childNodes[0] }
+    if (!target.dataset.fav) { target = target.parentNode }
+    var item = target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: 'viethle126',
+      id: item.getAttribute('data-hoot-id'),
+    }
+    console.log(data);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/removeFavorite', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      document.getElementById('fav-timeline').removeChild(item);
     })
   }
 })
@@ -419,7 +473,7 @@ document.getElementById('userlist').addEventListener('click', function(e) {
   yours.classList.add('hidden');
   visit.classList.remove('hidden');
   showCard('visit-card')
-  wantLine(who.id, 'visit-timeline', false, 'tweets');
+  wantLine(who.id, 'visit-timeline', 'viethle126', 'tweets');
   wantCard(who.id, 'visit-card', 'viethle126');
 })
 // on load: create home card

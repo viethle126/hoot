@@ -46,12 +46,13 @@ function format() {
 function sendLine(handle, homeuser, type) {
   var tweets = [];
   var user = handle;
+  var home = homeuser;
   var whichUser = user;
   var type = type;
   if (type === 'favorites') { whichUser = 'viethle126' }
   users[whichUser][type].forEach(function(element, index, array) {
     var fixed = military(element.date);
-    var fav = (users[whichUser].favorites.indexOf(element));
+    var fav = (users[home].favorites.indexOf(element));
     if (fav !== -1) { fav = true }
     tweets.push({
       name: element.name,
@@ -63,11 +64,11 @@ function sendLine(handle, homeuser, type) {
       fav: fav
     })
   })
-  if (homeuser === true) {
+  if (homeuser === user) {
     users[whichUser].following.forEach(function(element, index, array) {
       users[element].tweets.forEach(function(element, index, array) {
         var fixed = military(element.date);
-        var fav = (users[whichUser].favorites.indexOf(element));
+        var fav = (users[home].favorites.indexOf(element));
         if (fav !== -1) { fav = true }
         tweets.push({
           name: element.name,
@@ -157,7 +158,7 @@ app.post('/removeFavorite', jSonParser, function(req, res) {
   var id = Number(req.body.id);
   users[handle].favorites.forEach(function(element, index, array) {
     if (element.id === id) {
-      array.splice(index);
+      array.splice(index, 1);
       return;
     }
   })
