@@ -9,7 +9,7 @@ function elemClass(elem, classes) {
   element.className = classes;
   return element;
 }
-
+// clear child elements
 function remove(element, count) {
   if (count > 0) {
     count--;
@@ -19,13 +19,13 @@ function remove(element, count) {
     return;
   }
 }
-
+// determine how many child elements to remove
 function clear(id) {
   var element = document.getElementById(id);
   var count = element.childNodes.length;
   remove(element, count);
 }
-
+// create tweet
 function addTweet(data, where) {
   var timeline = document.getElementById(where);
   var item = elemClass('div', 'item');
@@ -41,10 +41,10 @@ function addTweet(data, where) {
   var para = document.createElement('p');
   var paraText = document.createTextNode(data.content);
   var extra = elemClass('div', 'extra');
-  var retweetLink = document.createElement('a');
+  var retweetLink = elemAttribute('a', 'data-retweet', 'false');
   var retweet = elemClass('i', 'retweet icon');
-  var favLink = document.createElement('a');
-  var fav = elemClass('i', 'heart icon');
+  var favLink = elemAttribute('a', 'data-fav', 'false');
+  var fav = elemClass('i', 'empty heart icon');
 
   retweetLink.appendChild(retweet);
   favLink.appendChild(fav);
@@ -66,7 +66,7 @@ function addTweet(data, where) {
   item.setAttribute('data-handle', data.handle);
   timeline.appendChild(item);
 }
-
+// request timeline
 function wantLine(user, where, homeuser) {
   clear(where);
   var data = { handle: user, home: homeuser }
@@ -84,7 +84,7 @@ function wantLine(user, where, homeuser) {
     }
   })
 }
-
+// create card
 function card(data, where) {
   var card = document.getElementById(where);
   var imageDiv = elemClass('div', 'image');
@@ -150,7 +150,7 @@ function card(data, where) {
     unfollow.classList.add('hidden');
   }
 }
-
+// request card
 function wantCard(user, where, me) {
   clear(where);
   var data = { handle: user, home: me }
@@ -164,14 +164,14 @@ function wantCard(user, where, me) {
     card(content, where);
   })
 }
-
+// reset menu active states
 function resetMenu(array) {
   array.forEach(function(element, index, array) {
     element.setAttribute('data-active', 'false');
     element.classList.remove('active');
   })
 }
-
+// event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
   var what = e.target
   var menu = document.getElementById('menu').childNodes[1].childNodes;
@@ -227,7 +227,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
     }
   }
 });
-
+// event listener: new hoot
 document.getElementById('new-hoot').addEventListener('click', function(e) {
   if (e.target.id === 'cancel-hoot') {
     var menu = document.getElementById('menu').childNodes[1].childNodes;
@@ -259,7 +259,7 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     })
   }
 })
-
+// event listener: create card when visiting other timelines
 document.getElementById('visit-card').addEventListener('click', function(e) {
   if (e.target.dataset.followText) {
     var action = e.target.dataset.followText
@@ -297,7 +297,29 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
     }
   }
 })
+// event listener: add to favorites
+document.getElementById('visit-timeline').addEventListener('click', function(e) {
+  var target = e.target;
+  if (target.dataset.fav || target.parentNode.dataset.fav) {
+    var item = target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: item.getAttribute('data-handle'),
+      id: item.getAttribute('data-hoot-id'),
+      home: 'viethle126'
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/addFavorite', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
 
+    xhr.addEventListener('load', function() {
+      e.target.setAttribute('class', 'heart icon');
+    })
+  }
+})
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
   var list = document.getElementById('userlist');
@@ -320,7 +342,7 @@ document.getElementById('userlist').addEventListener('click', function(e) {
   wantLine(who.id, 'visit-timeline', false);
   wantCard(who.id, 'visit-card', 'viethle126');
 })
-
+// on load: create home card
 window.onload = function() {
   wantCard('viethle126', 'card', 'viethle126');
 }
