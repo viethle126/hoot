@@ -206,6 +206,17 @@ document.getElementById('menu').addEventListener('click', function(e) {
       return;
     }
   }
+  if (what.id === 'favorites') {
+    var fav = items[3];
+    var line = document.getElementById('fav-timeline');
+    if (fav.getAttribute('data-active') === 'false') {
+      resetMenu(items);
+      fav.setAttribute('data-active', 'true');
+      fav.classList.add('active');
+      line.classList.remove('hidden');
+      wantLine('favorites', 'fav-timeline', false);
+    }
+  }
   if (what.id === 'hoot') {
     var hoot = items[0];
     var segment = document.getElementById('new-hoot');

@@ -5,8 +5,9 @@ var app = express();
 // custom modules
 var users = require('./users.js');
 var random = require('./random.js');
-var id = random.begin(); // generate random tweets for all users, return id
-
+// generate random hoots for all users, return id count
+var id = random.begin();
+// convert time to military format for sorting purposes
 function military(date) {
   var fixed = date;
   if (fixed[3] === '/') {
@@ -24,7 +25,7 @@ function military(date) {
   }
   return fixed;
 }
-
+// format Date() for new hoots
 function format() {
   var now = Date();
   var month = '';
@@ -41,17 +42,19 @@ function format() {
   var fixed = month + '/' + day + '/2016 ' + hours + ':' + min + ampm;
   return fixed;
 }
-
+// return an array of hoots
 function sendLine(handle, homeuser) {
   var tweets = [];
-  users[handle].tweets.forEach(function(element, index, array) {
-    var fixed = military(users[handle].tweets[index].date);
+  var type = 'tweets';
+  if (handle === 'favorites') { handle = 'viethle126', type = 'favorites' }
+  users[handle][type].forEach(function(element, index, array) {
+    var fixed = military(users[handle][type][index].date);
     tweets.push({
       name: users[handle].name,
-      id: users[handle].tweets[index].id,
+      id: users[handle][type][index].id,
       handle: users[handle].handle,
-      date: users[handle].tweets[index].date,
-      content: users[handle].tweets[index].content,
+      date: users[handle][type][index].date,
+      content: users[handle][type][index].content,
       sort: fixed
     })
   })
@@ -131,8 +134,8 @@ app.post('/hoot', jSonParser, function(req, res) {
 
 app.post('/addFavorite', jSonParser, function(req, res) {
   var handle = req.body.handle;
-  var id = req.body.id;
-  var me = req.body.me;
+  var id = Number(req.body.id);
+  var me = req.body.home;
   var hoot = {};
   users[handle].tweets.forEach(function(element, index, array) {
     if (element.id === id) {
@@ -140,7 +143,7 @@ app.post('/addFavorite', jSonParser, function(req, res) {
       return;
     }
   })
-  app.send();
+  res.send();
 })
 
 app.use(express.static('public'));
