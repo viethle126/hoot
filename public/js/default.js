@@ -48,7 +48,7 @@ function addTweet(data, where) {
 
   if (data.fav === true) {
     fav.setAttribute('class', 'heart icon');
-    favLink.setAttribute('data-fav', 'true')
+    favLink.setAttribute('data-fav', 'true');
   }
   retweetLink.appendChild(retweet);
   favLink.appendChild(fav);
@@ -69,6 +69,21 @@ function addTweet(data, where) {
   item.setAttribute('data-hoot-id', data.id);
   item.setAttribute('data-handle', data.handle);
   timeline.appendChild(item);
+
+  if (data.retweet !== 'None') {
+    var retweeted = document.createTextNode(data.name + ' rehoots:')
+    var stacked = elemClass('div', 'ui raised stacked segment items');
+    header.appendChild(retweeted);
+    header.removeChild(headerText);
+    content.removeChild(extra);
+    stacked.setAttribute('id', 'temporary');
+    timeline.appendChild(stacked);
+    addTweet(data.retweet, 'temporary');
+    stacked.removeAttribute('id');
+    return;
+  } else {
+    return;
+  }
 }
 // request timeline
 function wantLine(user, where, homeuser, type) {

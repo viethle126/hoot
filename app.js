@@ -54,6 +54,8 @@ function sendLine(handle, homeuser, type) {
     var fixed = military(element.date);
     var fav = (users[home].favorites.indexOf(element));
     if (fav !== -1) { fav = true }
+    var retweet = 'None';
+    if (element.retweet.id) { retweet = element.retweet }
     tweets.push({
       name: element.name,
       id: element.id,
@@ -61,7 +63,8 @@ function sendLine(handle, homeuser, type) {
       date: element.date,
       content: element.content,
       sort: fixed,
-      fav: fav
+      fav: fav,
+      retweet: retweet
     })
   })
   if (homeuser === user) {
@@ -70,6 +73,8 @@ function sendLine(handle, homeuser, type) {
         var fixed = military(element.date);
         var fav = (users[home].favorites.indexOf(element));
         if (fav !== -1) { fav = true }
+        var retweet = 'None';
+        if (element.retweet.id) { retweet = element.retweet }
         tweets.push({
           name: element.name,
           id: element.id,
@@ -77,7 +82,8 @@ function sendLine(handle, homeuser, type) {
           date: element.date,
           content: element.content,
           sort: fixed,
-          fav: fav
+          fav: fav,
+          retweet: retweet
         })
       })
     })
@@ -174,7 +180,6 @@ app.post('/addRehoot', jSonParser, function(req, res) {
     mentions: [],
     retweet: rehoot
   })
-  console.log(users[handle].tweets[users[handle].tweets.length - 1]);
   res.send();
 })
 

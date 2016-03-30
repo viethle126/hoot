@@ -86,7 +86,7 @@ function random() {
       content: content(),
       tags: [],
       mentions: [],
-      retweet: []
+      retweet: 'None'
     })
     if (quantity > 0) {
       tweet(who, quantity, id);
