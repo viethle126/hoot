@@ -129,7 +129,8 @@ app.post('/hoot', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var content = req.body.content;
   users[handle].tweets.push({
-    user: users[handle].name,
+    name: users[handle].name,
+    handle: handle,
     id: id,
     date: format(),
     content: content,
@@ -138,6 +139,16 @@ app.post('/hoot', jSonParser, function(req, res) {
     retweet: []
   })
   res.send();
+})
+
+app.post('/rehoot', jSonParser, function(req, res) {
+  var handle = req.body.handle;
+  var id = Number(req.body.id);
+  var payload = {};
+  users[handle].tweets.forEach(function(element, index, array) {
+    if (element.id === id) { payload = element }
+  })
+  res.send(payload);
 })
 
 app.post('/addFavorite', jSonParser, function(req, res) {
