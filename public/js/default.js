@@ -444,7 +444,6 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
       handle: 'viethle126',
       id: item.getAttribute('data-hoot-id'),
     }
-    console.log(data);
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/removeFavorite', true);
     xhr.setRequestHeader('Content-type', 'application/json');

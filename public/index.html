@@ -175,11 +175,15 @@
         <div class="ui form" id="hoot-form">
           <div class="field">
             <label>
-              <h3 class="ui violet header">What's on your mind?</h3>
+              <h3 class="ui violet header" id="new">What's on your mind?</h3>
+              <h3 class="ui violet header hidden" id="rehoot">Rehoot to your followers</h3>
             </label>
             <textarea rows="3" id="hoot-content"></textarea>
           </div>
+          <div class="ui raised stacked segment hidden" id="rehoot-here">
+          </div>
           <button class="ui violet button" type="submit" id="submit-hoot">Hoot</button>
+          <button class="ui violet button hidden" type="submit" id="re-hoot">Rehoot</button>
           <button class="ui basic violet button" type="submit" id="cancel-hoot">Cancel</button>
         </div>
         <div class="ui success message hidden" id="after-hoot">
@@ -211,6 +215,8 @@
       </div>
       <!-- favorites -->
       <div>
+        <div class="ui segment divided items hidden" id="fav-timeline">
+        </div>
       </div>
       <!-- messages -->
       <div>
