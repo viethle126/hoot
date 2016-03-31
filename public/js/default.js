@@ -26,10 +26,10 @@ function clear(id) {
   remove(element, count);
 }
 // login
-function login(a,b) {
+function login(user, password) {
   var data = {
-    user: a,
-    password: b
+    user: user,
+    password: password
   }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/login', true);
@@ -480,6 +480,12 @@ function goFavorites() {
   showCard('card');
   wantLine('favorites', 'fav-timeline', 'viethle126', 'favorites');
 }
+// event listener: login
+document.getElementById('login').addEventListener('click', function(e) {
+  var user = document.getElementById('username').value;
+  var password = document.getElementById('password').value;
+  login(user, password);
+})
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
   var what = e.target;
