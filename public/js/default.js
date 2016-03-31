@@ -244,6 +244,37 @@ function wantCard(user, where, me) {
     card(content, where);
   })
 }
+// change follow/unfollow state
+function changeFollow(target) {
+  var target = target;
+  if (!target.dataset.followText) {
+    target = target.parentNode;
+  }
+  var action = target.dataset.followText.toLowerCase();
+  var who = target.parentNode;
+  var follow = target.parentNode.childNodes[0];
+  var unfollow = target.parentNode.childNodes[1];
+  while (!who.dataset.cardHandle) {
+    who = who.parentNode;
+  }
+  who = who.getAttribute('data-card-handle');
+  var data = { handle: who, home: 'viethle126' }
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/' + action, true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    if (action === 'follow') {
+      follow.classList.add('hidden');
+      unfollow.classList.remove('hidden');
+    } else {
+      unfollow.classList.add('hidden');
+      follow.classList.remove('hidden');
+    }
+  })
+}
 // reset menu active states
 function resetMenu() {
   var menu = document.getElementById('menu').childNodes[1].childNodes;
@@ -383,7 +414,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
     return;
   }
 });
-// event listener: new hoot
+// event listener: new hoot form
 document.getElementById('new-hoot').addEventListener('click', function(e) {
   if (e.target.id === 'cancel-hoot') {
     toggle('close');
@@ -398,42 +429,10 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     return;
   }
 })
-// event listener: vistor card
+// event listener: visitor card
 document.getElementById('visit-card').addEventListener('click', function(e) {
-  if (e.target.dataset.followText) {
-    var action = e.target.dataset.followText
-    var who = e.target.parentNode;
-    var follow = e.target.parentNode.childNodes[0];
-    var unfollow = e.target.parentNode.childNodes[1];
-    while (!who.dataset.cardHandle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-card-handle');
-
-    if (action === 'Follow') {
-      var data = { handle: who, home: 'viethle126' }
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/follow', true);
-      xhr.setRequestHeader('Content-type', 'application/json');
-      xhr.send(JSON.stringify(data));
-
-      xhr.addEventListener('load', function() {
-        follow.classList.add('hidden');
-        unfollow.classList.remove('hidden');
-      })
-    }
-    if (action === 'Unfollow') {
-      var data = { handle: who, home: 'viethle126' }
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/unfollow', true);
-      xhr.setRequestHeader('Content-type', 'application/json');
-      xhr.send(JSON.stringify(data));
-
-      xhr.addEventListener('load', function() {
-        unfollow.classList.add('hidden');
-        follow.classList.remove('hidden');
-      })
-    }
+  if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
+    changeFollow(e.target);
   }
 })
 // event listener: home timeline
