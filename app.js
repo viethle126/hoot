@@ -67,6 +67,7 @@ function sendLine(handle, homeuser, type) {
       retweet: retweet
     })
   })
+  if (type === 'notifications') { homeuser = null }
   if (homeuser === user) {
     users[whichUser].following.forEach(function(element, index, array) {
       users[element].tweets.forEach(function(element, index, array) {

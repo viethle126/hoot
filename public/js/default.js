@@ -146,6 +146,27 @@ function wantRetweet(target) {
     addTweet(payload, 'rehoot-here');
   })
 }
+// add notes to timeline
+function addNote(data) {
+  var timeline = document.getElementById('note-timeline');
+  var container = elemClass('div', 'ui raised segment items');
+  var message = elemClass('div', 'ui compact floating violet message');
+  var icon = elemClass('i', 'twitch icon');
+  var content = elemClass('div', 'content');
+  var span = document.createElement('span');
+  var spanText = document.createTextNode(data.name + ' (@' + data.handle + ') mentioned you in a hoot:')
+  span.appendChild(spanText);
+  content.appendChild(icon);
+  content.appendChild(span);
+  message.appendChild(content);
+  container.appendChild(message);
+  timeline.appendChild(container);
+  console.log('inside addnote')
+  container.setAttribute('id', 'note');
+  addTweet(data, 'note');
+  container.removeAttribute('id');
+  //if (data.retweet !== 'None') { timeline.removeChild(container) }
+}
 // request timeline
 function wantLine(user, where, homeuser, type) {
   clear(where);
@@ -160,7 +181,11 @@ function wantLine(user, where, homeuser, type) {
     var displayed = tweets.length;
     if (displayed > 50) { displayed = 50 } // show up to 50
     for (var i = 0; i < displayed; i++) {
-      addTweet(tweets[i], where);
+      if (type !== 'notifications') {
+        addTweet(tweets[i], where)
+      } else {
+        addNote(tweets[i])
+      }
     }
   })
 }
@@ -398,6 +423,7 @@ function show(element) {
   document.getElementById('new-hoot').classList.add('hidden');
   document.getElementById('your-timeline').classList.add('hidden');
   document.getElementById('visit-timeline').classList.add('hidden');
+  document.getElementById('note-timeline').classList.add('hidden');
   document.getElementById('fav-timeline').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
 }
@@ -423,6 +449,14 @@ function goVisit(who) {
   wantCard(who.id, 'visit-card', 'viethle126');
   wantLine(who.id, 'visit-timeline', 'viethle126', 'tweets');
 }
+// navigate to notifications
+function goNotifications() {
+  resetMenu();
+  activate('notifications');
+  show('note-timeline');
+  showCard('card');
+  wantLine('viethle126', 'note-timeline', 'viethle126', 'notifications');
+}
 // navigate to favorites
 function goFavorites() {
   resetMenu();
@@ -439,6 +473,10 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
   if (what.id === 'home' && what.getAttribute('data-active') === 'false') {
     goHome();
+    return;
+  }
+  if (what.id === 'notifications' && what.getAttribute('data-active') === 'false') {
+    goNotifications();
     return;
   }
   if (what.id === 'favorites' && what.getAttribute('data-active') === 'false') {
