@@ -26,10 +26,10 @@ function clear(id) {
   remove(element, count);
 }
 // login
-function login(user, password) {
+function login() {
   var data = {
-    user: user,
-    password: password
+    user: document.getElementById('username').value,
+    password: document.getElementById('password').value
   }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/login', true);
@@ -37,8 +37,25 @@ function login(user, password) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    console.log(xhr.response);
-    console.log(xhr.status);
+    if (xhr.status === 200) {
+      document.getElementById('dropdown').classList.add('hidden');
+      document.getElementById('logout').classList.remove('hidden');
+    } else {
+      document.getElementById('fail').classList.remove('hidden');
+      setTimeout(function() {
+        document.getElementById('fail').classList.add('hidden');
+      }, 3000)
+    }
+  })
+}
+// logout
+function logout() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/logout', true);
+  xhr.send();
+
+  xhr.addEventListener('load', function() {
+    document.location.reload(true);
   })
 }
 // submit tweet
@@ -481,11 +498,9 @@ function goFavorites() {
   wantLine('favorites', 'fav-timeline', 'viethle126', 'favorites');
 }
 // event listener: login
-document.getElementById('login').addEventListener('click', function(e) {
-  var user = document.getElementById('username').value;
-  var password = document.getElementById('password').value;
-  login(user, password);
-})
+document.getElementById('login').addEventListener('click', login)
+// event listener: logout
+document.getElementById('logout').addEventListener('click', logout)
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
   var what = e.target;

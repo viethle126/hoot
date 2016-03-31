@@ -11,7 +11,7 @@
   <!-- top banner  -->
   <div id="masthead">
     <div class="ui container">
-      <a class="ui left floated inverted button hidden">Log out</a>
+      <a class="ui left floated inverted button hidden" id="logout">Log out</a>
       <a class="ui left floated inverted button hidden">Sign up</a>
       <div class="ui floating inverted dropdown button" id="dropdown">
         <span class="text">Login</span>
@@ -22,15 +22,15 @@
           </div>
           <div class="header">Password</div>
           <div class="ui left input">
-            <input type="text" id="password" placeholder="hoot">
+            <input type="password" id="password" placeholder="hoot">
           </div>
           <div class="ui left input">
             <button class="ui basic violet button" type="submit" id="login">Login</button>
           </div>
-          <div class="ui left input">
-            <div class="ui success message" id="fail">
-              Invalid username or password
-            </div>
+          <div class="ui left input" id="Fail">
+            <span class="ui success message hidden" id="fail">
+              Wrong ID/password
+            </span>
           </div>
           <span class="item hidden"></span>
         </div>

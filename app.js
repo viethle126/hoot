@@ -65,8 +65,10 @@ function makeCookie() {
 }
 // log in
 function login(user, password) {
-  if (users[user].password === password) {
-    return 200;
+  if (users[user]) {
+    if (users[user].password === password) {
+      return 200;
+    }
   } else {
     return 403
   }
@@ -155,6 +157,12 @@ app.post('/login', jSonParser, function(req, res) {
   if (login(user, password) === 403) {
     res.sendStatus(403);
   }
+})
+
+app.post('/logout', function(req, res) {
+  res.clearCookie('session');
+  res.clearCookie('user');
+  res.send();
 })
 
 app.post('/timeline', jSonParser, function(req, res) {
