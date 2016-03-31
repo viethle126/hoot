@@ -76,8 +76,8 @@ function addTweet(data, where) {
     header.appendChild(retweeted);
     header.removeChild(headerText);
     content.removeChild(extra);
-    stacked.setAttribute('id', 'temporary');
     timeline.appendChild(stacked);
+    stacked.setAttribute('id', 'temporary');
     addTweet(data.retweet, 'temporary');
     stacked.removeAttribute('id');
     return;
@@ -184,22 +184,84 @@ function wantCard(user, where, me) {
   })
 }
 // reset menu active states
-function resetMenu(array) {
-  array.forEach(function(element, index, array) {
+function resetMenu() {
+  var menu = document.getElementById('menu').childNodes[1].childNodes;
+  var items = [menu[1], menu[3], menu[5], menu[7], menu[9]];
+  items.forEach(function(element, index, array) {
     element.setAttribute('data-active', 'false');
     element.classList.remove('active');
   })
 }
+// set menu active state
+function activate(item) {
+
+}
+// set hoot form state
+function toggle(state) {
+  var hoot = document.getElementById('menu').childNodes[1].childNodes[1];
+  var container = document.getElementById('new-hoot');
+  var form = document.getElementById('hoot-form');
+  var header = document.getElementById('new');
+  var rehootHeader = document.getElementById('rehoot');
+  var content = document.getElementById('hoot-content');
+  var stacked = document.getElementById('rehoot-here');
+  var submit = document.getElementById('submit-hoot');
+  var rehoot = document.getElementById('submit-rehoot');
+  var success = document.getElementById('after-hoot')
+
+  switch(state) {
+    case 'hoot':
+    hoot.setAttribute('data-active', 'true');
+    hoot.classList.add('active');
+    container.classList.remove('hidden');
+    form.classList.remove('hidden');
+    header.classList.remove('hidden');
+    rehootHeader.classList.add('hidden');
+    stacked.classList.add('hidden');
+    submit.classList.remove('hidden');
+    rehoot.classList.add('hidden');
+    success.classList.add('hidden');
+    break;
+
+    case 'rehoot':
+    hoot.setAttribute('data-active', 'true');
+    hoot.classList.add('active');
+    container.classList.remove('hidden');
+    form.classList.remove('hidden');
+    header.classList.add('hidden');
+    rehootHeader.classList.remove('hidden');
+    stacked.classList.remove('hidden');
+    submit.classList.add('hidden');
+    rehoot.classList.remove('hidden');
+    success.classList.add('hidden');
+    break;
+
+    case 'success':
+    content.value = '';
+    hoot.setAttribute('data-active', 'false');
+    hoot.classList.remove('active');
+    form.classList.add('hidden');
+    success.classList.remove('hidden');
+    setTimeout(function() { container.classList.add('hidden') }, 5000);
+    break;
+
+    case 'close':
+    content.value = '';
+    hoot.setAttribute('data-active', 'false');
+    hoot.classList.remove('active');
+    container.classList.add('hidden');
+    break;
+
+    default:
+    break;
+  }
+}
 // show content
 function show(element) {
-  var content = [];
-  content.push(document.getElementById('new-hoot'));
-  content.push(document.getElementById('your-timeline'));
-  content.push(document.getElementById('visit-timeline'));
-  content.push(document.getElementById('fav-timeline'));
-  content.forEach(function(element, index, array) {
-    element.classList.add('hidden');
-  })
+  document.getElementById('new-hoot').classList.add('hidden');
+  document.getElementById('your-timeline').classList.add('hidden');
+  document.getElementById('visit-timeline').classList.add('hidden');
+  document.getElementById('fav-timeline').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
 }
 // show card
@@ -222,7 +284,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
     var card = document.getElementById('visit-card');
 
     if (home.getAttribute('data-active') === 'false') {
-      resetMenu(items);
+      resetMenu();
       home.setAttribute('data-active', 'true');
       home.classList.add('active');
       show('your-timeline');
@@ -230,7 +292,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
       wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
     }
     if (home.getAttribute('data-active') === 'visiting') {
-      resetMenu(items);
+      resetMenu();
       home.setAttribute('data-active', 'true');
       home.classList.add('active');
       card.classList.add('hidden');
@@ -245,7 +307,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
   if (what.id === 'favorites') {
     var fav = items[3];
     if (fav.getAttribute('data-active') === 'false') {
-      resetMenu(items);
+      resetMenu();
       fav.setAttribute('data-active', 'true');
       fav.classList.add('active');
       show('fav-timeline');
@@ -254,32 +316,14 @@ document.getElementById('menu').addEventListener('click', function(e) {
     }
   }
   if (what.id === 'hoot') {
-    var hoot = items[0];
-    var segment = document.getElementById('new-hoot');
-    var form = document.getElementById('hoot-form');
     if (hoot.getAttribute('data-active') === 'false') {
-      resetMenu(items);
-      // hiding rehoot elements
-      var header = document.getElementById('new');
-      var rehootHeader = document.getElementById('rehoot');
-      var stacked = document.getElementById('rehoot-here');
-      var submit = document.getElementById('submit-hoot');
-      var rehoot = document.getElementById('submit-rehoot');
-      header.classList.remove('hidden');
-      rehootHeader.classList.add('hidden');
-      stacked.classList.add('hidden');
-      submit.classList.remove('hidden');
-      rehoot.classList.add('hidden');
-      // show hoot form
-      hoot.setAttribute('data-active', 'true');
-      hoot.classList.add('active');
-      segment.classList.remove('hidden');
-      form.classList.remove('hidden');
+      resetMenu();
+      toggle('hoot');
       return;
     }
     if (hoot.getAttribute('data-active') === 'true') {
-      resetMenu(items);
-      segment.classList.add('hidden');
+      resetMenu();
+      toggle('close');
       return;
     } else {
       return;
@@ -289,11 +333,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
 // event listener: new hoot
 document.getElementById('new-hoot').addEventListener('click', function(e) {
   if (e.target.id === 'cancel-hoot') {
-    var menu = document.getElementById('menu').childNodes[1].childNodes;
-    var items = [menu[1], menu[3], menu[5], menu[7], menu[9]];
-    document.getElementById('hoot-content').value = '';
-    document.getElementById('new-hoot').classList.add('hidden');
-    resetMenu(items);
+    toggle('close');
     return;
   }
   if (e.target.id === 'submit-hoot') {
@@ -307,16 +347,8 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     xhr.send(JSON.stringify(data));
 
     xhr.addEventListener('load', function() {
-      show('your-timeline');
       wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
-      document.getElementById('new-hoot').classList.remove('hidden');
-      document.getElementById('hoot-form').classList.add('hidden');
-      document.getElementById('after-hoot').classList.remove('hidden');
-      document.getElementById('hoot-content').value = '';
-      setTimeout(function() {
-        document.getElementById('new-hoot').classList.add('hidden');
-        document.getElementById('after-hoot').classList.add('hidden');
-      }, 5000);
+      toggle('success');
     })
   }
   if (e.target.id === 'submit-rehoot') {
@@ -334,20 +366,12 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     xhr.send(JSON.stringify(data));
 
     xhr.addEventListener('load', function() {
-      show('your-timeline');
       wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
-      document.getElementById('new-hoot').classList.remove('hidden');
-      document.getElementById('hoot-form').classList.add('hidden');
-      document.getElementById('after-hoot').classList.remove('hidden');
-      document.getElementById('hoot-content').value = '';
-      setTimeout(function() {
-        document.getElementById('new-hoot').classList.add('hidden');
-        document.getElementById('after-hoot').classList.add('hidden');
-      }, 5000);
+      toggle('success');
     })
   }
 })
-// event listener: create card when visiting other timelines
+// event listener: vistor card
 document.getElementById('visit-card').addEventListener('click', function(e) {
   if (e.target.dataset.followText) {
     var action = e.target.dataset.followText
@@ -388,26 +412,7 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
 // event listener: home timeline
 document.getElementById('your-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    // show rehoot elements
-    var header = document.getElementById('new');
-    var rehootHeader = document.getElementById('rehoot');
-    var stacked = document.getElementById('rehoot-here');
-    var submit = document.getElementById('submit-hoot');
-    var rehoot = document.getElementById('submit-rehoot');
-    header.classList.add('hidden');
-    rehootHeader.classList.remove('hidden');
-    stacked.classList.remove('hidden');
-    submit.classList.add('hidden');
-    rehoot.classList.remove('hidden');
-    // show hoot form
-    var hoot = document.getElementById('menu').childNodes[1].childNodes[1];
-    var segment = document.getElementById('new-hoot');
-    var form = document.getElementById('hoot-form');
-    hoot.setAttribute('data-active', 'true');
-    hoot.classList.add('active');
-    segment.classList.remove('hidden');
-    form.classList.remove('hidden');
-
+    toggle('rehoot');
     var item = e.target.parentNode;
     while (!item.dataset.handle) {
       item = item.parentNode;
@@ -423,6 +428,7 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
 
     xhr.addEventListener('load', function() {
       var payload = JSON.parse(xhr.responseText);
+      var stacked = document.getElementById('rehoot-here');
       while (stacked.hasChildNodes()) {
         stacked.removeChild(stacked.firstChild)
       }
@@ -480,26 +486,7 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
 // event listener: visit timeline
 document.getElementById('visit-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    // show rehoot elements
-    var header = document.getElementById('new');
-    var rehootHeader = document.getElementById('rehoot');
-    var stacked = document.getElementById('rehoot-here');
-    var submit = document.getElementById('submit-hoot');
-    var rehoot = document.getElementById('submit-rehoot');
-    header.classList.add('hidden');
-    rehootHeader.classList.remove('hidden');
-    stacked.classList.remove('hidden');
-    submit.classList.add('hidden');
-    rehoot.classList.remove('hidden');
-    // show hoot form
-    var hoot = document.getElementById('menu').childNodes[1].childNodes[1];
-    var segment = document.getElementById('new-hoot');
-    var form = document.getElementById('hoot-form');
-    hoot.setAttribute('data-active', 'true');
-    hoot.classList.add('active');
-    segment.classList.remove('hidden');
-    form.classList.remove('hidden');
-
+    toggle('rehoot');
     var item = e.target.parentNode;
     while (!item.dataset.handle) {
       item = item.parentNode;
@@ -515,6 +502,7 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
 
     xhr.addEventListener('load', function() {
       var payload = JSON.parse(xhr.responseText);
+      var stacked = document.getElementById('rehoot-here');
       while (stacked.hasChildNodes()) {
         stacked.removeChild(stacked.firstChild)
       }
@@ -571,6 +559,29 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
 })
 // event listener: favorites
 document.getElementById('fav-timeline').addEventListener('click', function(e) {
+  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
+    toggle('rehoot');
+    var item = e.target.parentNode;
+    while (!item.dataset.handle) {
+      item = item.parentNode;
+    }
+    var data = {
+      handle: item.getAttribute('data-handle'),
+      id: item.getAttribute('data-hoot-id')
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/rehoot', true);
+    xhr.setRequestHeader('Content-type', 'application/json');
+    xhr.send(JSON.stringify(data));
+
+    xhr.addEventListener('load', function() {
+      var payload = JSON.parse(xhr.responseText);
+      while (stacked.hasChildNodes()) {
+        stacked.removeChild(stacked.firstChild)
+      }
+      addTweet(payload, 'rehoot-here')
+    })
+  }
   if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
     var target = e.target;
     var heart = e.target;
