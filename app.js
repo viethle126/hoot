@@ -42,6 +42,27 @@ function format() {
   var fixed = month + '/' + day + '/2016 ' + hours + ':' + min + ampm;
   return fixed;
 }
+// add string to cookie
+function extendCookie(count, cookie) {
+  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+  var pick = Math.floor(Math.random() * 60) + 1;
+
+  if (count > 0) {
+    cookie+= chars[pick];
+    count--;
+    return extendCookie(count, cookie);
+  } else {
+    return cookie;
+  }
+}
+// generate cookie value
+function makeCookie() {
+  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+  var pick = Math.floor(Math.random() * 60) + 1;
+  var cookie = chars[pick];
+  cookie = extendCookie(40, cookie);
+  return cookie;
+}
 // return an array of hoots
 function sendLine(handle, homeuser, type) {
   var tweets = [];

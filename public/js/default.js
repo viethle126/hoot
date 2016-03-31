@@ -161,7 +161,6 @@ function addNote(data) {
   message.appendChild(content);
   container.appendChild(message);
   timeline.appendChild(container);
-  console.log('inside addnote')
   container.setAttribute('id', 'note');
   addTweet(data, 'note');
   container.removeAttribute('id');
