@@ -245,7 +245,7 @@ function wantCard(user, where, me) {
   })
 }
 // change follow/unfollow state
-function changeFollow(target) {
+function follow(target) {
   var target = target;
   if (!target.dataset.followText) {
     target = target.parentNode;
@@ -272,6 +272,50 @@ function changeFollow(target) {
     } else {
       unfollow.classList.add('hidden');
       follow.classList.remove('hidden');
+    }
+  })
+}
+// add/remove favorites
+function favorite(target, remove) {
+  var target = target;
+  var heart = target;
+  if (target.dataset.fav) { heart = target.childNodes[0] }
+  if (!target.dataset.fav) { target = target.parentNode }
+  var item = target.parentNode;
+  while (!item.dataset.handle) {
+    item = item.parentNode;
+  }
+
+  var type = '';
+  var handle = '';
+  if (target.getAttribute('data-fav') === 'false') {
+    type = "addFavorite";
+    handle = item.getAttribute('data-handle');
+  } else {
+    type = "removeFavorite"
+    handle = 'viethle126';
+  }
+
+  var data = {
+    handle: handle,
+    id: item.getAttribute('data-hoot-id'),
+    home: 'viethle126'
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/' + type, true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    if (remove === true) {
+      document.getElementById('fav-timeline').removeChild(item);
+    }
+    if (type === 'addFavorite') {
+      heart.setAttribute('class', 'heart icon');
+      target.setAttribute('data-fav', 'true');
+    } else {
+      heart.setAttribute('class', 'empty heart icon');
+      target.setAttribute('data-fav', 'false');
     }
   })
 }
@@ -440,52 +484,8 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
     wantRetweet(e.target);
   }
-  if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
-    var target = e.target;
-    var heart = e.target;
-    if (target.dataset.fav) { heart = target.childNodes[0] }
-    if (!target.dataset.fav) { target = target.parentNode }
-    var item = target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: item.getAttribute('data-handle'),
-      id: item.getAttribute('data-hoot-id'),
-      home: 'viethle126'
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/addFavorite', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      heart.setAttribute('class', 'heart icon');
-      target.setAttribute('data-fav', 'true');
-    })
-  }
-  if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
-    var target = e.target;
-    var heart = e.target;
-    if (target.dataset.fav) { heart = target.childNodes[0] }
-    if (!target.dataset.fav) { target = target.parentNode }
-    var item = target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: 'viethle126',
-      id: item.getAttribute('data-hoot-id'),
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/removeFavorite', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      heart.setAttribute('class', 'empty heart icon');
-      target.setAttribute('data-fav', 'false');
-    })
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target);
   }
 })
 // event listener: visit timeline
@@ -493,52 +493,8 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
     wantRetweet(e.target);
   }
-  if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
-    var target = e.target;
-    var heart = e.target;
-    if (target.dataset.fav) { heart = target.childNodes[0] }
-    if (!target.dataset.fav) { target = target.parentNode }
-    var item = target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: item.getAttribute('data-handle'),
-      id: item.getAttribute('data-hoot-id'),
-      home: 'viethle126'
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/addFavorite', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      heart.setAttribute('class', 'heart icon');
-      target.setAttribute('data-fav', 'true');
-    })
-  }
-  if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
-    var target = e.target;
-    var heart = e.target;
-    if (target.dataset.fav) { heart = target.childNodes[0] }
-    if (!target.dataset.fav) { target = target.parentNode }
-    var item = target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: 'viethle126',
-      id: item.getAttribute('data-hoot-id'),
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/removeFavorite', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      heart.setAttribute('class', 'empty heart icon');
-      target.setAttribute('data-fav', 'false');
-    })
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target);
   }
 })
 // event listener: favorites
@@ -546,27 +502,8 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
     wantRetweet(e.target);
   }
-  if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
-    var target = e.target;
-    var heart = e.target;
-    if (target.dataset.fav) { heart = target.childNodes[0] }
-    if (!target.dataset.fav) { target = target.parentNode }
-    var item = target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: 'viethle126',
-      id: item.getAttribute('data-hoot-id'),
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/removeFavorite', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      document.getElementById('fav-timeline').removeChild(item);
-    })
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target, true);
   }
 })
 // temporary userlist, will move later
