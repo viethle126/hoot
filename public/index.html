@@ -13,7 +13,28 @@
     <div class="ui container">
       <a class="ui right floated inverted button hidden">Log out</a>
       <a class="ui right floated inverted button hidden">Sign up</a>
-      <a class="ui right floated inverted button">Log in</a>
+      <div class="ui floating inverted dropdown button">
+        <span class="text">Login</span>
+        <div class="menu">
+          <div class="header">Username</div>
+          <div class="ui left input">
+            <input type="text" id="username" placeholder="viethle126">
+          </div>
+          <div class="header">Password</div>
+          <div class="ui left input">
+            <input type="text" id="password" placeholder="hoot">
+          </div>
+          <div class="ui left input">
+            <button class="ui basic violet button" type="submit" id="login">Login</button>
+          </div>
+          <div class="ui left input">
+            <div class="ui success message" id="fail">
+              Invalid username or password
+            </div>
+          </div>
+          <span class="item hidden"></span>
+        </div>
+      </div>
     </div>
   </div>
   <!-- nav bar -->

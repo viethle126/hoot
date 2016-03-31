@@ -580,3 +580,7 @@ document.getElementById('userlist').addEventListener('click', function(e) {
 window.onload = function() {
   wantCard('viethle126', 'card', 'viethle126');
 }
+// semantic
+$('.ui.dropdown')
+  .dropdown()
+;
