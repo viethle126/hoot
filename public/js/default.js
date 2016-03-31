@@ -85,6 +85,31 @@ function addTweet(data, where) {
     return;
   }
 }
+// request retweet data
+function wantRetweet(target) {
+  toggle('rehoot');
+  var item = target.parentNode;
+  while (!item.dataset.handle) {
+    item = item.parentNode;
+  }
+  var data = {
+    handle: item.getAttribute('data-handle'),
+    id: item.getAttribute('data-hoot-id')
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/rehoot', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    var payload = JSON.parse(xhr.responseText);
+    var stacked = document.getElementById('rehoot-here');
+    while (stacked.hasChildNodes()) {
+      stacked.removeChild(stacked.firstChild);
+    }
+    addTweet(payload, 'rehoot-here');
+  })
+}
 // request timeline
 function wantLine(user, where, homeuser, type) {
   clear(where);
@@ -412,28 +437,7 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
 // event listener: home timeline
 document.getElementById('your-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    toggle('rehoot');
-    var item = e.target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: item.getAttribute('data-handle'),
-      id: item.getAttribute('data-hoot-id')
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/rehoot', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      var payload = JSON.parse(xhr.responseText);
-      var stacked = document.getElementById('rehoot-here');
-      while (stacked.hasChildNodes()) {
-        stacked.removeChild(stacked.firstChild)
-      }
-      addTweet(payload, 'rehoot-here')
-    })
+    wantRetweet(e.target);
   }
   if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
     var target = e.target;
@@ -486,28 +490,7 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
 // event listener: visit timeline
 document.getElementById('visit-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    toggle('rehoot');
-    var item = e.target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: item.getAttribute('data-handle'),
-      id: item.getAttribute('data-hoot-id')
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/rehoot', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      var payload = JSON.parse(xhr.responseText);
-      var stacked = document.getElementById('rehoot-here');
-      while (stacked.hasChildNodes()) {
-        stacked.removeChild(stacked.firstChild)
-      }
-      addTweet(payload, 'rehoot-here')
-    })
+    wantRetweet(e.target);
   }
   if (e.target.getAttribute('data-fav') === 'false' || e.target.parentNode.getAttribute('data-fav') === 'false') {
     var target = e.target;
@@ -560,27 +543,7 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
 // event listener: favorites
 document.getElementById('fav-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    toggle('rehoot');
-    var item = e.target.parentNode;
-    while (!item.dataset.handle) {
-      item = item.parentNode;
-    }
-    var data = {
-      handle: item.getAttribute('data-handle'),
-      id: item.getAttribute('data-hoot-id')
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/rehoot', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      var payload = JSON.parse(xhr.responseText);
-      while (stacked.hasChildNodes()) {
-        stacked.removeChild(stacked.firstChild)
-      }
-      addTweet(payload, 'rehoot-here')
-    })
+    wantRetweet(e.target);
   }
   if (e.target.getAttribute('data-fav') === 'true' || e.target.parentNode.getAttribute('data-fav') === 'true') {
     var target = e.target;
