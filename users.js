@@ -1,9 +1,6 @@
 var users = {
   viethle126: {
-    login: {
-      email: 'viet@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Viet Le',
     handle: 'viethle126',
     tweets: [],
@@ -13,10 +10,7 @@ var users = {
     favorites: [],
   },
   alysiasaquil: {
-    login: {
-      email: 'alysia@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Alysia Saquilabon',
     handle: 'alysiasaquil',
     tweets: [],
@@ -26,10 +20,7 @@ var users = {
     favorites: [],
   },
   ajames91: {
-    login: {
-      email: 'andrew@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Andrew Velasquez',
     handle: 'ajames91',
     tweets: [],
@@ -39,10 +30,7 @@ var users = {
     favorites: [],
   },
   arunpaulgopal: {
-    login: {
-      email: 'arun@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Arun Gopal',
     handle: 'arunpaulgopal',
     tweets: [],
@@ -52,10 +40,7 @@ var users = {
     favorites: [],
   },
   bgnewuch: {
-    login: {
-      email: 'ben@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Benjamin Gnewuch',
     handle: 'bgnewuch',
     tweets: [],
@@ -65,10 +50,7 @@ var users = {
     favorites: [],
   },
   brianwalen: {
-    login: {
-      email: 'brian@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Brian Walen',
     handle: 'brianwalen',
     tweets: [],
@@ -78,10 +60,7 @@ var users = {
     favorites: [],
   },
   metcalfec: {
-    login: {
-      email: 'chris@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Chris Metcalfe',
     handle: 'metcalfec',
     tweets: [],
@@ -91,10 +70,7 @@ var users = {
     favorites: [],
   },
   coreysl: {
-    login: {
-      email: 'corey@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Corey Lin ',
     handle: 'coreysl',
     tweets: [],
@@ -104,10 +80,7 @@ var users = {
     favorites: [],
   },
   nanhyunchul: {
-    login: {
-      email: 'hyun@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Hyun Lee',
     handle: 'nanhyunchul',
     tweets: [],
@@ -117,10 +90,7 @@ var users = {
     favorites: [],
   },
   jnguyen: {
-    login: {
-      email: 'justin@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Justin Nguyen',
     handle: 'jnguyen',
     tweets: [],
@@ -130,10 +100,7 @@ var users = {
     favorites: [],
   },
   little78926: {
-    login: {
-      email: 'john@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'John Huang',
     handle: 'little78926',
     tweets: [],
@@ -143,10 +110,7 @@ var users = {
     favorites: [],
   },
   mikefield: {
-    login: {
-      email: 'mike@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Michael Field',
     handle: 'mikefield',
     tweets: [],
@@ -156,10 +120,7 @@ var users = {
     favorites: [],
   },
   treezrppl2: {
-    login: {
-      email: 'nathan@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Nathan Walston',
     handle: 'treezrppl2',
     tweets: [],
@@ -169,10 +130,7 @@ var users = {
     favorites: [],
   },
   niralpokal: {
-    login: {
-      email: 'niral@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Niral Pokal',
     handle: 'niralpokal',
     tweets: [],
@@ -182,10 +140,7 @@ var users = {
     favorites: [],
   },
   ronperris: {
-    login: {
-      email: 'ron@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Ron Perris',
     handle: 'ronperris',
     tweets: [],
@@ -195,10 +150,7 @@ var users = {
     favorites: [],
   },
   espressohoarder: {
-    login: {
-      email: 'schlomo@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Shlomo Kofman',
     handle: 'espressohoarder',
     tweets: [],
@@ -208,10 +160,7 @@ var users = {
     favorites: [],
   },
   tputs001: {
-    login: {
-      email: 'tom@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Tom Putsawatanachai',
     handle: 'tputs001',
     tweets: [],
@@ -221,10 +170,7 @@ var users = {
     favorites: [],
   },
   zane: {
-    login: {
-      email: 'zane@hoot.com',
-      password: 'hoot'
-    },
+    password: 'hoot',
     name: 'Zane DeFazio',
     handle: 'zane',
     tweets: [],

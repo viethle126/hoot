@@ -63,6 +63,14 @@ function makeCookie() {
   cookie = extendCookie(40, cookie);
   return cookie;
 }
+// log in
+function login(user, password) {
+  if (users[user].password === password) {
+    return 200;
+  } else {
+    return 403
+  }
+}
 // return an array of hoots
 function sendLine(handle, homeuser, type) {
   var tweets = [];
@@ -134,6 +142,19 @@ function pushMentions(mentions, hoot) {
 app.use(function(req, res, next) {
   console.log(req.url);
   next();
+})
+
+app.post('/login', jSonParser, function(req, res) {
+  var user = req.body.user;
+  var password = req.body.password;
+  if (login(user, password) === 200) {
+    res.cookie('user', user);
+    res.cookie('session', makeCookie());
+    res.sendStatus(200);
+  }
+  if (login(user, password) === 403) {
+    res.sendStatus(403);
+  }
 })
 
 app.post('/timeline', jSonParser, function(req, res) {

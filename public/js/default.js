@@ -25,6 +25,22 @@ function clear(id) {
   var count = element.childNodes.length;
   remove(element, count);
 }
+// login
+function login(a,b) {
+  var data = {
+    user: a,
+    password: b
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/login', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    console.log(xhr.response);
+    console.log(xhr.status);
+  })
+}
 // submit tweet
 function tweet() {
   var data = {
