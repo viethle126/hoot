@@ -219,7 +219,8 @@ function resetMenu() {
 }
 // set menu active state
 function activate(item) {
-
+  document.getElementById(item).setAttribute('data-active', 'true');
+  document.getElementById(item).classList.add('active');
 }
 // set hoot form state
 function toggle(state) {
@@ -295,64 +296,55 @@ function showCard(element) {
   document.getElementById('visit-card').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
 }
+// navigate home
+function goHome() {
+  resetMenu();
+  activate('home');
+  show('your-timeline');
+  showCard('card');
+  wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
+}
+// navigate to other timeline
+function goVisit(who) {
+  resetMenu();
+  show('visit-timeline');
+  showCard('visit-card');
+  wantCard(who.id, 'visit-card', 'viethle126');
+  wantLine(who.id, 'visit-timeline', 'viethle126', 'tweets');
+}
+// navigate to favorites
+function goFavorites() {
+  resetMenu();
+  activate('favorites');
+  show('fav-timeline');
+  showCard('card');
+  wantLine('favorites', 'fav-timeline', 'viethle126', 'favorites');
+}
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
-  var what = e.target
-  var menu = document.getElementById('menu').childNodes[1].childNodes;
-  var items = [menu[1], menu[3], menu[5], menu[7], menu[9]];
+  var what = e.target;
   while (!what.id) {
     what = what.parentNode;
   }
-  if (what.id === 'home') {
-    var home = items[1];
-    var you = document.getElementById('card');
-    var card = document.getElementById('visit-card');
-
-    if (home.getAttribute('data-active') === 'false') {
-      resetMenu();
-      home.setAttribute('data-active', 'true');
-      home.classList.add('active');
-      show('your-timeline');
-      showCard('card');
-      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
-    }
-    if (home.getAttribute('data-active') === 'visiting') {
-      resetMenu();
-      home.setAttribute('data-active', 'true');
-      home.classList.add('active');
-      card.classList.add('hidden');
-      you.classList.remove('hidden');
-      show('your-timeline');
-      showCard('card');
-      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
-    } else {
-      return;
-    }
+  if (what.id === 'home' && what.getAttribute('data-active') === 'false') {
+    goHome();
+    return;
   }
-  if (what.id === 'favorites') {
-    var fav = items[3];
-    if (fav.getAttribute('data-active') === 'false') {
-      resetMenu();
-      fav.setAttribute('data-active', 'true');
-      fav.classList.add('active');
-      show('fav-timeline');
-      showCard('card');
-      wantLine('favorites', 'fav-timeline', 'viethle126', 'favorites');
-    }
+  if (what.id === 'favorites' && what.getAttribute('data-active') === 'false') {
+    goFavorites();
+    return;
   }
-  if (what.id === 'hoot') {
-    if (hoot.getAttribute('data-active') === 'false') {
-      resetMenu();
-      toggle('hoot');
-      return;
-    }
-    if (hoot.getAttribute('data-active') === 'true') {
-      resetMenu();
-      toggle('close');
-      return;
-    } else {
-      return;
-    }
+  if (what.id === 'hoot' && what.getAttribute('data-active') === 'false') {
+    resetMenu();
+    toggle('hoot');
+    return;
+  }
+  if (what.id === 'hoot' && what.getAttribute('data-active') === 'true') {
+    resetMenu();
+    toggle('close');
+    return;
+  } else {
+    return;
   }
 });
 // event listener: new hoot
@@ -570,24 +562,11 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
 })
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
-  var list = document.getElementById('userlist');
-  var home = document.getElementById('home');
-  var yours = document.getElementById('your-timeline');
-  var visit = document.getElementById('visit-timeline');
-  var you = document.getElementById('card')
-  var card = document.getElementById('visit-card');
-
   var who = e.target;
   while (!who.id) {
     who = who.parentNode;
   }
-  home.setAttribute('data-active', 'visiting');
-  home.classList.remove('active');
-  yours.classList.add('hidden');
-  visit.classList.remove('hidden');
-  showCard('visit-card')
-  wantLine(who.id, 'visit-timeline', 'viethle126', 'tweets');
-  wantCard(who.id, 'visit-card', 'viethle126');
+  goVisit(who);
 })
 // on load: create home card
 window.onload = function() {
