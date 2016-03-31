@@ -91,6 +91,28 @@ function sendLine(handle, homeuser, type) {
   tweets = _.sortBy(tweets, 'sort');
   return tweets;
 }
+// split mentions into array
+function mention(content) {
+  var array = content.split(/(@[a-z\d-]+)/)
+  var mentions = [];
+  array.forEach(function(element, index, array) {
+    if (element.search(/@([a-z\d-]+)/) === 0) {
+      mentions.push(element.slice(1));
+    }
+  })
+  return mentions;
+}
+// push mentions
+function pushMentions(mentions, hoot) {
+  mentions.forEach(function(element, index, array) {
+    users[element].notifications.push(hoot);
+  })
+}
+
+app.use(function(req, res, next) {
+  console.log(req.url);
+  next();
+})
 
 app.post('/timeline', jSonParser, function(req, res) {
   res.send(sendLine(req.body.handle, req.body.home, req.body.type));
@@ -134,16 +156,18 @@ app.post('/hoot', jSonParser, function(req, res) {
   id++
   var handle = req.body.handle;
   var content = req.body.content;
-  users[handle].tweets.push({
+  var hoot = {
     name: users[handle].name,
     handle: handle,
     id: id,
     date: format(),
     content: content,
     tags: [],
-    mentions: [],
+    mentions: mention(content),
     retweet: []
-  })
+  }
+  pushMentions(hoot.mentions, hoot);
+  users[handle].tweets.push(hoot);
   res.send();
 })
 
