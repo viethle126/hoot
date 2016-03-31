@@ -25,7 +25,43 @@ function clear(id) {
   var count = element.childNodes.length;
   remove(element, count);
 }
-// create tweet
+// submit tweet
+function tweet() {
+  var data = {
+    content: document.getElementById('hoot-content').value,
+    handle: 'viethle126'
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/hoot', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
+    toggle('success');
+  })
+}
+// submit retweet
+function retweet() {
+  var item = document.getElementById('rehoot-here').childNodes[0];
+  var data = {
+    content: document.getElementById('hoot-content').value,
+    handle: 'viethle126',
+    rehootId: item.getAttribute('data-hoot-id'),
+    rehootHandle: item.getAttribute('data-handle')
+  }
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/addRehoot', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
+    toggle('success');
+  })
+}
+// add tweet to timeline
 function addTweet(data, where) {
   var timeline = document.getElementById(where);
   var item = elemClass('div', 'item');
@@ -354,38 +390,12 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     return;
   }
   if (e.target.id === 'submit-hoot') {
-    var data = {
-      content: document.getElementById('hoot-content').value,
-      handle: 'viethle126'
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/hoot', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
-      toggle('success');
-    })
+    tweet();
   }
   if (e.target.id === 'submit-rehoot') {
-    var item = document.getElementById('rehoot-here').childNodes[0];
-    var data = {
-      content: document.getElementById('hoot-content').value,
-      handle: 'viethle126',
-      rehootId: item.getAttribute('data-hoot-id'),
-      rehootHandle: item.getAttribute('data-handle')
-    }
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/addRehoot', true);
-    xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(data));
-
-    xhr.addEventListener('load', function() {
-      wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
-      toggle('success');
-    })
+    retweet();
+  } else {
+    return;
   }
 })
 // event listener: vistor card
