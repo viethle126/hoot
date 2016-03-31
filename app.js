@@ -194,16 +194,18 @@ app.post('/addRehoot', jSonParser, function(req, res) {
   })
   var handle = req.body.handle;
   var content = req.body.content;
-  users[handle].tweets.push({
+  var hoot = {
     name: users[handle].name,
     handle: handle,
     id: id,
     date: format(),
     content: content,
     tags: [],
-    mentions: [],
+    mentions: mention(content),
     retweet: rehoot
-  })
+  }
+  pushMentions(hoot.mentions, hoot);
+  users[handle].tweets.push(hoot);
   res.send();
 })
 
