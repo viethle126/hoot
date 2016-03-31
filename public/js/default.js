@@ -535,6 +535,15 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
     favorite(e.target);
   }
 })
+// event listener: notifications
+document.getElementById('note-timeline').addEventListener('click', function(e) {
+  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
+    wantRetweet(e.target);
+  }
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target);
+  }
+})
 // event listener: favorites
 document.getElementById('fav-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
