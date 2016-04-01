@@ -59,15 +59,14 @@ function logout() {
 }
 // search
 function search(input) {
-  var data = { search: input }
+  var data = { search: input, home: me }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/search', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    console.log(xhr.response);
-    var tweets = JSON.parse(xhr.responseText);
+    var tweets = JSON.parse(xhr.responseText).reverse();
     console.log(tweets);
   })
 }

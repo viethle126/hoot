@@ -175,10 +175,17 @@ function parseSearch(input) {
   return string;
 }
 // search for tweets by string, user or hashtag(implement later)
-function search(input) {
-  var users = mention(input);
+function search(input, home) {
+  var payload = [];
+  var handles = mention(input);
   var string = parseSearch(input);
-  console.log(users, string);
+  handles.forEach(function(element, index, array) {
+    if (users[element]) {
+      payload = payload.concat(sendLine(element, home, 'tweets'));
+      return payload;
+    }
+  })
+  return payload;
 }
 
 app.use(function(req, res, next) {
@@ -246,9 +253,7 @@ app.post('/logout', function(req, res) {
 })
 
 app.post('/search', jSonParser, function(req, res) {
-  console.log(req.body);
-  search(req.body.search);
-  res.send();
+  res.send(search(req.body.search, req.body.home));
 })
 
 app.post('/timeline', jSonParser, function(req, res) {
