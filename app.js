@@ -162,16 +162,13 @@ function parseSearch(input) {
   var string = input.split(/(@[a-z\d-]+)/);
   var stripped = []
   string.forEach(function(element, index, array) {
-    if (element.search(/@([a-z\d-]+)/) === 0) {
-      string.splice(index, 1);
-      return string;
+    if (element[0] === ' ' && element.search(/@([a-z\d-]+)/) === -1) {
+      stripped.push(element.slice(1))
+      return;
     }
-  })
-  string.forEach(function(element, index, array) {
-    if (element[0] === ' ') {
-      stripped.push(element.slice(1));
-    } else {
+    if (element.search(/@([a-z\d-]+)/) === -1) {
       stripped.push(element);
+      return;
     }
   })
   string = stripped.join('');
