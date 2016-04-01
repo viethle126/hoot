@@ -66,8 +66,8 @@ function search(input) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    var tweets = JSON.parse(xhr.responseText).reverse();
-    console.log(tweets);
+    var payload = JSON.parse(xhr.responseText);
+    console.log(payload);
   })
 }
 // submit tweet

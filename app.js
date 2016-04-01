@@ -176,18 +176,28 @@ function parseSearch(input) {
 }
 // search for tweets by string, user or hashtag(implement later)
 function search(input, home) {
-  var payload = [];
+  var byUser = [];
+  var byString = [];
   var handles = mention(input);
   var string = parseSearch(input);
+  if (string === '') { string = 'foobar' }
+  var reg = new RegExp('(' + string + ')');
   handles.forEach(function(element, index, array) {
     if (users[element]) {
-      payload = payload.concat(sendLine(element, home, 'tweets'));
-      return payload;
+      byUser = byUser.concat(sendLine(element, home, 'mine'));
+      return byUser;
     }
   })
-  return payload;
+  for (prop in users) {
+    users[prop].tweets.forEach(function(element, index, array) {
+      if (element.content.search(reg) !== -1) {
+        byString.push(element.content);
+      }
+    })
+  }
+  return { byUser: byUser, byString: byString }
 }
-
+debugger;
 app.use(function(req, res, next) {
   console.log(req.url);
   next();
