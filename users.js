@@ -8,6 +8,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   alysiasaquil: {
     password: 'hoot',
@@ -18,6 +19,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   ajames91: {
     password: 'hoot',
@@ -28,6 +30,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   arunpaulgopal: {
     password: 'hoot',
@@ -38,6 +41,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   bgnewuch: {
     password: 'hoot',
@@ -48,6 +52,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   brianwalen: {
     password: 'hoot',
@@ -58,6 +63,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   metcalfec: {
     password: 'hoot',
@@ -68,6 +74,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   coreysl: {
     password: 'hoot',
@@ -78,6 +85,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   nanhyunchul: {
     password: 'hoot',
@@ -88,6 +96,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   jnguyen: {
     password: 'hoot',
@@ -98,6 +107,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   little78926: {
     password: 'hoot',
@@ -108,6 +118,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   mikefield: {
     password: 'hoot',
@@ -128,6 +139,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   niralpokal: {
     password: 'hoot',
@@ -138,6 +150,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   ronperris: {
     password: 'hoot',
@@ -148,6 +161,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   espressohoarder: {
     password: 'hoot',
@@ -158,6 +172,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   tputs001: {
     password: 'hoot',
@@ -168,6 +183,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
   zane: {
     password: 'hoot',
@@ -178,6 +194,7 @@ var users = {
     following: [],
     notifications: [],
     favorites: [],
+    cookies: []
   },
 }
 

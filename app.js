@@ -1,5 +1,6 @@
 var express = require('express');
 var jSonParser = require('body-parser').json();
+var cookieParser = require('cookie-parser');
 var _ = require('underscore');
 var app = express();
 // custom modules
@@ -68,9 +69,11 @@ function login(user, password) {
   if (users[user]) {
     if (users[user].password === password) {
       return 200;
+    } else {
+      return 403;
     }
   } else {
-    return 403
+    return 403;
   }
 }
 // return an array of hoots
@@ -146,12 +149,52 @@ app.use(function(req, res, next) {
   next();
 })
 
+app.use(cookieParser());
+
+app.get('/landing', function(req, res) {
+  var payload = [];
+  for (prop in users) {
+    if (users[prop].tweets) {
+      users[prop].tweets.forEach(function(element, index, array) {
+        var fixed = military(element.date);
+        payload.push({
+          name: element.name,
+          id: element.id,
+          handle: element.handle,
+          date: element.date,
+          content: element.content,
+          sort: fixed,
+        })
+      })
+    }
+  }
+  payload = _.sortBy(payload, 'sort').reverse();
+  payload = payload.slice(0, 30);
+  res.send(payload);
+})
+
+app.get('/check', function(req, res) {
+  if (req.cookies.user) {
+    var user = req.cookies.user;
+    var cookie = req.cookies.session;
+    if (users[user].cookies.indexOf(cookie) !== -1) {
+      res.sendStatus(240);
+    } else {
+      res.sendStatus(200);
+    }
+  } else {
+    res.sendStatus(200);
+  }
+})
+
 app.post('/login', jSonParser, function(req, res) {
   var user = req.body.user;
   var password = req.body.password;
   if (login(user, password) === 200) {
+    var cookie = makeCookie();
+    users[user].cookies.push(cookie),
     res.cookie('user', user);
-    res.cookie('session', makeCookie());
+    res.cookie('session', cookie);
     res.sendStatus(200);
   }
   if (login(user, password) === 403) {
