@@ -287,8 +287,10 @@ function card(data, where) {
   var follower = elemClass('i', 'users icon');
   var followerText = document.createTextNode(data.followers);
 
+  followingLink.setAttribute('data-go', 'following');
   followingLink.appendChild(following);
   followingLink.appendChild(followingText)
+  followerLink.setAttribute('data-go', 'followers');
   followerLink.appendChild(follower);
   followerLink.appendChild(followerText);
   floated.appendChild(followerLink);
@@ -523,12 +525,21 @@ function showCard(element) {
   document.getElementById('visit-card').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
 }
-// navigate to followers
-function goFollowers() {
+// navigate to following/followers
+function goFollowers(target) {
+  var target = target;
+  if (!target.dataset.go) {
+    target = target.parentNode;
+  }
+  var type = target.dataset.go
+  var who = target;
+  while (!who.dataset.cardHandle) {
+    who = who.parentNode;
+  }
   resetMenu();
   show('following');
   showCard('card');
-  wantFollowers(me, 'following', 'followers')
+  wantFollowers(who.dataset.cardHandle, 'following', type)
 }
 // navigate home
 function goHome() {
@@ -607,10 +618,20 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     retweet();
   }
 })
+// event listener: your card
+document.getElementById('card').addEventListener('click', function(e) {
+  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
+    console.log('clicked!')
+    goFollowers(e.target);
+  }
+})
 // event listener: visitor card
 document.getElementById('visit-card').addEventListener('click', function(e) {
   if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
     follow(e.target);
+  }
+  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
+    goFollowers(e.target);
   }
 })
 // event listener: home timeline
