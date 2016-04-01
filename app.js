@@ -157,7 +157,31 @@ function pushMentions(mentions, hoot) {
     users[element].notifications.push(hoot);
   })
 }
-
+// split search string into components
+function parseSearch(input) {
+  var string = input.split(/(@[a-z\d-]+)/);
+  var stripped = []
+  string.forEach(function(element, index, array) {
+    if (element.search(/@([a-z\d-]+)/) === 0) {
+      string.splice(index, 1);
+      return string;
+    }
+  })
+  string.forEach(function(element, index, array) {
+    if (element[0] === ' ') {
+      stripped.push(element.slice(1));
+    } else {
+      stripped.push(element);
+    }
+  })
+  string = stripped.join('');
+  return string;
+}
+// search for tweets by string, user or hashtag(implement later)
+function search(input) {
+  var users = mention(input);
+  var string = parseSearch(input);
+}
 app.use(function(req, res, next) {
   console.log(req.url);
   next();
