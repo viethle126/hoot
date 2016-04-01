@@ -139,6 +139,7 @@ function addTweet(data, where) {
   timeline.appendChild(item);
 
   if (data.retweet !== 'None') {
+    console.log(data.retweet);
     var retweeted = document.createTextNode(data.name + ' rehoots:')
     var stacked = elemClass('div', 'ui raised stacked segment items');
     header.appendChild(retweeted);

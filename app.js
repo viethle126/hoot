@@ -90,8 +90,20 @@ function sendLine(handle, homeuser, type) {
     var fixed = military(element.date);
     var fav = (users[home].favorites.indexOf(element));
     if (fav !== -1) { fav = true }
+    var retweetFav = (users[home].favorites.indexOf(element.retweet))
+    if (retweetFav !== -1) { retweetFav = true }
     var retweet = 'None';
-    if (element.retweet.id) { retweet = element.retweet }
+    if (element.retweet.id) {
+      retweet = {
+        name: element.retweet.name,
+        id: element.retweet.id,
+        handle: element.retweet.handle,
+        date: element.retweet.date,
+        content: element.retweet.content,
+        fav: retweetFav,
+        retweet: 'None'
+      }
+    }
     tweets.push({
       name: element.name,
       id: element.id,
