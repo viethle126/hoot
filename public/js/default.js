@@ -38,8 +38,7 @@ function login() {
 
   xhr.addEventListener('load', function() {
     if (xhr.status === 200) {
-      document.getElementById('dropdown').classList.add('hidden');
-      document.getElementById('logout').classList.remove('hidden');
+      document.location.reload(true)
     } else {
       document.getElementById('fail').classList.remove('hidden');
       setTimeout(function() {
@@ -452,6 +451,7 @@ function toggle(state) {
 }
 // show content
 function show(element) {
+  document.getElementById('landing').parentNode.classList.add('hidden');
   document.getElementById('new-hoot').classList.add('hidden');
   document.getElementById('your-timeline').classList.add('hidden');
   document.getElementById('visit-timeline').classList.add('hidden');
@@ -597,9 +597,32 @@ document.getElementById('userlist').addEventListener('click', function(e) {
   }
   goVisit(who);
 })
-// on load: create home card
+// who is logged in
+var me = false;
+// on load: check for cookies
 window.onload = function() {
-  wantCard('viethle126', 'card', 'viethle126');
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/check', true);
+  xhr.send();
+
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      wantLanding();
+      return;
+    }
+    if (xhr.status === 240) {
+      me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
+      document.getElementById('dropdown').classList.add('hidden');
+      document.getElementById('logout').classList.remove('hidden');
+      activate('home')
+      wantCard(me, 'card', me);
+      showCard('card');
+      wantLine(me, 'your-timeline', me, 'tweets');
+      show('your-timeline');
+      document.getElementById('userlist').classList.remove('hidden');
+      return me;
+    }
+  })
 }
 // semantic
 $('.ui.dropdown')

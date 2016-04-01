@@ -27,7 +27,7 @@
           <div class="ui left input">
             <button class="ui basic violet button" type="submit" id="login">Login</button>
           </div>
-          <div class="ui left input" id="Fail">
+          <div class="ui left input">
             <span class="ui success message hidden" id="fail">
               Wrong ID/password
             </span>
@@ -65,10 +65,16 @@
   </div>
   <!-- page wrapper -->
   <div class="ui grid" id="wrapper">
+    <!-- landing until user logs in -->
+    <div class="sixteen wide column">
+      <div class="ui three cards" id="landing">
+      </div>
+    </div>
+    <!-- end landing -->
     <!-- left container  -->
     <div class="four wide column">
       <!-- your card -->
-      <div class="ui card" id="card" data-card-handle="none">
+      <div class="ui card hidden" id="card" data-card-handle="none">
       </div>
       <!-- other card -->
       <div class="ui card hidden" id="visit-card" data-card-handle="none">
@@ -80,7 +86,7 @@
       <div>
       </div>
       <!-- temporary user list -->
-      <div class="ui segment" id="userlist">Temporary User List
+      <div class="ui segment hidden" id="userlist">Temporary User List
         <div class="ui middle aligned selection list">
           <div class="item" id="alysiasaquil">
             <img class="ui avatar image" src="/images/alysiasaquil.jpg">
@@ -247,6 +253,7 @@
       <div>
       </div>
     </div>
+    <!-- end right container -->
   </div>
   <script src="http://code.jquery.com/jquery-1.12.2.js"></script>
   <script src="./dist/semantic.min.js"></script>
