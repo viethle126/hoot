@@ -246,6 +246,27 @@ app.post('/unfollow', jSonParser, function(req, res) {
   res.send();
 })
 
+app.post('/followers', jSonParser, function(req, res) {
+  var user = req.body.handle;
+  var me = req.body.home;
+  var type = req.body.type;
+  var youFollow = false;
+  var payload = [];
+  users[user][type].forEach(function(element, index, array) {
+    if (users[user].followers.indexOf(me) !== -1) { youFollow = true }
+    payload.push({
+      name: users[user].name,
+      handle: users[user].handle,
+      tweets: users[user].tweets.length,
+      followers: users[user].followers.length,
+      following: users[user].following.length,
+      follow: youFollow,
+      me: me
+    })
+  })
+  res.send(payload);
+})
+
 app.post('/hoot', jSonParser, function(req, res) {
   id++
   var handle = req.body.handle;
