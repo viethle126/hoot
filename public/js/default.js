@@ -150,8 +150,9 @@ function addTweet(data, where) {
     addTweet(data.retweet, 'temporary');
     stacked.removeAttribute('id');
     return;
-  } else {
-    return;
+  }
+  if (where === 'rehoot-here') {
+    content.removeChild(extra);
   }
 }
 // request retweet data
