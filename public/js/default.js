@@ -388,6 +388,7 @@ function follow(target) {
       unfollow.classList.add('hidden');
       follow.classList.remove('hidden');
     }
+    wantCard(me, 'card', me)
   })
 }
 // add/remove favorites
@@ -526,7 +527,7 @@ function showCard(element) {
   document.getElementById(element).classList.remove('hidden');
 }
 // navigate to following/followers
-function goFollowers(target) {
+function goFollowers(target, card) {
   var target = target;
   if (!target.dataset.go) {
     target = target.parentNode;
@@ -538,7 +539,10 @@ function goFollowers(target) {
   }
   resetMenu();
   show('following');
-  showCard('card');
+  if (card === 'visit-card') {
+    wantCard(who.dataset.cardHandle, 'visit-card', me);
+  }
+  showCard(card);
   wantFollowers(who.dataset.cardHandle, 'following', type)
 }
 // navigate home
@@ -621,8 +625,7 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
 // event listener: your card
 document.getElementById('card').addEventListener('click', function(e) {
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
-    console.log('clicked!')
-    goFollowers(e.target);
+    goFollowers(e.target, 'card');
   }
 })
 // event listener: visitor card
@@ -631,9 +634,19 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
     follow(e.target);
   }
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
-    goFollowers(e.target);
+    goFollowers(e.target, 'visit-card');
   }
 })
+// event listener: following/follower list
+document.getElementById('following').addEventListener('click', function(e) {
+  if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
+    follow(e.target);
+  }
+  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
+    goFollowers(e.target, 'visit-card');
+  }
+})
+
 // event listener: home timeline
 document.getElementById('your-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {

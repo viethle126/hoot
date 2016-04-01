@@ -252,7 +252,7 @@ app.post('/followers', jSonParser, function(req, res) {
   var youFollow = false;
   var payload = [];
   users[user][type].forEach(function(element, index, array) {
-    if (users[element].followers.indexOf(user) !== -1) { youFollow = true }
+    if (users[user].following.indexOf(element) !== -1) { youFollow = true }
     payload.push({
       name: users[element].name,
       handle: users[element].handle,
