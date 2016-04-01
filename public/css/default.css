@@ -2,12 +2,16 @@ body {
   background-color: #f5f8fa;
 }
 
+button[data-follow-text]:after {
+  content: attr(data-follow-text);
+}
+
 .hidden {
   display: none !important;
 }
 
-button[data-follow-text]:after {
-  content: attr(data-follow-text);
+.wider {
+  width: 30%;
 }
 
 #masthead {

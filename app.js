@@ -178,7 +178,9 @@ function parseSearch(input) {
 function search(input) {
   var users = mention(input);
   var string = parseSearch(input);
+  console.log(users, string);
 }
+
 app.use(function(req, res, next) {
   console.log(req.url);
   next();
@@ -240,6 +242,12 @@ app.post('/login', jSonParser, function(req, res) {
 app.post('/logout', function(req, res) {
   res.clearCookie('session');
   res.clearCookie('user');
+  res.send();
+})
+
+app.post('/search', jSonParser, function(req, res) {
+  console.log(req.body);
+  search(req.body.search);
   res.send();
 })
 

@@ -57,6 +57,20 @@ function logout() {
     document.location.reload(true);
   })
 }
+// search
+function search(input) {
+  var data = { search: input }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/search', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    console.log(xhr.response);
+    var tweets = JSON.parse(xhr.responseText);
+    console.log(tweets);
+  })
+}
 // submit tweet
 function tweet() {
   var data = {
@@ -620,6 +634,10 @@ document.getElementById('menu').addEventListener('click', function(e) {
   if (what.id === 'hoot' && what.getAttribute('data-active') === 'true') {
     resetMenu();
     toggle('close');
+    return;
+  }
+  if (what.id === 'search') {
+    search(document.getElementById('search-input').value);
     return;
   }
 });
