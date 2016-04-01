@@ -61,7 +61,7 @@ function logout() {
 function tweet() {
   var data = {
     content: document.getElementById('hoot-content').value,
-    handle: 'viethle126'
+    handle: me
   }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/hoot', true);
@@ -69,7 +69,7 @@ function tweet() {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
+    wantLine(me, 'your-timeline', me, 'tweets');
     toggle('success');
   })
 }
@@ -78,7 +78,7 @@ function retweet() {
   var item = document.getElementById('rehoot-here').childNodes[0];
   var data = {
     content: document.getElementById('hoot-content').value,
-    handle: 'viethle126',
+    handle: me,
     rehootId: item.getAttribute('data-hoot-id'),
     rehootHandle: item.getAttribute('data-handle')
   }
@@ -89,7 +89,7 @@ function retweet() {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
+    wantLine(me, 'your-timeline', me, 'tweets');
     toggle('success');
   })
 }
@@ -351,7 +351,7 @@ function follow(target) {
     who = who.parentNode;
   }
   who = who.getAttribute('data-card-handle');
-  var data = { handle: who, home: 'viethle126' }
+  var data = { handle: who, home: me }
 
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/' + action, true);
@@ -385,14 +385,14 @@ function favorite(target, remove) {
     type = "addFavorite";
     handle = item.getAttribute('data-handle');
   } else {
-    type = "removeFavorite"
-    handle = 'viethle126';
+    type = "removeFavorite";
+    handle = me;
   }
 
   var data = {
     handle: handle,
     id: item.getAttribute('data-hoot-id'),
-    home: 'viethle126'
+    home: me
   }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/' + type, true);
@@ -508,15 +508,15 @@ function goHome() {
   activate('home');
   show('your-timeline');
   showCard('card');
-  wantLine('viethle126', 'your-timeline', 'viethle126', 'tweets');
+  wantLine(me, 'your-timeline', me, 'tweets');
 }
 // navigate to other timeline
 function goVisit(who) {
   resetMenu();
   show('visit-timeline');
   showCard('visit-card');
-  wantCard(who.id, 'visit-card', 'viethle126');
-  wantLine(who.id, 'visit-timeline', 'viethle126', 'tweets');
+  wantCard(who.id, 'visit-card', me);
+  wantLine(who.id, 'visit-timeline', me, 'tweets');
 }
 // navigate to notifications
 function goNotifications() {
@@ -524,7 +524,7 @@ function goNotifications() {
   activate('notifications');
   show('note-timeline');
   showCard('card');
-  wantLine('viethle126', 'note-timeline', 'viethle126', 'notifications');
+  wantLine(me, 'note-timeline', me, 'notifications');
 }
 // navigate to favorites
 function goFavorites() {
@@ -532,7 +532,7 @@ function goFavorites() {
   activate('favorites');
   show('fav-timeline');
   showCard('card');
-  wantLine('favorites', 'fav-timeline', 'viethle126', 'favorites');
+  wantLine('favorites', 'fav-timeline', me, 'favorites');
 }
 // event listener: login
 document.getElementById('login').addEventListener('click', login)
@@ -565,29 +565,24 @@ document.getElementById('menu').addEventListener('click', function(e) {
     resetMenu();
     toggle('close');
     return;
-  } else {
-    return;
   }
 });
 // event listener: new hoot form
 document.getElementById('new-hoot').addEventListener('click', function(e) {
   if (e.target.id === 'cancel-hoot') {
     toggle('close');
-    return;
   }
   if (e.target.id === 'submit-hoot') {
     tweet();
   }
   if (e.target.id === 'submit-rehoot') {
     retweet();
-  } else {
-    return;
   }
 })
 // event listener: visitor card
 document.getElementById('visit-card').addEventListener('click', function(e) {
   if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
-    changeFollow(e.target);
+    follow(e.target);
   }
 })
 // event listener: home timeline
