@@ -42,28 +42,38 @@ function random() {
   }
 
   function month() {
-    return Math.floor(Math.random() * 3) + 1;
-    // change to * 4 when April starts
+    return Math.floor(Math.random() * 4) + 1;
   }
 
   function day(month) {
     if (month === 1) { return Math.floor(Math.random() * 30) + 1 }
     if (month === 2) { return Math.floor(Math.random() * 28) + 1 }
     if (month === 3) { return Math.floor(Math.random() * 30) + 1 }
-    // will add when April starts
-    //if (month === 4) { return Math.floor(Math.random() * (nowDate - 1)) + 1 }
+    if (month === 4) { return Math.floor(Math.random() * (nowDate - 1)) + 1 }
   }
 
   function time(hourRange) {
     var hours = Math.floor(Math.random() * hourRange - 1) + 1;
     var minutes = Math.floor(Math.random() * nowMinutes - 1) + 1;
     var ampm = '';
-    if (hours === 0) { ampm = 'am'; hours = 12 }
-    if (hours < 12) { ampm = 'am' }
-    if (hours === 12) { ampm = 'pm' }
-    if (hours > 12) { ampm = 'pm'; hours -= 12 }
     if (minutes < 10) { minutes = '0' + minutes }
-    return hours + ':' + minutes + ampm;
+    if (hours === 0) {
+      ampm = 'am';
+      hours = 12;
+      return hours + ':' + minutes + ampm;
+    } else if (hours < 12) {
+      ampm = 'am';
+      return hours + ':' + minutes + ampm;
+    } else if (hours === 12) {
+      ampm = 'pm';
+      return hours + ':' + minutes + ampm;
+    } else if (hours > 12) {
+      ampm = 'pm';
+      hours -= 12;
+      return hours + ':' + minutes + ampm;
+    } else {
+      return hours + ':' + minutes + ampm;
+    }
   }
 
   function date() {
