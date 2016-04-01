@@ -83,7 +83,9 @@ function sendLine(handle, homeuser, type) {
   var home = homeuser;
   var whichUser = user;
   var type = type;
+  var mine = false;
   if (type === 'favorites') { whichUser = home }
+  if (type === 'mine') { type = 'tweets'; mine = true }
   users[whichUser][type].forEach(function(element, index, array) {
     var fixed = military(element.date);
     var fav = (users[home].favorites.indexOf(element));
@@ -102,7 +104,7 @@ function sendLine(handle, homeuser, type) {
     })
   })
   if (type === 'notifications') { homeuser = null }
-  if (homeuser === user) {
+  if (homeuser === user && mine === false) {
     users[whichUser].following.forEach(function(element, index, array) {
       users[element].tweets.forEach(function(element, index, array) {
         var fixed = military(element.date);
