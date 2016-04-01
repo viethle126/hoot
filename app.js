@@ -76,14 +76,14 @@ function login(user, password) {
     return 403;
   }
 }
-// return an array of hoots
+// return an array of hoots NOTE need to refactor later
 function sendLine(handle, homeuser, type) {
   var tweets = [];
   var user = handle;
   var home = homeuser;
   var whichUser = user;
   var type = type;
-  if (type === 'favorites') { whichUser = 'viethle126' }
+  if (type === 'favorites') { whichUser = home }
   users[whichUser][type].forEach(function(element, index, array) {
     var fixed = military(element.date);
     var fav = (users[home].favorites.indexOf(element));

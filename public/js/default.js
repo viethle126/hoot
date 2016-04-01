@@ -198,6 +198,43 @@ function addNote(data) {
   container.removeAttribute('id');
   //if (data.retweet !== 'None') { timeline.removeChild(container) }
 }
+// add compact tweets
+function addSmall(data) {
+  var landing = document.getElementById('landing');
+  var card = elemClass('div', 'card');
+  var content = elemClass('div', 'content');
+  var image = elemClass('img', 'ui left floated mini image');
+  var header = elemClass('div', 'header');
+  var headerText = document.createTextNode(data.name);
+  var meta = elemClass('div', 'meta');
+  var metaText = document.createTextNode('@' + data.handle + ' - ' + data.date);
+  var desc = elemClass('div', 'description');
+  var descText = document.createTextNode(data.content);
+
+  desc.appendChild(descText);
+  meta.appendChild(metaText);
+  header.appendChild(headerText);
+  image.setAttribute('src', 'images/' + data.handle + '.jpg');
+  content.appendChild(image);
+  content.appendChild(header);
+  content.appendChild(meta);
+  content.appendChild(desc);
+  card.appendChild(content);
+  landing.appendChild(card);
+}
+// request landing page
+function wantLanding() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/landing', true);
+  xhr.send();
+
+  xhr.addEventListener('load', function() {
+    var tweets = JSON.parse(xhr.responseText)
+    tweets.forEach(function(element, index, array) {
+      addSmall(element);
+    })
+  })
+}
 // request timeline
 function wantLine(user, where, homeuser, type) {
   clear(where);
