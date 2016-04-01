@@ -337,6 +337,26 @@ function wantCard(user, where, me) {
     card(content, where);
   })
 }
+// request followers or following
+function wantFollowers(me, where, type) {
+  clear(where);
+  var data = { me: me, type: type }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/followers', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    var payload = JSON.parse(xhr.responseText);
+    payload.forEach(function(element, index, array) {
+      var container = elemClass('div', 'ui card');
+      document.getElementById('following').appendChild(container);
+      container.setAttribute('id', 'foobar');
+      card(element, 'foobar');
+      container.removeAttribute('id');
+    })
+  })
+}
 // change follow/unfollow state
 function follow(target) {
   var target = target;
@@ -490,6 +510,7 @@ function toggle(state) {
 function show(element) {
   document.getElementById('landing').parentNode.classList.add('hidden');
   document.getElementById('new-hoot').classList.add('hidden');
+  document.getElementById('following').classList.add('hidden');
   document.getElementById('your-timeline').classList.add('hidden');
   document.getElementById('visit-timeline').classList.add('hidden');
   document.getElementById('note-timeline').classList.add('hidden');
@@ -501,6 +522,13 @@ function showCard(element) {
   document.getElementById('card').classList.add('hidden');
   document.getElementById('visit-card').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
+}
+// navigate to followers
+function goFollowers() {
+  resetMenu();
+  show('following');
+  showCard('card');
+  wantFollowers(me, 'following', 'followers')
 }
 // navigate home
 function goHome() {

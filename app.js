@@ -35,7 +35,7 @@ function format() {
   var ampm = '';
   var day = now.slice(8, 10);
   if (now.slice(4, 7) === 'Mar') { month = 3 }
-  if (now.slice(4, 7) + now[6] === 'Apr') { month = 4 }
+  if (now.slice(4, 7) === 'Apr') { month = 4 }
   if (hours < 12) { ampm = 'am' }
   if (hours >= 12) { ampm = 'pm' }
   if (hours > 12) { hours -= 12 }
@@ -247,21 +247,20 @@ app.post('/unfollow', jSonParser, function(req, res) {
 })
 
 app.post('/followers', jSonParser, function(req, res) {
-  var user = req.body.handle;
-  var me = req.body.home;
+  var user = req.body.me;
   var type = req.body.type;
   var youFollow = false;
   var payload = [];
   users[user][type].forEach(function(element, index, array) {
-    if (users[user].followers.indexOf(me) !== -1) { youFollow = true }
+    if (users[element].followers.indexOf(user) !== -1) { youFollow = true }
     payload.push({
-      name: users[user].name,
-      handle: users[user].handle,
-      tweets: users[user].tweets.length,
-      followers: users[user].followers.length,
-      following: users[user].following.length,
+      name: users[element].name,
+      handle: users[element].handle,
+      tweets: users[element].tweets.length,
+      followers: users[element].followers.length,
+      following: users[element].following.length,
       follow: youFollow,
-      me: me
+      me: user
     })
   })
   res.send(payload);
