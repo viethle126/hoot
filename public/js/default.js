@@ -57,6 +57,16 @@ function logout() {
     document.location.reload(true);
   })
 }
+// search header
+function showQuery(input) {
+  var results = document.getElementById('search-results');
+  var message = elemClass('div', 'ui violet message');
+  var header = elemClass('div', 'header');
+  var headerText = document.createTextNode('Showing search results for: ' + input);
+  header.appendChild(headerText);
+  message.appendChild(header);
+  results.appendChild(message);
+}
 // search
 function search(input) {
   var data = { search: input, home: me }
@@ -66,8 +76,16 @@ function search(input) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
+    resetMenu();
+    clear('search-results');
+    show('search-results');
+    showCard('card');
+    showQuery(input);
+
     var payload = JSON.parse(xhr.responseText);
-    console.log(payload);
+    payload.byUser.forEach(function(element, index, array) {
+      addTweet(element, 'search-results')
+    })
   })
 }
 // submit tweet
@@ -532,6 +550,7 @@ function show(element) {
   document.getElementById('landing').parentNode.classList.add('hidden');
   document.getElementById('new-hoot').classList.add('hidden');
   document.getElementById('following').classList.add('hidden');
+  document.getElementById('search-results').classList.add('hidden');
   document.getElementById('your-timeline').classList.add('hidden');
   document.getElementById('your-hoots').classList.add('hidden');
   document.getElementById('visit-timeline').classList.add('hidden');

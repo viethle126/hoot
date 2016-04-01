@@ -197,7 +197,7 @@ function search(input, home) {
   }
   return { byUser: byUser, byString: byString }
 }
-debugger;
+
 app.use(function(req, res, next) {
   console.log(req.url);
   next();
