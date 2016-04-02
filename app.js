@@ -102,66 +102,33 @@ function prepare(home, hoot) {
     retweet: retweet,
   }
 }
-// return an array of hoots NOTE need to refactor later
-function sendLine(handle, homeuser, type) {
+// return an array of hoots
+function timeline(user, me, type) {
   var tweets = [];
-  var user = handle;
-  var home = homeuser;
-  var whichUser = user;
-  var type = type;
-  var mine = false;
-  if (type === 'favorites') { whichUser = home }
-  if (type === 'mine') { type = 'tweets'; mine = true }
-  users[whichUser][type].forEach(function(element, index, array) {
-    var fixed = military(element.date);
-    var fav = (users[home].favorites.indexOf(element));
-    if (fav !== -1) { fav = true }
-    var retweetFav = (users[home].favorites.indexOf(element.retweet))
-    if (retweetFav !== -1) { retweetFav = true }
-    var retweet = 'None';
-    if (element.retweet.id) {
-      retweet = {
-        name: element.retweet.name,
-        id: element.retweet.id,
-        handle: element.retweet.handle,
-        date: element.retweet.date,
-        content: element.retweet.content,
-        fav: retweetFav,
-        retweet: 'None'
-      }
-    }
-    tweets.push({
-      name: element.name,
-      id: element.id,
-      handle: element.handle,
-      date: element.date,
-      content: element.content,
-      sort: fixed,
-      fav: fav,
-      retweet: retweet
+  switch(type) {
+    case 'favorites':
+    users[me].favorites.forEach(function(element, index, array) {
+      tweets.push(prepare(me, element));
     })
-  })
-  if (type === 'notifications') { homeuser = null }
-  if (homeuser === user && mine === false) {
-    users[whichUser].following.forEach(function(element, index, array) {
+    break;
+    case 'notifications':
+    users[me].notifications.forEach(function(element, index, array) {
+      tweets.push(prepare(me, element));
+    })
+    break;
+    case 'home': // push followers' hoots, continue to next case
+    users[me].following.forEach(function(element, index, array) {
       users[element].tweets.forEach(function(element, index, array) {
-        var fixed = military(element.date);
-        var fav = (users[home].favorites.indexOf(element));
-        if (fav !== -1) { fav = true }
-        var retweet = 'None';
-        if (element.retweet.id) { retweet = element.retweet }
-        tweets.push({
-          name: element.name,
-          id: element.id,
-          handle: element.handle,
-          date: element.date,
-          content: element.content,
-          sort: fixed,
-          fav: fav,
-          retweet: retweet
-        })
+        tweets.push(prepare(me, element));
       })
     })
+    case 'tweets': // push user's hoots
+    users[user].tweets.forEach(function(element, index, array) {
+      tweets.push(prepare(me, element));
+    })
+    break;
+    default:
+    break;
   }
   tweets = _.sortBy(tweets, 'sort');
   return tweets;
