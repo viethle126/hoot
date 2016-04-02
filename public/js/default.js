@@ -86,6 +86,9 @@ function search(input) {
     payload.byUser.forEach(function(element, index, array) {
       addTweet(element, 'search-results')
     })
+    payload.byString.forEach(function(element, index, array) {
+      addTweet(element, 'search-results')
+    })
   })
 }
 // submit tweet
@@ -95,7 +98,7 @@ function tweet() {
     handle: me
   }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/hoot', true);
+  xhr.open('POST', '/addHoot', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -203,6 +206,7 @@ function wantRetweet(target) {
 
   xhr.addEventListener('load', function() {
     var payload = JSON.parse(xhr.responseText);
+    console.log(payload);
     var stacked = document.getElementById('rehoot-here');
     while (stacked.hasChildNodes()) {
       stacked.removeChild(stacked.firstChild);
@@ -588,7 +592,7 @@ function goHoots() {
   resetMenu();
   show('your-hoots');
   showCard('card');
-  wantLine(me, 'your-hoots', me, 'mine');
+  wantLine(me, 'your-hoots', me, 'tweets');
 }
 // navigate home
 function goHome() {
@@ -596,7 +600,7 @@ function goHome() {
   activate('home');
   show('your-timeline');
   showCard('card');
-  wantLine(me, 'your-timeline', me, 'tweets');
+  wantLine(me, 'your-timeline', me, 'home');
 }
 // navigate to other timeline
 function goVisit(who) {
@@ -676,9 +680,6 @@ document.getElementById('card').addEventListener('click', function(e) {
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
     goFollowers(e.target, 'card');
   }
-  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
-    goFollowers(e.target, 'card');
-  }
   if (e.target.dataset.hoots || e.target.parentNode.dataset.hoots) {
     goHoots();
   }
@@ -701,9 +702,17 @@ document.getElementById('following').addEventListener('click', function(e) {
     goFollowers(e.target, 'visit-card');
   }
 })
-
 // event listener: home timeline
 document.getElementById('your-timeline').addEventListener('click', function(e) {
+  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
+    wantRetweet(e.target);
+  }
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target);
+  }
+})
+// event listener: home timeline
+document.getElementById('your-hoots').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
     wantRetweet(e.target);
   }
@@ -766,7 +775,7 @@ window.onload = function() {
       activate('home')
       wantCard(me, 'card', me);
       showCard('card');
-      wantLine(me, 'your-timeline', me, 'tweets');
+      wantLine(me, 'your-timeline', me, 'home');
       show('your-timeline');
       document.getElementById('userlist').classList.remove('hidden');
       return me;

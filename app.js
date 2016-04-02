@@ -133,9 +133,15 @@ function timeline(user, me, type) {
   tweets = _.sortBy(tweets, 'sort');
   return tweets;
 }
+// push mentions
+function pushMentions(mentions, hoot) {
+  mentions.forEach(function(element, index, array) {
+    users[element].notifications.push(hoot);
+  })
+}
 // split mentions into array
-function mention(content) {
-  var array = content.split(/(@[a-z\d-]+)/)
+function parseUsers(input) {
+  var array = input.split(/(@[a-z\d-]+)/)
   var mentions = [];
   array.forEach(function(element, index, array) {
     if (element.search(/@([a-z\d-]+)/) === 0) {
@@ -143,12 +149,6 @@ function mention(content) {
     }
   })
   return mentions;
-}
-// push mentions
-function pushMentions(mentions, hoot) {
-  mentions.forEach(function(element, index, array) {
-    users[element].notifications.push(hoot);
-  })
 }
 // split search string into components
 function parseSearch(input) {
@@ -171,20 +171,20 @@ function parseSearch(input) {
 function search(input, home) {
   var byUser = [];
   var byString = [];
-  var handles = mention(input);
+  var handles = parseUsers(input);
   var string = parseSearch(input);
   if (string === '') { string = 'foobar' }
   var reg = new RegExp('(' + string + ')');
   handles.forEach(function(element, index, array) {
     if (users[element]) {
-      byUser = byUser.concat(sendLine(element, home, 'mine'));
+      byUser = byUser.concat(timeline(element, home, 'tweets'));
       return byUser;
     }
   })
   for (prop in users) {
     users[prop].tweets.forEach(function(element, index, array) {
       if (element.content.search(reg) !== -1) {
-        byString.push(element.content);
+        byString.push(element);
       }
     })
   }
@@ -260,7 +260,7 @@ app.post('/search', jSonParser, function(req, res) {
 })
 
 app.post('/timeline', jSonParser, function(req, res) {
-  res.send(sendLine(req.body.handle, req.body.home, req.body.type));
+  res.send(timeline(req.body.handle, req.body.home, req.body.type));
 })
 
 app.post('/card', jSonParser, function(req, res) {
@@ -268,7 +268,6 @@ app.post('/card', jSonParser, function(req, res) {
   var me = req.body.home;
   var youFollow = false;
   if (users[user].followers.indexOf(me) !== -1) { youFollow = true }
-  // use req.body.home to check follow status later
   var data = {
     name: users[user].name,
     handle: users[user].handle,
@@ -303,6 +302,7 @@ app.post('/followers', jSonParser, function(req, res) {
   var youFollow = false;
   var payload = [];
   users[user][type].forEach(function(element, index, array) {
+    youFollow = false;
     if (users[user].following.indexOf(element) !== -1) { youFollow = true }
     payload.push({
       name: users[element].name,
@@ -317,7 +317,7 @@ app.post('/followers', jSonParser, function(req, res) {
   res.send(payload);
 })
 
-app.post('/hoot', jSonParser, function(req, res) {
+app.post('/addHoot', jSonParser, function(req, res) {
   id++
   var handle = req.body.handle;
   var content = req.body.content;
@@ -328,22 +328,12 @@ app.post('/hoot', jSonParser, function(req, res) {
     date: format(),
     content: content,
     tags: [],
-    mentions: mention(content),
-    retweet: []
+    mentions: parseUsers(content),
+    retweet: 'None'
   }
   pushMentions(hoot.mentions, hoot);
   users[handle].tweets.push(hoot);
   res.send();
-})
-
-app.post('/rehoot', jSonParser, function(req, res) {
-  var handle = req.body.handle;
-  var id = Number(req.body.id);
-  var payload = {};
-  users[handle].tweets.forEach(function(element, index, array) {
-    if (element.id === id) { payload = element }
-  })
-  res.send(payload);
 })
 
 app.post('/addRehoot', jSonParser, function(req, res) {
@@ -366,12 +356,22 @@ app.post('/addRehoot', jSonParser, function(req, res) {
     date: format(),
     content: content,
     tags: [],
-    mentions: mention(content),
+    mentions: parseUsers(content),
     retweet: rehoot
   }
   pushMentions(hoot.mentions, hoot);
   users[handle].tweets.push(hoot);
   res.send();
+})
+
+app.post('/rehoot', jSonParser, function(req, res) {
+  var handle = req.body.handle;
+  var id = Number(req.body.id);
+  var payload = {};
+  users[handle].tweets.forEach(function(element, index, array) {
+    if (element.id === id) { payload = element }
+  })
+  res.send(payload);
 })
 
 app.post('/addFavorite', jSonParser, function(req, res) {
