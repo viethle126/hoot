@@ -76,6 +76,32 @@ function login(user, password) {
     return 403;
   }
 }
+// check favorite
+function heart(home, hoot) {
+  if (users[home].favorites.indexOf(hoot) !== -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+// prepare tweet
+function prepare(home, hoot) {
+  var retweet = 'None';
+  if (hoot.retweet.id) {
+    retweet = prepare(home, hoot.retweet)
+  }
+
+  return {
+    name: hoot.name,
+    id: hoot.id,
+    handle: hoot.handle,
+    date: hoot.date,
+    content: hoot.content,
+    sort: military(hoot.date),
+    fav: heart(home, hoot),
+    retweet: retweet,
+  }
+}
 // return an array of hoots NOTE need to refactor later
 function sendLine(handle, homeuser, type) {
   var tweets = [];
