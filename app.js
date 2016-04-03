@@ -5,44 +5,10 @@ var _ = require('underscore');
 var app = express();
 // custom modules
 var users = require('./users.js');
+var timestamp = require('./timestamp');
 var random = require('./random.js');
 // generate random hoots for all users, return id count
 var id = random.begin();
-// convert time to military format for sorting purposes
-function military(date) {
-  var fixed = date;
-  if (fixed[3] === '/') {
-    fixed = fixed.slice(0, 2) + '0' + fixed.slice(2)
-  }
-  if (fixed[fixed.length - 7] === ' ') {
-    fixed = fixed.slice(0, 10) + '0' + fixed.slice(fixed.length - 6);
-  }
-  if (fixed[fixed.length - 2] === 'a' && fixed[10] + fixed[11] === '12') {
-    fixed = fixed.slice(0, 10) + '00' + fixed.slice(fixed.length - 5);
-  }
-  if (fixed[fixed.length - 2] === 'p' && fixed[10] + fixed[11] !== '12') {
-    var military = String(Number(fixed.slice(10, 12)) + 12);
-    fixed = fixed.slice(0, 10) + military + fixed.slice(fixed.length - 5);
-  }
-  return fixed;
-}
-// format Date() for new hoots
-function format() {
-  var now = Date();
-  var month = '';
-  var hours = now.slice(16, 18);
-  var min = now.slice(19, 21);
-  var ampm = '';
-  var day = now.slice(8, 10);
-  if (now.slice(4, 7) === 'Mar') { month = 3 }
-  if (now.slice(4, 7) === 'Apr') { month = 4 }
-  if (hours < 12) { ampm = 'am' }
-  if (hours >= 12) { ampm = 'pm' }
-  if (hours > 12) { hours -= 12 }
-  if (hours == '00') { hours = 12 }
-  var fixed = month + '/' + day + '/2016 ' + hours + ':' + min + ampm;
-  return fixed;
-}
 // add string to cookie
 function extendCookie(count, cookie) {
   var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
@@ -97,7 +63,7 @@ function prepare(home, hoot) {
     handle: hoot.handle,
     date: hoot.date,
     content: hoot.content,
-    sort: military(hoot.date),
+    sort: timestamp.military(hoot.date),
     fav: heart(home, hoot),
     retweet: retweet,
   }
@@ -203,7 +169,7 @@ app.get('/landing', function(req, res) {
   for (prop in users) {
     if (users[prop].tweets) {
       users[prop].tweets.forEach(function(element, index, array) {
-        var fixed = military(element.date);
+        var fixed = timestamp.military(element.date);
         payload.push({
           name: element.name,
           id: element.id,
@@ -325,7 +291,7 @@ app.post('/addHoot', jSonParser, function(req, res) {
     name: users[handle].name,
     handle: handle,
     id: id,
-    date: format(),
+    date: timestamp.civilian(),
     content: content,
     tags: [],
     mentions: parseUsers(content),
@@ -353,7 +319,7 @@ app.post('/addRehoot', jSonParser, function(req, res) {
     name: users[handle].name,
     handle: handle,
     id: id,
-    date: format(),
+    date: timestamp.civilian(),
     content: content,
     tags: [],
     mentions: parseUsers(content),
