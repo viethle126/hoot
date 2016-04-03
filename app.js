@@ -5,6 +5,7 @@ var _ = require('underscore');
 var app = express();
 // custom modules
 var users = require('./users.js');
+var convo = require('./convo.js');
 var timestamp = require('./timestamp');
 var random = require('./random.js');
 // generate random hoots for all users, return id count
