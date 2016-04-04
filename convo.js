@@ -9,6 +9,7 @@ convo.new = function(who) {
   who.forEach(function(element, index, array) {
     users.push(element);
   })
+  users = _.sortBy(users);
   var add = {
     id: id,
     users: users,
@@ -30,6 +31,7 @@ convo.check = function(who, id) {
 // invite a user to a conversation
 convo.invite = function(who, id) {
   convo[id].users.push(who);
+  convo[id].users = _.sortBy(convo[id].users);
   var update = {
     user: 'hoot',
     date: timestamp.civilian(),

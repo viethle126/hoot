@@ -366,6 +366,31 @@ app.post('/removeFavorite', jSonParser, function(req, res) {
   res.send();
 })
 
+app.post('/msgNew', jSonParser, function(req, res) {
+  convo.new(req.body.users);
+  res.send();
+})
+
+app.post('/msgInvite', jSonParser, function(req, res) {
+  convo.invite(req.body.user, req.body.id);
+  res.send();
+})
+
+app.post('/msgLeave', jSonParser, function(req, res) {
+  convo.leave(req.body.user, req.body.id);
+  res.send();
+})
+
+app.post('/msgList', jSonParser, function(req, res) {
+  res.send(convo.list(req.body.user));
+
+app.post('/msgGet', jSonParser, function(req, res) {
+  res.send(convo.get(req.body.id));
+
+app.post('/msgSend', jSonParser, function(req, res) {
+  convo.send(req.body.data);
+  res.send();
+
 app.use(express.static('public'));
 
 app.listen(8080, function() {
