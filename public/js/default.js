@@ -475,8 +475,26 @@ function favorite(target, remove) {
     }
   })
 }
+// remove me from list of users
+function prepConvo(convos) {
+  convos.forEach(function(element, index, array) {
+    element.users.splice(element.users.indexOf(me), 1);
+  })
+  return convos;
+}
+// match filter criteria
+function checkFilter(convos, filter) {
+  filter.forEach(function(element, index, array) {
+    for (var i = 0; i < convos.length; i++) {
+      if (convos[i].users.indexOf(element) === -1) {
+        convos.splice(i, 1);
+      }
+    }
+  })
+  return convos;
+}
 // request list of conversations
-function wantList() {
+function wantList(filter) {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/msgList', true);
@@ -484,7 +502,12 @@ function wantList() {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    // make HTML elements for returned array
+    var convos = JSON.parse(xhr.responseText);
+    prepConvo(convos);
+    if (filter) { checkFilter(convos, filter) }
+    convos.forEach(function(element, index, array) {
+      addConvo(element);
+    })
   })
 }
 // request messages from a conversation
@@ -495,7 +518,8 @@ function wantMessages(which) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    // make HTML elements for returned array
+    var convos = xhr.response
+
   })
 }
 // create new conversation
@@ -539,7 +563,7 @@ function addConvo(data) {
   var list = document.getElementById('msg-list');
   var divider = elemClass('div', 'ui divider');
   var item = elemClass('a', 'item');
-  var itemText = document.createTextNode(data.users.join(', '));
+  var itemText = document.createTextNode('@' + data.users.join(', @'));
 
   item.setAttribute('data-convo-id', data.id);
   item.appendChild(itemText);
@@ -778,12 +802,12 @@ function goFavorites() {
   wantLine('favorites', 'fav-timeline', me, 'favorites');
 }
 // navigate to favorites
-function goFavorites() {
+function goMessages() {
   resetMenu();
   activate('messages');
   show('msg-timeline');
   showCard('card');
-  wantLine('favorites', 'fav-timeline', me, 'favorites');
+  wantList();
 }
 // event listener: login
 document.getElementById('login').addEventListener('click', login)
@@ -805,6 +829,10 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
   if (what.id === 'favorites' && what.getAttribute('data-active') === 'false') {
     goFavorites();
+    return;
+  }
+  if (what.id === 'messages' && what.getAttribute('data-active') === 'false') {
+    goMessages();
     return;
   }
   if (what.id === 'hoot' && what.getAttribute('data-active') === 'false') {
