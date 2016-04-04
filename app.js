@@ -383,13 +383,16 @@ app.post('/msgLeave', jSonParser, function(req, res) {
 
 app.post('/msgList', jSonParser, function(req, res) {
   res.send(convo.list(req.body.user));
+})
 
 app.post('/msgGet', jSonParser, function(req, res) {
   res.send(convo.get(req.body.id));
+})
 
 app.post('/msgSend', jSonParser, function(req, res) {
-  convo.send(req.body.data);
+  convo.send(req.body);
   res.send();
+})
 
 app.use(express.static('public'));
 

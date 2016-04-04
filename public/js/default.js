@@ -399,7 +399,7 @@ function wantFollowers(me, where, type) {
     })
   })
 }
-// change follow/unfollow state
+// follow/unfollow users
 function follow(target) {
   var target = target;
   if (!target.dataset.followText) {
@@ -473,6 +473,65 @@ function favorite(target, remove) {
       heart.setAttribute('class', 'empty heart icon');
       target.setAttribute('data-fav', 'false');
     }
+  })
+}
+// request list of conversations
+function wantList() {
+  var data = { user: me }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/msgList', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    // make HTML elements for returned array
+  })
+}
+// request messages from a conversation
+function wantMessages(which) {
+  var data = { id: which }
+  xhr.open('POST', '/msgGet', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    // make HTML elements for returned array
+  })
+}
+// create new message thread
+function createThread(users) {
+  var data = { users: users }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/msgNew', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    // update list, show message thread
+  })
+}
+// invite user to thread or leave thread
+function modifyThread(who, which, type) {
+  var data = { user: who, id: which }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/' + type, true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    // update list and clear messages section if leaving,
+    // update messages if inviting
+  })
+}
+// send reply
+function reply(data) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    // update messages for current thread
   })
 }
 // reset menu active states
@@ -623,7 +682,15 @@ function goNotifications() {
 function goFavorites() {
   resetMenu();
   activate('favorites');
-  show('fav-timeline');
+  show('msg-timeline');
+  showCard('card');
+  wantLine('favorites', 'fav-timeline', me, 'favorites');
+}
+// navigate to favorites
+function goFavorites() {
+  resetMenu();
+  activate('messages');
+  show('msg-timeline');
   showCard('card');
   wantLine('favorites', 'fav-timeline', me, 'favorites');
 }
