@@ -498,8 +498,8 @@ function wantMessages(which) {
     // make HTML elements for returned array
   })
 }
-// create new message thread
-function createThread(users) {
+// create new conversation
+function createConvo(users) {
   var data = { users: users }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/msgNew', true);
@@ -510,8 +510,8 @@ function createThread(users) {
     // update list, show message thread
   })
 }
-// invite user to thread or leave thread
-function modifyThread(who, which, type) {
+// invite user to conversation or leave conversation
+function modifyConvo(who, which, type) {
   var data = { user: who, id: which }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/' + type, true);
@@ -533,6 +533,45 @@ function reply(data) {
   xhr.addEventListener('load', function() {
     // update messages for current thread
   })
+}
+// append convo to list
+function addConvo(data) {
+  var list = document.getElementById('msg-list');
+  var divider = elemClass('div', 'ui divider');
+  var item = elemClass('a', 'item');
+  var itemText = document.createTextNode(data.users.join(', '));
+
+  item.setAttribute('data-convo-id', data.id);
+  item.appendChild(itemText);
+  list.appendChild(divider);
+  list.appendChild(item);
+}
+// append message
+function addMessage(data) {
+  var messages = document.getElementById('msg-here');
+  var item = elemClass('div', 'item');
+  var content = elemClass('div', 'content');
+  var image = elemClass('img', 'ui left floated mini image');
+  var header = elemClass('div', 'header');
+  var headerText = document.createTextNode('@' + data.user);
+  var meta = elemClass('span', 'meta');
+  var metaText = document.createTextNode(' - ' + data.date);
+  var desc = elemClass('div', 'description');
+  var descText = document.createTextNode(data.content)
+
+  header.setAttribute('data-visit', 1);
+  image.setAttribute('src', '/images/' + data.user + '.jpg');
+  image.setAttribute('data-visit', 1);
+  item.setAttribute('data-msg', 1);
+  desc.appendChild(descText);
+  meta.appendChild(metaText);
+  header.appendChild(headerText);
+  content.appendChild(image);
+  content.appendChild(header);
+  content.appendChild(meta);
+  content.appendChild(desc);
+  item.appendChild(content);
+  messages.appendChild(item);
 }
 // reset menu active states
 function resetMenu() {
