@@ -368,7 +368,10 @@ app.post('/removeFavorite', jSonParser, function(req, res) {
 
 app.post('/msgNew', jSonParser, function(req, res) {
   convo.new(req.body.users);
-  res.send();
+  var data = {
+    id: convo.id() - 1
+  }
+  res.send(data);
 })
 
 app.post('/msgInvite', jSonParser, function(req, res) {

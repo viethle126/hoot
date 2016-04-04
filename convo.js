@@ -20,6 +20,10 @@ convo.new = function(who) {
   id++
   return id;
 }
+// return id
+convo.id = function() {
+  return id;
+}
 // check if user is part of a convo
 convo.check = function(who, id) {
   if (convo[id].users.indexOf(who) !== -1) {

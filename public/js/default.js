@@ -549,7 +549,8 @@ function createConvo(users) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    // update list, show message thread
+    var id = JSON.parse(xhr.responseText).id
+    wantList()
   })
 }
 // invite user to conversation or leave conversation
@@ -573,14 +574,20 @@ function modifyConvo(who, which, type) {
   })
 }
 // send reply
-function reply(data) {
+function reply() {
+  var data = {
+    user: me,
+    content: document.getElementById('msg-send-input').value,
+    id: document.getElementById('msg-here').getAttribute('data-convo-id')
+  }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/msgSend', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    // update messages for current thread
+    document.getElementById('msg-send-input').value = '';
+    wantMessages(data.id);
   })
 }
 // append convo to list
@@ -684,7 +691,6 @@ function inConvo(users) {
   var header = document.getElementById('msg-header');
   var span = document.createElement('span');
   var user = document.createTextNode('In this thread: ' + users);
-
   while (header.firstChild) {
     header.removeChild(header.firstChild);
   }
@@ -980,7 +986,7 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
     favorite(e.target, true);
   }
 })
-// event listener: convo list
+// event listener: messages
 document.getElementById('msg-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.convoId) {
     var id = e.target.getAttribute('data-convo-id');
@@ -999,6 +1005,9 @@ document.getElementById('msg-timeline').addEventListener('click', function(e) {
     var id = document.getElementById('msg-here').getAttribute('data-convo-id');
     modifyConvo(me, id, 'msgLeave');
   }
+  if (e.target.id === 'msg-send' || e.target.parentNode.id === 'msg-send') {
+    reply();
+  }
 })
 // event listener: filter conversation, enter
 document.getElementById('msg-search').addEventListener('keydown', function(e) {
@@ -1008,6 +1017,16 @@ document.getElementById('msg-search').addEventListener('keydown', function(e) {
     addFilter(input);
     wantList(parsed);
 	}
+});
+// event listener: new conversation, enter
+document.getElementById('msg-new').addEventListener('keydown', function(e) {
+  if (e.keyCode == 13) {
+    var input = document.getElementById('msg-new').value;
+    var parsed = parseUsers(input);
+    parsed.push(me);
+    createConvo(parsed);
+    document.getElementById('msg-new').value = '';
+  }
 });
 // event listener: invite user, enter
 document.getElementById('msg-include').addEventListener('keydown', function(e) {

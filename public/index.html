@@ -270,9 +270,17 @@
                   <i class="remove circle icon"></i>
                   Filters:
                 </a>
-                <a class="item" id="msg-start">
-                  <i class="add square icon"></i>Start new message
-                </a>
+                <div class="ui dropdown item" id="dropdown">
+                  <span class="text">Start new message</span>
+                  <i class="add square icon"></i>
+                  <div class="menu">
+                    <div class="header">Invite users</div>
+                    <div class="ui left input">
+                      <input type="text" id="msg-new" placeholder="@users">
+                    </div>
+                    <span class="item hidden"></span>
+                  </div>
+                </div>
                 <div class="item">
                   <b>Messages:</b>
                   <div class="menu" id="msg-list">
@@ -285,24 +293,29 @@
               <div class="ui segment divided items" id="msg-here">
                 <div class="item">
                   <div class="content">
-                    <div class="header" id="msg-header">
+                    <div class="header" id="msg-header">Messages
                     </div>
                     <div class="description">
                       <div class="ui dropdown item">
                         Options
                         <i class="dropdown icon"></i>
                         <div class="menu">
-                          <a class="item" id="msg-include"><i class="add user icon"></i>Include user</a>
-                          <a class="item" id="msg-leave"><i class="rocket icon"></i>Leave thread</a>
+                          <div class="ui transparent icon input">
+                            <i class="add user icon"></i>
+                            <input type="text" placeholder="Invite user: @user" id="msg-include">
+                          </div>
+                          <a class="item" id="msg-leave">
+                            <i class="rocket icon"></i>Leave conversation
+                          </a>
                         </div>
                       </div>
                     </div>
                     <div class="description">
                       <form class="ui reply form">
                         <div class="field">
-                          <textarea rows="2" id="msg-reply"></textarea>
+                          <textarea rows="2" id="msg-send-input"></textarea>
                         </div>
-                        <div class="ui violet button">
+                        <div class="ui violet button" id="msg-send">
                           <i class="edit icon"></i>Add Reply
                         </div>
                       </form>
