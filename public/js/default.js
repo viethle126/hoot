@@ -9,6 +9,17 @@ function elemClass(elem, classes) {
   element.className = classes;
   return element;
 }
+// parse handles into array
+function parseUsers(input) {
+  var array = input.split(/(@[a-z\d-]+)/)
+  var users = [];
+  array.forEach(function(element, index, array) {
+    if (element.search(/@([a-z\d-]+)/) === 0) {
+      users.push(element.slice(1));
+    }
+  })
+  return users;
+}
 // clear child elements
 function remove(element, count) {
   if (count > 0) {
@@ -505,8 +516,11 @@ function wantList(filter) {
     var convos = JSON.parse(xhr.responseText);
     prepConvo(convos);
     if (filter) { checkFilter(convos, filter) }
+    convos = convos.reverse();
     convos.forEach(function(element, index, array) {
-      addConvo(element);
+      if (element.users[0] !== undefined) {
+        addConvo(element);
+      }
     })
   })
 }
@@ -520,7 +534,7 @@ function wantMessages(which) {
 
   xhr.addEventListener('load', function() {
     clearMessages();
-    var messages = JSON.parse(xhr.responseText);
+    var messages = JSON.parse(xhr.responseText).reverse();
     messages.forEach(function(element, index, array) {
       addMessage(element);
     })
@@ -547,8 +561,15 @@ function modifyConvo(who, which, type) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    // update list and clear messages section if leaving,
-    // update messages if inviting
+    if (type === 'msgInvite') {
+      wantList();
+      wantMessages(which);
+    }
+    if (type === 'msgLeave') {
+      wantList();
+      clearMessages();
+      inConvo('');
+    }
   })
 }
 // send reply
@@ -581,6 +602,26 @@ function clearConvos() {
   var nodes = conversations.childNodes;
   while (nodes.length > 0) {
     conversations.removeChild(conversations.firstChild);
+  }
+}
+// reset convo active states
+function convoReset() {
+  var conversations = document.getElementById('msg-list');
+  var nodes = conversations.childNodes;
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].dataset.convoId) {
+      nodes[i].classList.remove('active');
+    }
+  }
+}
+// set convo active state
+function activateConvo(id) {
+  var conversations = document.getElementById('msg-list');
+  var nodes = conversations.childNodes;
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].getAttribute('data-convo-id') === id) {
+      nodes[i].classList.add('active');
+    }
   }
 }
 // append message
@@ -810,6 +851,9 @@ function goMessages() {
   show('msg-timeline');
   showCard('card');
   wantList();
+  var list = document.getElementById('msg-list');
+  console.log(list);
+  //wantMessages(list.childNodes[1].getAttribute('data-convo-id'))
 }
 // event listener: login
 document.getElementById('login').addEventListener('click', login)
@@ -939,25 +983,47 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
 // event listener: convo list
 document.getElementById('msg-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.convoId) {
+    var id = e.target.getAttribute('data-convo-id');
+    document.getElementById('msg-here').setAttribute('data-convo-id', id);
+    convoReset();
     inConvo(e.target.textContent);
-    wantMessages(e.target.getAttribute('data-convo-id'));
+    wantMessages(id);
+    e.target.classList.add('active');
   }
   if (e.target.id === 'msg-filter' || e.target.parentNode.id === 'msg-filter') {
     document.getElementById('msg-search').value = '';
     clearFilter();
     wantList();
   }
+  if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
+    var id = document.getElementById('msg-here').getAttribute('data-convo-id');
+    modifyConvo(me, id, 'msgLeave');
+  }
 })
 // event listener: filter conversation, enter
 document.getElementById('msg-search').addEventListener('keydown', function(e) {
-	if(e.keyCode == 13) {
-    var input = document.getElementById('msg-search').value
-    var query = input.split(' ');
+	if (e.keyCode == 13) {
+    var input = document.getElementById('msg-search').value;
+    var parsed = parseUsers(input);
     addFilter(input);
-    wantList(query)
+    wantList(parsed);
 	}
 });
-
+// event listener: invite user, enter
+document.getElementById('msg-include').addEventListener('keydown', function(e) {
+	if (e.keyCode == 13) {
+    var id = document.getElementById('msg-here').getAttribute('data-convo-id');
+    var input = document.getElementById('msg-include').value;
+    var parsed = parseUsers(input);
+    parsed.forEach(function(element, index, array) {
+      modifyConvo(element, id, 'msgInvite');
+    })
+    wantList()
+    wantMessages(id);
+    activateConvo(id);
+    document.getElementById('msg-include').value = '';
+	}
+});
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
   var who = e.target;
