@@ -502,6 +502,7 @@ function wantList(filter) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
+    clearConvos();
     var convos = JSON.parse(xhr.responseText);
     prepConvo(convos);
     if (filter) { checkFilter(convos, filter) }
@@ -513,13 +514,17 @@ function wantList(filter) {
 // request messages from a conversation
 function wantMessages(which) {
   var data = { id: which }
+  var xhr = new XMLHttpRequest();
   xhr.open('POST', '/msgGet', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    var convos = xhr.response
-
+    clearMessages();
+    var messages = JSON.parse(xhr.responseText);
+    messages.forEach(function(element, index, array) {
+      addMessage(element);
+    })
   })
 }
 // create new conversation
@@ -550,7 +555,7 @@ function modifyConvo(who, which, type) {
 // send reply
 function reply(data) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/', true);
+  xhr.open('POST', '/msgSend', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -565,6 +570,7 @@ function addConvo(data) {
   var item = elemClass('a', 'item');
   var itemText = document.createTextNode('@' + data.users.join(', @'));
 
+  divider.setAttribute('data-divider', 1);
   item.setAttribute('data-convo-id', data.id);
   item.appendChild(itemText);
   list.appendChild(divider);
@@ -573,13 +579,9 @@ function addConvo(data) {
 // remove message nodes
 function clearConvos() {
   var conversations = document.getElementById('msg-list');
-  var nodes = messages.childNodes;
-  for (var i = 0; i < nodes.length; i++) {
-    if (nodes[i].nodeType === 1) {
-      if (nodes[i].hasAttribute('data-convo-id')) {
-        conversations.removeChild(nodes[i]);
-      }
-    }
+  var nodes = conversations.childNodes;
+  while (nodes.length > 0) {
+    conversations.removeChild(conversations.firstChild);
   }
 }
 // append message
@@ -613,12 +615,9 @@ function addMessage(data) {
 function clearMessages() {
   var messages = document.getElementById('msg-here');
   var nodes = messages.childNodes;
-  for (var i = 0; i < nodes.length; i++) {
-    if (nodes[i].nodeType === 1) {
-      if (nodes[i].hasAttribute('data-msg')) {
-        messages.removeChild(nodes[i]);
-      }
-    }
+  console.log(nodes);
+  while (nodes.length > 3) {
+    messages.removeChild(messages.lastChild);
   }
 }
 // append filter to conversation list
@@ -645,7 +644,7 @@ function clearFilter() {
 function inConvo(users) {
   var header = document.getElementById('msg-header');
   var link = document.createElement('a');
-  var user = document.createTextNode('In this thread: ' + users);
+  var user = document.createTextNode('In this thread: @' + data.users.join(', @'));
   link.appendChild(user);
   header.appendChild(link);
 }
@@ -797,7 +796,7 @@ function goNotifications() {
 function goFavorites() {
   resetMenu();
   activate('favorites');
-  show('msg-timeline');
+  show('fav-timeline');
   showCard('card');
   wantLine('favorites', 'fav-timeline', me, 'favorites');
 }
@@ -934,6 +933,13 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
     favorite(e.target, true);
   }
 })
+// event listener: convo list
+document.getElementById('msg-timeline').addEventListener('click', function(e) {
+  if (e.target.dataset.convoId) {
+    wantMessages(e.target.getAttribute('data-convo-id'));
+  }
+})
+// NOTE NOTE NOTE
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
   var who = e.target;

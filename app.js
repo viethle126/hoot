@@ -386,7 +386,7 @@ app.post('/msgList', jSonParser, function(req, res) {
 })
 
 app.post('/msgGet', jSonParser, function(req, res) {
-  res.send(convo.get(req.body.id));
+  res.send(convo.get(Number(req.body.id)));
 })
 
 app.post('/msgSend', jSonParser, function(req, res) {
