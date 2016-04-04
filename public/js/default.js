@@ -206,7 +206,6 @@ function wantRetweet(target) {
 
   xhr.addEventListener('load', function() {
     var payload = JSON.parse(xhr.responseText);
-    console.log(payload);
     var stacked = document.getElementById('rehoot-here');
     while (stacked.hasChildNodes()) {
       stacked.removeChild(stacked.firstChild);
@@ -615,17 +614,16 @@ function addMessage(data) {
 function clearMessages() {
   var messages = document.getElementById('msg-here');
   var nodes = messages.childNodes;
-  console.log(nodes);
   while (nodes.length > 3) {
     messages.removeChild(messages.lastChild);
   }
 }
 // append filter to conversation list
-function addFilter(query) {
+function addFilter(users) {
   var search = document.getElementById('msg-search').parentNode.parentNode;
   var filter = document.getElementById('msg-filter');
   var query = elemAttribute('span', 'id', 'filtered');
-  var queryText = document.createTextNode(' ' + query);
+  var queryText = document.createTextNode(' ' + users);
   query.appendChild(queryText);
   filter.appendChild(query);
   filter.classList.remove('hidden');
@@ -643,10 +641,15 @@ function clearFilter() {
 // append list of users in conversation to header
 function inConvo(users) {
   var header = document.getElementById('msg-header');
-  var link = document.createElement('a');
-  var user = document.createTextNode('In this thread: @' + data.users.join(', @'));
-  link.appendChild(user);
-  header.appendChild(link);
+  var span = document.createElement('span');
+  var user = document.createTextNode('In this thread: ' + users);
+
+  while (header.firstChild) {
+    header.removeChild(header.firstChild);
+  }
+
+  span.appendChild(user);
+  header.appendChild(span);
 }
 // reset menu active states
 function resetMenu() {
@@ -936,10 +939,25 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
 // event listener: convo list
 document.getElementById('msg-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.convoId) {
+    inConvo(e.target.textContent);
     wantMessages(e.target.getAttribute('data-convo-id'));
   }
+  if (e.target.id === 'msg-filter' || e.target.parentNode.id === 'msg-filter') {
+    document.getElementById('msg-search').value = '';
+    clearFilter();
+    wantList();
+  }
 })
-// NOTE NOTE NOTE
+// event listener: filter conversation, enter
+document.getElementById('msg-search').addEventListener('keydown', function(e) {
+	if(e.keyCode == 13) {
+    var input = document.getElementById('msg-search').value
+    var query = input.split(' ');
+    addFilter(input);
+    wantList(query)
+	}
+});
+
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
   var who = e.target;
