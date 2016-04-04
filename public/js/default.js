@@ -560,6 +560,7 @@ function show(element) {
   document.getElementById('visit-timeline').classList.add('hidden');
   document.getElementById('note-timeline').classList.add('hidden');
   document.getElementById('fav-timeline').classList.add('hidden');
+  document.getElementById('msg-timeline').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
 }
 // show card

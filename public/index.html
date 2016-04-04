@@ -38,7 +38,7 @@
     </div>
   </div>
   <!-- nav bar -->
-  <div class="ui attached borderless stackable menu" id="menu">
+  <div class="ui attached borderless stackable violet menu" id="menu">
     <div class="ui container">
       <a class="item" id="hoot" data-active="false">
         <img class="ui image mini spaced" src="images/logo.png">Hoot
@@ -254,13 +254,70 @@
         </div>
       </div>
       <!-- messages -->
-      <div>
+      <div class="hidden" id="msg-timeline">
+        <div class="column">
+          <div class="ui grid">
+            <!-- list of message threads -->
+            <div class="four wide column">
+              <div class="ui vertical menu">
+                <div class="item">
+                  <div class="ui transparent icon input">
+                    <input type="text" placeholder="Search by @user" id="msg-search">
+                    <i class="search icon"></i>
+                  </div>
+                </div>
+                <a class="item" id="msg-filter">
+                  <i class="remove circle icon"></i>
+                  Filters:
+                </a>
+                <a class="item" id="msg-start">
+                  <i class="add square icon"></i>Start new message
+                </a>
+                <div class="item">
+                  <b>Messages:</b>
+                  <div class="menu" id="msg-list">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- list of messages -->
+            <div class="twelve wide column">
+              <div class="ui segment divided items" id="msg-here">
+                <div class="item">
+                  <div class="content">
+                    <div class="header" id="msg-header">
+                    </div>
+                    <div class="description">
+                      <div class="ui dropdown item">
+                        Options
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                          <a class="item" id="msg-include"><i class="add user icon"></i>Include user</a>
+                          <a class="item" id="msg-leave"><i class="rocket icon"></i>Leave thread</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="description">
+                      <form class="ui reply form">
+                        <div class="field">
+                          <textarea rows="2" id="msg-reply"></textarea>
+                        </div>
+                        <div class="ui violet button">
+                          <i class="edit icon"></i>Add Reply
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <!-- end right container -->
     </div>
-    <!-- end right container -->
-  </div>
-  <script src="http://code.jquery.com/jquery-1.12.2.js"></script>
-  <script src="./dist/semantic.min.js"></script>
-  <script src="./js/default.js"></script>
-</body>
-</html>
+    <script src="http://code.jquery.com/jquery-1.12.2.js"></script>
+    <script src="./dist/semantic.min.js"></script>
+    <script src="./js/default.js"></script>
+  </body>
+  </html>
