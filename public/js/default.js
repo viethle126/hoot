@@ -546,6 +546,18 @@ function addConvo(data) {
   list.appendChild(divider);
   list.appendChild(item);
 }
+// remove message nodes
+function clearConvos() {
+  var conversations = document.getElementById('msg-list');
+  var nodes = messages.childNodes;
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].nodeType === 1) {
+      if (nodes[i].hasAttribute('data-convo-id')) {
+        conversations.removeChild(nodes[i]);
+      }
+    }
+  }
+}
 // append message
 function addMessage(data) {
   var messages = document.getElementById('msg-here');
@@ -572,6 +584,46 @@ function addMessage(data) {
   content.appendChild(desc);
   item.appendChild(content);
   messages.appendChild(item);
+}
+// remove message nodes
+function clearMessages() {
+  var messages = document.getElementById('msg-here');
+  var nodes = messages.childNodes;
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].nodeType === 1) {
+      if (nodes[i].hasAttribute('data-msg')) {
+        messages.removeChild(nodes[i]);
+      }
+    }
+  }
+}
+// append filter to conversation list
+function addFilter(query) {
+  var search = document.getElementById('msg-search').parentNode.parentNode;
+  var filter = document.getElementById('msg-filter');
+  var query = elemAttribute('span', 'id', 'filtered');
+  var queryText = document.createTextNode(' ' + query);
+  query.appendChild(queryText);
+  filter.appendChild(query);
+  filter.classList.remove('hidden');
+  search.classList.add('hidden');
+}
+// remove filter node
+function clearFilter() {
+  var search = document.getElementById('msg-search').parentNode.parentNode;
+  var filter = document.getElementById('msg-filter');
+  var query = document.getElementById('filtered');
+  filter.removeChild(query);
+  filter.classList.add('hidden');
+  search.classList.remove('hidden');
+}
+// append list of users in conversation to header
+function inConvo(users) {
+  var header = document.getElementById('msg-header');
+  var link = document.createElement('a');
+  var user = document.createTextNode('In this thread: ' + users);
+  link.appendChild(user);
+  header.appendChild(link);
 }
 // reset menu active states
 function resetMenu() {
