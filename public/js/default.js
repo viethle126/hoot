@@ -171,11 +171,13 @@ function addTweet(data, where) {
   desc.appendChild(para);
   span.appendChild(spanText);
   meta.appendChild(span);
+  header.setAttribute('data-visit', 1);
   header.appendChild(headerText);
   content.appendChild(header);
   content.appendChild(meta);
   content.appendChild(desc);
   content.appendChild(extra);
+  image.setAttribute('data-visit', 1);
   imageDiv.appendChild(image);
   item.appendChild(imageDiv);
   item.appendChild(content);
@@ -374,11 +376,17 @@ function card(data, where) {
   content.appendChild(header);
   content.appendChild(meta);
   content.appendChild(desc);
+
   imageDiv.appendChild(image);
   card.appendChild(imageDiv);
   card.appendChild(content);
   card.appendChild(extra);
-  card.setAttribute('data-card-handle', data.handle)
+  card.setAttribute('data-handle', data.handle);
+  if (where === 'foobar') {
+    image.setAttribute('data-visit', 1);
+    header.setAttribute('data-visit', 1);
+    handleSpan.setAttribute('data-visit', 1);
+  }
 
   if (data.follow === true) {
     follow.classList.add('hidden');
@@ -430,10 +438,10 @@ function follow(target) {
   var who = target.parentNode;
   var follow = target.parentNode.childNodes[0];
   var unfollow = target.parentNode.childNodes[1];
-  while (!who.dataset.cardHandle) {
+  while (!who.dataset.handle) {
     who = who.parentNode;
   }
-  who = who.getAttribute('data-card-handle');
+  who = who.getAttribute('data-handle');
   var data = { handle: who, home: me }
 
   var xhr = new XMLHttpRequest();
@@ -833,16 +841,16 @@ function goFollowers(target, card) {
   }
   var type = target.dataset.go
   var who = target;
-  while (!who.dataset.cardHandle) {
+  while (!who.dataset.handle) {
     who = who.parentNode;
   }
   resetMenu();
   show('following');
   if (card === 'visit-card') {
-    wantCard(who.dataset.cardHandle, 'visit-card', me);
+    wantCard(who.dataset.handle, 'visit-card', me);
   }
   showCard(card);
-  wantFollowers(who.dataset.cardHandle, 'following', type)
+  wantFollowers(who.dataset.handle, 'following', type)
 }
 // navigate to your hoots
 function goHoots() {
@@ -864,8 +872,8 @@ function goVisit(who) {
   resetMenu();
   show('visit-timeline');
   showCard('visit-card');
-  wantCard(who.id, 'visit-card', me);
-  wantLine(who.id, 'visit-timeline', me, 'tweets');
+  wantCard(who, 'visit-card', me);
+  wantLine(who, 'visit-timeline', me, 'tweets');
 }
 // navigate to notifications
 function goNotifications() {
@@ -984,10 +992,10 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
   }
   if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
     who = e.target.parentNode;
-    while (!who.dataset.cardHandle) {
+    while (!who.dataset.handle) {
       who = who.parentNode;
     }
-    who = who.getAttribute('data-card-handle');
+    who = who.getAttribute('data-handle');
     goMessages();
     $('#new-dropdown').trigger('click');
     document.getElementById('msg-new').value = '@' + who;
@@ -1001,12 +1009,20 @@ document.getElementById('following').addEventListener('click', function(e) {
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
     goFollowers(e.target, 'visit-card');
   }
-  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
-    who = e.target.parentNode;
-    while (!who.dataset.cardHandle) {
+  if (e.target.dataset.visit) {
+    who = e.target.parentNode
+    while (!who.dataset.handle) {
       who = who.parentNode;
     }
-    who = who.getAttribute('data-card-handle');
+    who = who.getAttribute('data-handle');
+    goVisit(who);
+  }
+  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
+    who = e.target.parentNode;
+    while (!who.dataset.handle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-handle');
     goMessages();
     $('#new-dropdown').trigger('click');
     document.getElementById('msg-new').value = '@' + who;
@@ -1020,6 +1036,14 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
   if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
     favorite(e.target);
   }
+  if (e.target.dataset.visit) {
+    who = e.target.parentNode
+    while (!who.dataset.handle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-handle');
+    goVisit(who);
+  }
 })
 // event listener: your hoots timeline
 document.getElementById('your-hoots').addEventListener('click', function(e) {
@@ -1029,6 +1053,14 @@ document.getElementById('your-hoots').addEventListener('click', function(e) {
   if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
     favorite(e.target);
   }
+  if (e.target.dataset.visit) {
+    who = e.target.parentNode
+    while (!who.dataset.handle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-handle');
+    goVisit(who);
+  }
 })
 // event listener: visit timeline
 document.getElementById('visit-timeline').addEventListener('click', function(e) {
@@ -1037,6 +1069,14 @@ document.getElementById('visit-timeline').addEventListener('click', function(e) 
   }
   if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
     favorite(e.target);
+  }
+  if (e.target.dataset.visit) {
+    who = e.target.parentNode
+    while (!who.dataset.handle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-handle');
+    goVisit(who);
   }
 })
 // event listener: notifications
@@ -1121,14 +1161,6 @@ document.getElementById('msg-send-input').addEventListener('keydown', function(e
   if (e.keyCode == 13 && document.getElementById('msg-send-input').value !== '') {
     reply();
   }
-})
-// temporary userlist, will move later
-document.getElementById('userlist').addEventListener('click', function(e) {
-  var who = e.target;
-  while (!who.id) {
-    who = who.parentNode;
-  }
-  goVisit(who);
 })
 // who is logged in
 var me = false;

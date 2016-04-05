@@ -32,6 +32,6 @@ button[data-follow-text]:after {
   margin-top: 0px;
 }
 
-[data-visit="1"]:hover {
+[data-visit]:hover {
   cursor: pointer;
 }
