@@ -4,12 +4,14 @@ var cookieParser = require('cookie-parser');
 var _ = require('underscore');
 var app = express();
 // custom modules
-var users = require('./users.js');
-var convo = require('./convo.js');
+var users = require('./users');
+var convo = require('./convo');
+var trends = require('./trends');
 var timestamp = require('./timestamp');
-var random = require('./random.js');
-// generate random hoots for all users, return id count
-random.begin();
+var random = require('./random');
+// request trends, generate random hoots
+trends.request();
+random.begin(); // will move this into trends.js to incorporate trends later
 // add string to cookie
 function extendCookie(count, cookie) {
   var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
@@ -174,6 +176,11 @@ app.use(function(req, res, next) {
 })
 
 app.use(cookieParser());
+
+// for testing
+app.get('/trends', function(req, res) {
+  res.send(trends.data);
+})
 
 app.get('/landing', function(req, res) {
   var payload = [];

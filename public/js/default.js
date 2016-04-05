@@ -1184,7 +1184,6 @@ window.onload = function() {
       showCard('card');
       wantLine(me, 'your-timeline', me, 'home');
       show('your-timeline');
-      document.getElementById('userlist').classList.remove('hidden');
       return me;
     }
   })
@@ -1193,3 +1192,15 @@ window.onload = function() {
 $('.ui.dropdown')
   .dropdown()
 ;
+// TESTING
+var trends = ''
+function trending() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/trends', true);
+  xhr.send();
+
+  xhr.addEventListener('load', function() {
+    trends = JSON.parse(xhr.response);
+    console.log('success');
+  })
+}
