@@ -68,6 +68,44 @@ function logout() {
     document.location.reload(true);
   })
 }
+// request trends
+function wantTrends() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/trends', true);
+  xhr.send();
+
+  xhr.addEventListener('load', function() {
+    data = JSON.parse(xhr.response).reverse();
+    console.log(data);
+    for (var i = 0; i < 20; i++) {
+      var size = trendSize(data[i]);
+      addTrend(data[i], size);
+    }
+  })
+}
+// determine header size
+function trendSize(data) {
+  if (data.percent > 15) {
+    return 'h2';
+  } else if (data.percent > 10) {
+    return 'h3';
+  } else if (data.percent > 5) {
+    return 'h4';
+  } else {
+    return 'h5';
+  }
+}
+// append trend to trending list
+function addTrend(data, size) {
+  var trending = document.getElementById('trending');
+  var link = elemClass('a', 'item');
+  var header = elemClass(size, 'ui header');
+  var headerText = document.createTextNode(data.name);
+  header.appendChild(headerText);
+  link.appendChild(header);
+  link.setAttribute('data-trend', data.name);
+  trending.appendChild(link);
+}
 // search header
 function showQuery(input) {
   var results = document.getElementById('search-results');
@@ -1179,11 +1217,10 @@ window.onload = function() {
       me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
       document.getElementById('dropdown').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
-      activate('home');
+      document.getElementById('trending').parentNode.classList.remove('hidden');
       wantCard(me, 'card', me);
-      showCard('card');
-      wantLine(me, 'your-timeline', me, 'home');
-      show('your-timeline');
+      wantTrends();
+      goHome();
       return me;
     }
   })
@@ -1192,15 +1229,3 @@ window.onload = function() {
 $('.ui.dropdown')
   .dropdown()
 ;
-// TESTING
-var trends = '';
-function trending() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/trends', true);
-  xhr.send();
-
-  xhr.addEventListener('load', function() {
-    trends = JSON.parse(xhr.response).reverse();
-    console.log('success');
-  })
-}
