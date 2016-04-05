@@ -148,14 +148,24 @@ function search(input, home) {
       return byUser;
     }
   })
-  for (prop in users) {
-    users[prop].tweets.forEach(function(element, index, array) {
+  users.keys.forEach(function(element, index, array) {
+    users[element].tweets.forEach(function(element, index, array) {
       if (element.content.search(reg) !== -1) {
         byString.push(element);
       }
     })
-  }
+  })
   return { byUser: byUser, byString: byString }
+}
+// check if users exist, return error if any fail
+function check(who) {
+  var error = false;
+  who.forEach(function(element, index, array) {
+    if (users.check(element) === false) {
+      error = true;
+    }
+  })
+  return error;
 }
 
 app.use(function(req, res, next) {
@@ -167,9 +177,9 @@ app.use(cookieParser());
 
 app.get('/landing', function(req, res) {
   var payload = [];
-  for (prop in users) {
-    if (users[prop].tweets) {
-      users[prop].tweets.forEach(function(element, index, array) {
+  users.keys.forEach(function(element, index, array) {
+    if (users[element].tweets) {
+      users[element].tweets.forEach(function(element, index, array) {
         var fixed = timestamp.military(element.date);
         payload.push({
           name: element.name,
@@ -181,7 +191,7 @@ app.get('/landing', function(req, res) {
         })
       })
     }
-  }
+  })
   payload = _.sortBy(payload, 'sort').reverse();
   payload = payload.slice(0, 30);
   res.send(payload);
@@ -367,16 +377,24 @@ app.post('/removeFavorite', jSonParser, function(req, res) {
 })
 
 app.post('/msgNew', jSonParser, function(req, res) {
-  convo.new(req.body.users);
-  var data = {
-    id: convo.id() - 1
+  if (check(req.body.users) === true) {
+    res.sendStatus(208);
+  } else {
+    convo.new(req.body.users);
+    var data = {
+      id: convo.id() - 1
+    }
+    res.send(data);
   }
-  res.send(data);
 })
 
 app.post('/msgInvite', jSonParser, function(req, res) {
-  convo.invite(req.body.user, req.body.id);
-  res.send();
+  if (check(req.body.users) === true) {
+    res.sendStatus(208);
+  } else {
+    convo.invite(req.body.users, req.body.id);
+    res.send();
+  }
 })
 
 app.post('/msgLeave', jSonParser, function(req, res) {

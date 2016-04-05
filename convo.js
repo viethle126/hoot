@@ -5,11 +5,7 @@ var id = 0;
 var convo = [];
 // start new conversation
 convo.new = function(who) {
-  var users = [];
-  who.forEach(function(element, index, array) {
-    users.push(element);
-  })
-  users = _.sortBy(users);
+  users = _.sortBy(who);
   var add = {
     id: id,
     users: users,
@@ -23,14 +19,6 @@ convo.new = function(who) {
 // return id
 convo.id = function() {
   return id;
-}
-// check if user is part of a convo
-convo.check = function(who, id) {
-  if (convo[id].users.indexOf(who) !== -1) {
-    return true;
-  } else {
-    return false;
-  }
 }
 // invite a user to a conversation
 convo.invite = function(who, id) {

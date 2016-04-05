@@ -314,10 +314,14 @@ function card(data, where) {
   var meta = elemClass('div', 'meta');
   var handleSpan = elemClass('span', 'date');
   var handleText = document.createTextNode('@' + data.handle);
-  var breakLine = document.createElement('br');
+  var breakOne = document.createElement('br');
   var countSpan = elemClass('span', 'date');
   var write = elemClass('i', 'edit icon icon');
   var writeText = document.createTextNode(data.tweets + ' Hoots');
+  var breakTwo = document.createElement('br');
+  var msgSpan = elemClass('span', 'date');
+  var msg = elemClass('i', 'mail icon');
+  var msgText = elemClass('Send message');
   var desc = elemClass('div', 'description');
   var segment = elemClass('div', 'ui basic center aligned segment');
   var follow = elemClass('button', 'ui basic violet button');
@@ -332,6 +336,8 @@ function card(data, where) {
   var followerLink = document.createElement('a');
   var follower = elemClass('i', 'users icon');
   var followerText = document.createTextNode(data.followers);
+
+
 
   if (data.handle === me) {
     countSpan = elemClass('a', 'date');
@@ -356,9 +362,16 @@ function card(data, where) {
   handleSpan.appendChild(handleText);
   countSpan.appendChild(write);
   countSpan.appendChild(writeText);
+
   meta.appendChild(handleSpan);
-  meta.appendChild(breakLine);
+  meta.appendChild(breakOne);
   meta.appendChild(countSpan);
+  if (data.handle !== data.me) {
+    msgSpan.appendChild(msg);
+    msgSpan.appendChild(msgText);
+    meta.appendChild(breakTwo);
+    meta.appendChild(msgSpan);
+  }
   header.appendChild(headerText);
   content.appendChild(header);
   content.appendChild(meta);
@@ -495,11 +508,13 @@ function prepConvo(convos) {
 // match filter criteria
 function checkFilter(convos, filter) {
   filter.forEach(function(element, index, array) {
-    for (var i = 0; i < convos.length; i++) {
-      if (convos[i].users.indexOf(element) === -1) {
-        convos.splice(i, 1);
+    var checking = element;
+    convos.forEach(function(element, index, array) {
+      if (element.users.indexOf(checking) === -1) {
+        convos.splice(convos.indexOf(element), 1);
+        checkFilter(convos, filter);
       }
-    }
+    })
   })
   return convos;
 }
@@ -540,6 +555,17 @@ function wantMessages(which) {
     })
   })
 }
+// create error message
+function errorMessage() {
+  document.getElementById('msg-search').parentNode.parentNode.classList.add('hidden');
+  document.getElementById('msg-filter').classList.add('hidden');
+  document.getElementById('msg-error').classList.remove('hidden');
+  setTimeout(function() {
+    document.getElementById('msg-search').parentNode.parentNode.classList.remove('hidden');
+    document.getElementById('msg-filter').classList.add('hidden');
+    document.getElementById('msg-error').classList.add('hidden');
+  }, 4000);
+}
 // create new conversation
 function createConvo(users) {
   var data = { users: users }
@@ -549,20 +575,27 @@ function createConvo(users) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    var id = JSON.parse(xhr.responseText).id
-    wantList()
+    if (xhr.status === 208) {
+      errorMessage();
+    } else {
+      var id = JSON.parse(xhr.responseText).id
+      wantList()
+    }
   })
 }
 // invite user to conversation or leave conversation
 function modifyConvo(who, which, type) {
-  var data = { user: who, id: which }
+  var data = { users: who, id: which }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/' + type, true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    if (type === 'msgInvite') {
+    if (type === 'msgInvite' && xhr.status === 208) {
+      errorMessage();
+    }
+    if (type === 'msgInvite'){
       wantList();
       wantMessages(which);
     }
@@ -759,7 +792,7 @@ function toggle(state) {
     hoot.classList.remove('active');
     form.classList.add('hidden');
     success.classList.remove('hidden');
-    setTimeout(function() { container.classList.add('hidden') }, 5000);
+    setTimeout(function() { container.classList.add('hidden') }, 4000);
     break;
 
     case 'close':
@@ -859,9 +892,6 @@ function goMessages() {
   show('msg-timeline');
   showCard('card');
   wantList();
-  var list = document.getElementById('msg-list');
-  console.log(list);
-  //wantMessages(list.childNodes[1].getAttribute('data-convo-id'))
 }
 // event listener: login
 document.getElementById('login').addEventListener('click', login)
@@ -910,6 +940,12 @@ document.getElementById('menu').addEventListener('click', function(e) {
     return;
   }
 });
+// event listener: search, enter key
+document.getElementById('search-input').addEventListener('keydown', function(e) {
+  if (e.keyCode == 13) {
+    search(document.getElementById('search-input').value);
+  }
+})
 // event listener: new hoot form
 document.getElementById('new-hoot').addEventListener('click', function(e) {
   if (e.target.id === 'cancel-hoot') {
@@ -1054,9 +1090,7 @@ document.getElementById('msg-include').addEventListener('keydown', function(e) {
     var id = document.getElementById('msg-here').getAttribute('data-convo-id');
     var input = document.getElementById('msg-include').value;
     var parsed = parseUsers(input);
-    parsed.forEach(function(element, index, array) {
-      modifyConvo(element, id, 'msgInvite');
-    })
+    modifyConvo(parsed, id, 'msgInvite');
     wantList()
     wantMessages(id);
     activateConvo(id);

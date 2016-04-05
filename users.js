@@ -1,19 +1,8 @@
 var users = {
-  viethle126: {
-    password: 'hoot',
-    name: 'Viet Le',
-    handle: 'viethle126',
-    tweets: [],
-    followers: [],
-    following: [],
-    notifications: [],
-    favorites: [],
-    cookies: []
-  },
-  alysiasaquil: {
+  alysia: {
     password: 'hoot',
     name: 'Alysia Saquilabon',
-    handle: 'alysiasaquil',
+    handle: 'alysia',
     tweets: [],
     followers: [],
     following: [],
@@ -21,10 +10,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  ajames91: {
+  andrew: {
     password: 'hoot',
     name: 'Andrew Velasquez',
-    handle: 'ajames91',
+    handle: 'andrew',
     tweets: [],
     followers: [],
     following: [],
@@ -32,10 +21,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  arunpaulgopal: {
+  arun: {
     password: 'hoot',
     name: 'Arun Gopal',
-    handle: 'arunpaulgopal',
+    handle: 'arun',
     tweets: [],
     followers: [],
     following: [],
@@ -43,10 +32,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  bgnewuch: {
+  ben: {
     password: 'hoot',
     name: 'Benjamin Gnewuch',
-    handle: 'bgnewuch',
+    handle: 'ben',
     tweets: [],
     followers: [],
     following: [],
@@ -54,10 +43,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  brianwalen: {
+  brian: {
     password: 'hoot',
     name: 'Brian Walen',
-    handle: 'brianwalen',
+    handle: 'brian',
     tweets: [],
     followers: [],
     following: [],
@@ -65,10 +54,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  metcalfec: {
+  chris: {
     password: 'hoot',
     name: 'Chris Metcalfe',
-    handle: 'metcalfec',
+    handle: 'chris',
     tweets: [],
     followers: [],
     following: [],
@@ -76,10 +65,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  coreysl: {
+  corey: {
     password: 'hoot',
     name: 'Corey Lin ',
-    handle: 'coreysl',
+    handle: 'corey',
     tweets: [],
     followers: [],
     following: [],
@@ -87,10 +76,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  nanhyunchul: {
+  hyun: {
     password: 'hoot',
     name: 'Hyun Lee',
-    handle: 'nanhyunchul',
+    handle: 'hyun',
     tweets: [],
     followers: [],
     following: [],
@@ -98,10 +87,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  jnguyen: {
+  justin: {
     password: 'hoot',
     name: 'Justin Nguyen',
-    handle: 'jnguyen',
+    handle: 'justin',
     tweets: [],
     followers: [],
     following: [],
@@ -109,10 +98,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  little78926: {
+  john: {
     password: 'hoot',
     name: 'John Huang',
-    handle: 'little78926',
+    handle: 'john',
     tweets: [],
     followers: [],
     following: [],
@@ -120,10 +109,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  mikefield: {
+  mike: {
     password: 'hoot',
     name: 'Michael Field',
-    handle: 'mikefield',
+    handle: 'mike',
     tweets: [],
     followers: [],
     following: [],
@@ -141,10 +130,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  niralpokal: {
+  niral: {
     password: 'hoot',
     name: 'Niral Pokal',
-    handle: 'niralpokal',
+    handle: 'niral',
     tweets: [],
     followers: [],
     following: [],
@@ -152,10 +141,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  ronperris: {
+  ron: {
     password: 'hoot',
     name: 'Ron Perris',
-    handle: 'ronperris',
+    handle: 'ron',
     tweets: [],
     followers: [],
     following: [],
@@ -163,10 +152,10 @@ var users = {
     favorites: [],
     cookies: []
   },
-  espressohoarder: {
+  shlomo: {
     password: 'hoot',
     name: 'Shlomo Kofman',
-    handle: 'espressohoarder',
+    handle: 'shlomo',
     tweets: [],
     followers: [],
     following: [],
@@ -174,10 +163,21 @@ var users = {
     favorites: [],
     cookies: []
   },
-  tputs001: {
+  tom: {
     password: 'hoot',
     name: 'Tom Putsawatanachai',
-    handle: 'tputs001',
+    handle: 'tom',
+    tweets: [],
+    followers: [],
+    following: [],
+    notifications: [],
+    favorites: [],
+    cookies: []
+  },
+  viet: {
+    password: 'hoot',
+    name: 'Viet Le',
+    handle: 'viet',
     tweets: [],
     followers: [],
     following: [],
