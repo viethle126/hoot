@@ -28,7 +28,7 @@
             <button class="ui basic violet button" type="submit" id="login">Login</button>
           </div>
           <div class="ui left input">
-            <span class="ui success message hidden" id="fail">
+            <span class="hidden" id="fail">
               Wrong ID/password
             </span>
           </div>
@@ -88,68 +88,68 @@
       <!-- temporary user list -->
       <div class="ui segment hidden" id="userlist">Temporary User List
         <div class="ui middle aligned selection list">
-          <div class="item" id="alysiasaquil">
-            <img class="ui avatar image" src="/images/alysiasaquil.jpg">
+          <div class="item" id="alysia">
+            <img class="ui avatar image" src="/images/alysia.jpg">
             <div class="content">
               <div class="header">Alysia</div>
             </div>
           </div>
-          <div class="item" id="ajames91">
-            <img class="ui avatar image" src="/images/ajames91.jpg">
+          <div class="item" id="andrew">
+            <img class="ui avatar image" src="/images/andrew.jpg">
             <div class="content">
               <div class="header">Andrew</div>
             </div>
           </div>
-          <div class="item" id="arunpaulgopal">
-            <img class="ui avatar image" src="/images/arunpaulgopal.jpg">
+          <div class="item" id="arun">
+            <img class="ui avatar image" src="/images/arun.jpg">
             <div class="content">
               <div class="header">Arun</div>
             </div>
           </div>
-          <div class="item" id="bgnewuch">
-            <img class="ui avatar image" src="/images/bgnewuch.jpg">
+          <div class="item" id="ben">
+            <img class="ui avatar image" src="/images/ben.jpg">
             <div class="content">
               <div class="header">Ben</div>
             </div>
           </div>
-          <div class="item" id="brianwalen">
-            <img class="ui avatar image" src="/images/brianwalen.jpg">
+          <div class="item" id="brian">
+            <img class="ui avatar image" src="/images/brian.jpg">
             <div class="content">
               <div class="header">Brian</div>
             </div>
           </div>
-          <div class="item" id="metcalfec">
-            <img class="ui avatar image" src="/images/metcalfec.jpg">
+          <div class="item" id="chris">
+            <img class="ui avatar image" src="/images/chris.jpg">
             <div class="content">
               <div class="header">Chris</div>
             </div>
           </div>
-          <div class="item" id="coreysl">
-            <img class="ui avatar image" src="/images/coreysl.jpg">
+          <div class="item" id="corey">
+            <img class="ui avatar image" src="/images/corey.jpg">
             <div class="content">
               <div class="header">Corey</div>
             </div>
           </div>
-          <div class="item" id="nanhyunchul">
-            <img class="ui avatar image" src="/images/nanhyunchul.jpg">
+          <div class="item" id="hyun">
+            <img class="ui avatar image" src="/images/hyun.jpg">
             <div class="content">
               <div class="header">Hyun</div>
             </div>
           </div>
-          <div class="item" id="jnguyen">
-            <img class="ui avatar image" src="/images/jnguyen.jpg">
+          <div class="item" id="justin">
+            <img class="ui avatar image" src="/images/justin.jpg">
             <div class="content">
               <div class="header">Justin</div>
             </div>
           </div>
-          <div class="item" id="little78926">
-            <img class="ui avatar image" src="/images/little78926.jpg">
+          <div class="item" id="john">
+            <img class="ui avatar image" src="/images/john.jpg">
             <div class="content">
               <div class="header">John</div>
             </div>
           </div>
-          <div class="item" id="mikefield">
-            <img class="ui avatar image" src="/images/mikefield.jpg">
+          <div class="item" id="mike">
+            <img class="ui avatar image" src="/images/mike.jpg">
             <div class="content">
               <div class="header">Mike</div>
             </div>
@@ -160,26 +160,26 @@
               <div class="header">Nathan</div>
             </div>
           </div>
-          <div class="item" id="niralpokal">
-            <img class="ui avatar image" src="/images/niralpokal.jpg">
+          <div class="item" id="niral">
+            <img class="ui avatar image" src="/images/niral.jpg">
             <div class="content">
               <div class="header">Niral</div>
             </div>
           </div>
-          <div class="item" id="ronperris">
-            <img class="ui avatar image" src="/images/ronperris.jpg">
+          <div class="item" id="ron">
+            <img class="ui avatar image" src="/images/ron.jpg">
             <div class="content">
               <div class="header">Ron</div>
             </div>
           </div>
-          <div class="item" id="espressohoarder">
-            <img class="ui avatar image" src="/images/espressohoarder.jpg">
+          <div class="item" id="shlomo">
+            <img class="ui avatar image" src="/images/shlomo.jpg">
             <div class="content">
               <div class="header">Shlomo</div>
             </div>
           </div>
-          <div class="item" id="tputs001">
-            <img class="ui avatar image" src="/images/tputs001.jpg">
+          <div class="item" id="tom">
+            <img class="ui avatar image" src="/images/tom.jpg">
             <div class="content">
               <div class="header">Tom</div>
             </div>
@@ -262,13 +262,17 @@
               <div class="ui vertical menu">
                 <div class="item">
                   <div class="ui transparent icon input">
-                    <input type="text" placeholder="Search by @user" id="msg-search">
+                    <input type="text" placeholder="Filter by @user" id="msg-search">
                     <i class="search icon"></i>
                   </div>
                 </div>
                 <a class="item hidden" id="msg-filter">
                   <i class="remove circle icon"></i>
                   Filters:
+                </a>
+                <a class="item hidden" id="msg-error">
+                  <i class="warning sign icon"></i>
+                  ERROR: invalid user
                 </a>
                 <div class="ui dropdown item" id="dropdown">
                   <span class="text">Start new message</span>

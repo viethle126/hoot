@@ -319,9 +319,9 @@ function card(data, where) {
   var write = elemClass('i', 'edit icon icon');
   var writeText = document.createTextNode(data.tweets + ' Hoots');
   var breakTwo = document.createElement('br');
-  var msgSpan = elemClass('span', 'date');
+  var msgLink = elemClass('a', 'date');
   var msg = elemClass('i', 'mail icon');
-  var msgText = elemClass('Send message');
+  var msgText = document.createTextNode('Send message');
   var desc = elemClass('div', 'description');
   var segment = elemClass('div', 'ui basic center aligned segment');
   var follow = elemClass('button', 'ui basic violet button');
@@ -336,8 +336,6 @@ function card(data, where) {
   var followerLink = document.createElement('a');
   var follower = elemClass('i', 'users icon');
   var followerText = document.createTextNode(data.followers);
-
-
 
   if (data.handle === me) {
     countSpan = elemClass('a', 'date');
@@ -362,15 +360,14 @@ function card(data, where) {
   handleSpan.appendChild(handleText);
   countSpan.appendChild(write);
   countSpan.appendChild(writeText);
-
   meta.appendChild(handleSpan);
   meta.appendChild(breakOne);
   meta.appendChild(countSpan);
   if (data.handle !== data.me) {
-    msgSpan.appendChild(msg);
-    msgSpan.appendChild(msgText);
+    msgLink.appendChild(msg);
+    msgLink.appendChild(msgText);
     meta.appendChild(breakTwo);
-    meta.appendChild(msgSpan);
+    meta.appendChild(msgLink);
   }
   header.appendChild(headerText);
   content.appendChild(header);

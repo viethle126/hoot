@@ -31,3 +31,7 @@ button[data-follow-text]:after {
 #visit-card {
   margin-top: 0px;
 }
+
+[data-visit="1"]:hover {
+  cursor: pointer;
+}
