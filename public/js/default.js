@@ -364,6 +364,7 @@ function card(data, where) {
   meta.appendChild(breakOne);
   meta.appendChild(countSpan);
   if (data.handle !== data.me) {
+    msgLink.setAttribute('data-send-msg', true);
     msgLink.appendChild(msg);
     msgLink.appendChild(msgText);
     meta.appendChild(breakTwo);
@@ -981,6 +982,16 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
     goFollowers(e.target, 'visit-card');
   }
+  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
+    who = e.target.parentNode;
+    while (!who.dataset.cardHandle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-card-handle');
+    goMessages();
+    $('#new-dropdown').trigger('click');
+    document.getElementById('msg-new').value = '@' + who;
+  }
 })
 // event listener: following/follower list
 document.getElementById('following').addEventListener('click', function(e) {
@@ -989,6 +1000,16 @@ document.getElementById('following').addEventListener('click', function(e) {
   }
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
     goFollowers(e.target, 'visit-card');
+  }
+  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
+    who = e.target.parentNode;
+    while (!who.dataset.cardHandle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-card-handle');
+    goMessages();
+    $('#new-dropdown').trigger('click');
+    document.getElementById('msg-new').value = '@' + who;
   }
 })
 // event listener: home timeline
@@ -1088,7 +1109,7 @@ document.getElementById('msg-include').addEventListener('keydown', function(e) {
     var input = document.getElementById('msg-include').value;
     var parsed = parseUsers(input);
     modifyConvo(parsed, id, 'msgInvite');
-    wantList()
+    wantList();
     wantMessages(id);
     activateConvo(id);
     document.getElementById('msg-include').value = '';
@@ -1126,7 +1147,7 @@ window.onload = function() {
       me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
       document.getElementById('dropdown').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
-      activate('home')
+      activate('home');
       wantCard(me, 'card', me);
       showCard('card');
       wantLine(me, 'your-timeline', me, 'home');
