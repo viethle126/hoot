@@ -9,7 +9,7 @@ var convo = require('./convo.js');
 var timestamp = require('./timestamp');
 var random = require('./random.js');
 // generate random hoots for all users, return id count
-var id = random.begin();
+random.begin();
 // add string to cookie
 function extendCookie(count, cookie) {
   var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
@@ -285,13 +285,13 @@ app.post('/followers', jSonParser, function(req, res) {
 })
 
 app.post('/addHoot', jSonParser, function(req, res) {
-  id++
+  users.id++
   var handle = req.body.handle;
   var content = req.body.content;
   var hoot = {
     name: users[handle].name,
     handle: handle,
-    id: id,
+    id: users.id,
     date: timestamp.civilian(),
     content: content,
     tags: [],
@@ -304,7 +304,7 @@ app.post('/addHoot', jSonParser, function(req, res) {
 })
 
 app.post('/addRehoot', jSonParser, function(req, res) {
-  id++
+  users.id++
   var rehoot = {};
   var rehootId = Number(req.body.rehootId);
   var rehootHandle = req.body.rehootHandle;
@@ -319,7 +319,7 @@ app.post('/addRehoot', jSonParser, function(req, res) {
   var hoot = {
     name: users[handle].name,
     handle: handle,
-    id: id,
+    id: users.id,
     date: timestamp.civilian(),
     content: content,
     tags: [],

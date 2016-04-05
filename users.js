@@ -198,4 +198,25 @@ var users = {
   },
 }
 
+users.id = 0;
+users.keys = [];
+
+(users.updateKeys = function() {
+  users.keys = ['id', 'keys', 'updateKeys', 'check'];
+  for (prop in users) {
+    if (users.keys.indexOf(prop) === -1) {
+      users.keys.push(prop);
+    }
+  }
+  users.keys = users.keys.slice(4);
+})();
+
+users.check = function(user) {
+  if (users.keys.indexOf(user) !== -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 module.exports = users;
