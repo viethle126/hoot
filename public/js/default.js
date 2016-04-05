@@ -114,7 +114,7 @@ function tweet() {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    wantLine(me, 'your-timeline', me, 'tweets');
+    wantLine(me, 'your-timeline', me, 'home');
     toggle('success');
   })
 }
@@ -134,7 +134,7 @@ function retweet() {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    wantLine(me, 'your-timeline', me, 'tweets');
+    wantLine(me, 'your-timeline', me, 'home');
     toggle('success');
   })
 }
@@ -598,6 +598,7 @@ function addConvo(data) {
   var itemText = document.createTextNode('@' + data.users.join(', @'));
 
   divider.setAttribute('data-divider', 1);
+  item.setAttribute('data-convo-list', 1);
   item.setAttribute('data-convo-id', data.id);
   item.appendChild(itemText);
   list.appendChild(divider);
@@ -784,6 +785,7 @@ function show(element) {
   document.getElementById('note-timeline').classList.add('hidden');
   document.getElementById('fav-timeline').classList.add('hidden');
   document.getElementById('msg-timeline').classList.add('hidden');
+  document.getElementById('msg-here').classList.add('hidden');
   document.getElementById(element).classList.remove('hidden');
 }
 // show card
@@ -865,6 +867,12 @@ function goMessages() {
 document.getElementById('login').addEventListener('click', login)
 // event listener: logout
 document.getElementById('logout').addEventListener('click', logout)
+// event listener: log in, enter key
+document.getElementById('password').addEventListener('keydown', function(e) {
+	if (e.keyCode == 13) {
+    login();
+	}
+});
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
   var what = e.target;
@@ -914,6 +922,15 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     retweet();
   }
 })
+// event listener: submit hoot/rehoot, enter key
+document.getElementById('hoot-content').addEventListener('keydown', function(e) {
+	if (e.keyCode == 13 && $('#submit-rehoot').hasClass('hidden')) {
+    tweet();
+	}
+  if (e.keyCode == 13 && $('#submit-hoot').hasClass('hidden')) {
+    retweet();
+	}
+});
 // event listener: your card
 document.getElementById('card').addEventListener('click', function(e) {
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
@@ -950,7 +967,7 @@ document.getElementById('your-timeline').addEventListener('click', function(e) {
     favorite(e.target);
   }
 })
-// event listener: home timeline
+// event listener: your hoots timeline
 document.getElementById('your-hoots').addEventListener('click', function(e) {
   if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
     wantRetweet(e.target);
@@ -988,9 +1005,10 @@ document.getElementById('fav-timeline').addEventListener('click', function(e) {
 })
 // event listener: messages
 document.getElementById('msg-timeline').addEventListener('click', function(e) {
-  if (e.target.dataset.convoId) {
+  if (e.target.dataset.convoList) {
     var id = e.target.getAttribute('data-convo-id');
     document.getElementById('msg-here').setAttribute('data-convo-id', id);
+    document.getElementById('msg-here').classList.remove('hidden');
     convoReset();
     inConvo(e.target.textContent);
     wantMessages(id);
@@ -1004,6 +1022,7 @@ document.getElementById('msg-timeline').addEventListener('click', function(e) {
   if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
     var id = document.getElementById('msg-here').getAttribute('data-convo-id');
     modifyConvo(me, id, 'msgLeave');
+    show('msg-timeline');
   }
   if (e.target.id === 'msg-send' || e.target.parentNode.id === 'msg-send') {
     reply();
@@ -1026,6 +1045,7 @@ document.getElementById('msg-new').addEventListener('keydown', function(e) {
     parsed.push(me);
     createConvo(parsed);
     document.getElementById('msg-new').value = '';
+    $('body').trigger('click');
   }
 });
 // event listener: invite user, enter
@@ -1041,8 +1061,15 @@ document.getElementById('msg-include').addEventListener('keydown', function(e) {
     wantMessages(id);
     activateConvo(id);
     document.getElementById('msg-include').value = '';
+    $('body').trigger('click');
 	}
 });
+// event listener: send message, enter
+document.getElementById('msg-send-input').addEventListener('keydown', function(e) {
+  if (e.keyCode == 13 && document.getElementById('msg-send-input').value !== '') {
+    reply();
+  }
+})
 // temporary userlist, will move later
 document.getElementById('userlist').addEventListener('click', function(e) {
   var who = e.target;
