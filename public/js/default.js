@@ -1193,14 +1193,14 @@ $('.ui.dropdown')
   .dropdown()
 ;
 // TESTING
-var trends = ''
+var trends = '';
 function trending() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/trends', true);
   xhr.send();
 
   xhr.addEventListener('load', function() {
-    trends = JSON.parse(xhr.response);
+    trends = JSON.parse(xhr.response).reverse();
     console.log('success');
   })
 }

@@ -3,6 +3,7 @@ var twitterSecret = process.env.TWITTER_CONSUMER_SECRET;
 var token = process.env.TWITTER_ACCESS_TOKEN_KEY;
 var secret = process.env.TWITTER_ACCESS_TOKEN_SECRET;
 
+var _ = require('underscore');
 var OAuth = require('OAuth');
 var oauth = new OAuth.OAuth(
   'https://api.twitter.com/oauth/request_token',
@@ -15,7 +16,48 @@ var oauth = new OAuth.OAuth(
 );
 
 var trends = {};
-trends.data = {};
+trends.raw = {};
+trends.list = [];
+trends.stats = [];
+trends.sum = 0;
+
+trends.sort = function() {
+  trends.list = [];
+  trends.raw[0].trends.forEach(function(element, index, array) {
+    trends.list.push(element);
+  })
+  trends.list = _.sortBy(trends.list, 'tweet_volume');
+  return trends.list;
+}
+
+trends.calcSum = function() {
+  sum = 0;
+  trends.list.forEach(function(element, index, array) {
+    sum += element.tweet_volume;
+  })
+  return sum;
+}
+
+trends.calcPercent = function(trend) {
+  var percent = null;
+  if (trend.tweet_volume !== null) {
+    percent = Math.floor(trend.tweet_volume / sum * 100);
+  }
+  return percent;
+}
+
+trends.giveStats = function() {
+  trends.stats = [];
+  trends.calcSum();
+  trends.list.forEach(function(element, index, array) {
+    trends.stats.push({
+      name: element.name,
+      volume: element.tweet_volume,
+      percent: trends.calcPercent(element)
+    });
+  })
+  return trends.stats;
+}
 
 trends.request = function() {
   var promise = new Promise(function(resolve, reject) {
@@ -31,17 +73,14 @@ trends.request = function() {
     );
   })
   promise.then(function(data) {
-    trends.data = JSON.parse(data);
+    trends.raw = JSON.parse(data);
+    trends.sort();
+    trends.giveStats();
     console.log('Request for trending data received: ' + Date.now());
   })
   .catch(function(error) {
-    console.log('Error encountered: ' + Date.now());
     console.log(error);
   })
-}
-
-trends.list = function() {
-  return JSON.stringify(trends.data, 0, 2);
 }
 
 module.exports = trends;

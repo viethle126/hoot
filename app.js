@@ -179,7 +179,7 @@ app.use(cookieParser());
 
 // for testing
 app.get('/trends', function(req, res) {
-  res.send(trends.data);
+  res.send(trends.stats);
 })
 
 app.get('/landing', function(req, res) {
