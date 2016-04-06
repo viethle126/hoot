@@ -20,6 +20,7 @@
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
+    "oauth": "^0.9.14",
     "semantic-ui": "^2.1.8",
     "underscore": "^1.8.3"
   },
