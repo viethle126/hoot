@@ -76,7 +76,6 @@ function wantTrends() {
 
   xhr.addEventListener('load', function() {
     data = JSON.parse(xhr.response).reverse();
-    console.log(data);
     for (var i = 0; i < 20; i++) {
       var size = trendSize(data[i]);
       addTrend(data[i], size);
@@ -109,7 +108,7 @@ function addTrend(data, size) {
 // search header
 function showQuery(input) {
   var results = document.getElementById('search-results');
-  var message = elemClass('div', 'ui violet message');
+  var message = elemClass('h1', 'ui violet header');
   var header = elemClass('div', 'header');
   var headerText = document.createTextNode('Showing search results for: ' + input);
   header.appendChild(headerText);
@@ -125,6 +124,7 @@ function search(input) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
+    document.getElementById('search-input').value = '';
     resetMenu();
     clear('search-results');
     show('search-results');
@@ -133,10 +133,10 @@ function search(input) {
 
     var payload = JSON.parse(xhr.responseText);
     payload.byUser.forEach(function(element, index, array) {
-      addTweet(element, 'search-results')
+      addTweet(element, 'search-results');
     })
     payload.byString.forEach(function(element, index, array) {
-      addTweet(element, 'search-results')
+      addTweet(element, 'search-results');
     })
   })
 }
@@ -681,7 +681,7 @@ function addConvo(data) {
   list.appendChild(divider);
   list.appendChild(item);
 }
-// remove message nodes
+// clear convo list
 function clearConvos() {
   var conversations = document.getElementById('msg-list');
   var nodes = conversations.childNodes;
@@ -1039,6 +1039,16 @@ document.getElementById('visit-card').addEventListener('click', function(e) {
     document.getElementById('msg-new').value = '@' + who;
   }
 })
+// event listener: trending
+document.getElementById('trending').addEventListener('click', function(e) {
+  if (e.target.dataset.trend || e.target.parentNode.dataset.trend) {
+    var input = e.target;
+    while (!input.dataset.trend) {
+      input = input.parentNode;
+    }
+    search(input.getAttribute('data-trend'));
+  }
+})
 // event listener: following/follower list
 document.getElementById('following').addEventListener('click', function(e) {
   if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
@@ -1064,6 +1074,23 @@ document.getElementById('following').addEventListener('click', function(e) {
     goMessages();
     $('#new-dropdown').trigger('click');
     document.getElementById('msg-new').value = '@' + who;
+  }
+})
+// event listener: search results
+document.getElementById('search-results').addEventListener('click', function(e) {
+  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
+    wantRetweet(e.target);
+  }
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target);
+  }
+  if (e.target.dataset.visit) {
+    who = e.target.parentNode
+    while (!who.dataset.handle) {
+      who = who.parentNode;
+    }
+    who = who.getAttribute('data-handle');
+    goVisit(who);
   }
 })
 // event listener: home timeline
