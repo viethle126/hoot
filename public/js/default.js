@@ -364,8 +364,9 @@ function wantLine(user, where, homeuser, type) {
 
   xhr.addEventListener('load', function() {
     var tweets = JSON.parse(xhr.responseText).reverse();
+    remainingLine = tweets.slice(20);
     var displayed = tweets.length;
-    if (displayed > 50) { displayed = 50 } // show up to 50
+    if (displayed > 20) { displayed = 20 } // show up to 20
     for (var i = 0; i < displayed; i++) {
       if (type !== 'notifications') {
         addTweet(tweets[i], where)
@@ -936,6 +937,7 @@ function goHome() {
   show('your-timeline');
   showCard('card');
   wantLine(me, 'your-timeline', me, 'home');
+  viewing = 'your-timeline';
 }
 // navigate to other timeline
 function goVisit(who) {
@@ -944,6 +946,7 @@ function goVisit(who) {
   showCard('visit-card');
   wantCard(who, 'visit-card', me);
   wantLine(who, 'visit-timeline', me, 'tweets');
+  viewing = 'visit-timeline';
 }
 // navigate to notifications
 function goNotifications() {
@@ -952,6 +955,7 @@ function goNotifications() {
   show('note-timeline');
   showCard('card');
   wantLine(me, 'note-timeline', me, 'notifications');
+  viewing = 'note-timeline';
 }
 // navigate to favorites
 function goFavorites() {
@@ -960,6 +964,7 @@ function goFavorites() {
   show('fav-timeline');
   showCard('card');
   wantLine('favorites', 'fav-timeline', me, 'favorites');
+  viewing = 'fav-timeline';
 }
 // navigate to favorites
 function goMessages() {
@@ -968,6 +973,35 @@ function goMessages() {
   show('msg-timeline');
   showCard('card');
   wantList();
+  viewing = 'msg-timeline';
+}
+// toggle Back to Top button or reveal more tweets
+function onScroll() {
+  var max = $(document).height() - $(window).height();
+  var current = window.scrollY;
+
+  if (current > 450 && showScroll === false) {
+    showScroll = true;
+    document.getElementById('top').classList.remove('hidden');
+  }
+  if (current < 60 && showScroll === true) {
+    showScroll = false;
+    document.getElementById('top').classList.add('hidden');
+  }
+  if (current > max * .9 && viewing !== 'msg-timeline') {
+    console.log('hit breaking point');
+    var displayed = remainingLine.length;
+    if (displayed > 20) { displayed = 20 } // show up to 20 more
+    for (var i = 0; i < displayed; i++) {
+      if (viewing !== 'note-timeline') {
+        addTweet(remainingLine[i], viewing)
+      } else {
+        addNote(remainingLine[i])
+      }
+    }
+    remainingLine = remainingLine.slice(20);
+    return
+  }
 }
 // event listener: login
 document.getElementById('login').addEventListener('click', login)
@@ -1269,6 +1303,12 @@ document.getElementById('msg-send-input').addEventListener('keydown', function(e
 })
 // who is logged in
 var me = false;
+// for revealing tweets
+var showScroll = false;
+var remainingLine = [];
+var viewing = '';
+// event listener: scroll
+window.document.addEventListener('scroll', onScroll);
 // on load: check for cookies
 window.onload = function() {
   var xhr = new XMLHttpRequest();

@@ -32,6 +32,11 @@ button[data-follow-text]:after {
   margin-top: 0px;
 }
 
+#top {
+  position: fixed;
+  bottom: 50px;
+}
+
 [data-visit]:hover {
   cursor: pointer;
 }
