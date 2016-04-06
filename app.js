@@ -396,7 +396,9 @@ app.post('/msgInvite', jSonParser, function(req, res) {
   if (check(req.body.users) === true) {
     res.sendStatus(208);
   } else {
-    convo.invite(req.body.users, req.body.id);
+    req.body.users.forEach(function(element, index, array) {
+      convo.invite(element, req.body.id);
+    })
     res.send();
   }
 })
