@@ -949,6 +949,10 @@ document.getElementById('password').addEventListener('keydown', function(e) {
 });
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
+  if (me === false) {
+    $('.modal').modal('show');
+    return;
+  }
   var what = e.target;
   while (!what.id) {
     what = what.parentNode;
@@ -1172,19 +1176,23 @@ document.getElementById('msg-timeline').addEventListener('click', function(e) {
     inConvo(e.target.textContent);
     wantMessages(id);
     e.target.classList.add('active');
+    return;
   }
   if (e.target.id === 'msg-filter' || e.target.parentNode.id === 'msg-filter') {
     document.getElementById('msg-search').value = '';
     clearFilter();
     wantList();
+    return;
   }
   if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
     var id = document.getElementById('msg-here').getAttribute('data-convo-id');
     modifyConvo(me, id, 'msgLeave');
     show('msg-timeline');
+    return;
   }
   if (e.target.id === 'msg-send' || e.target.parentNode.id === 'msg-send') {
     reply();
+    return;
   }
 })
 // event listener: filter conversation, enter
@@ -1253,6 +1261,4 @@ window.onload = function() {
   })
 }
 // semantic
-$('.ui.dropdown')
-  .dropdown()
-;
+$('.ui.dropdown').dropdown();
