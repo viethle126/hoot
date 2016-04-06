@@ -115,7 +115,9 @@ function wantRecommended() {
 
   xhr.addEventListener('load', function() {
     var users = JSON.parse(xhr.response).reverse();
-    for (var i = 0; i < 5; i++) {
+    var count = 5;
+    if (users.length < 5) { count = users.length }
+    for (var i = 0; i < count; i++) {
       addRecommended(users[i].handle);
     }
   })
@@ -129,8 +131,10 @@ function addRecommended(user) {
   var header = elemClass('div', 'header');
   var headerText = document.createTextNode('@' + user);
 
+  header.setAttribute('data-visit', 1);
   header.appendChild(headerText);
   content.appendChild(header);
+  image.setAttribute('data-visit', 1);
   image.setAttribute('src', '/images/' + user + '.jpg');
   item.setAttribute('data-handle', user);
   item.appendChild(image);
@@ -138,14 +142,16 @@ function addRecommended(user) {
   list.appendChild(item);
 }
 // search header
-function showQuery(input) {
-  var results = document.getElementById('search-results');
-  var message = elemClass('h1', 'ui violet header');
+function showHeader(what, where) {
+  console.log(what);
+  console.log(where);
+  var location = document.getElementById(where);
+  var message = elemClass('h1', 'ui header');
   var header = elemClass('div', 'header');
-  var headerText = document.createTextNode('Showing search results for: ' + input);
+  var headerText = document.createTextNode(what);
   header.appendChild(headerText);
   message.appendChild(header);
-  results.appendChild(message);
+  location.appendChild(message);
 }
 // search
 function search(input) {
@@ -161,7 +167,7 @@ function search(input) {
     clear('search-results');
     show('search-results');
     showCard('card');
-    showQuery(input);
+    showHeader('Showing search results for: ' + input, 'search-results');
 
     var payload = JSON.parse(xhr.responseText);
     payload.byUser.forEach(function(element, index, array) {
@@ -363,6 +369,12 @@ function wantLine(user, where, homeuser, type) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
+    if (where === 'note-timeline') {
+      showHeader('Notifications:', 'note-timeline');
+    }
+    if (where === 'fav-timeline') {
+      showHeader('Favorites:', 'fav-timeline');
+    }
     var tweets = JSON.parse(xhr.responseText).reverse();
     remainingLine = tweets.slice(20);
     var displayed = tweets.length;
@@ -371,7 +383,7 @@ function wantLine(user, where, homeuser, type) {
       if (type !== 'notifications') {
         addTweet(tweets[i], where)
       } else {
-        addNote(tweets[i])
+        addNote(tweets[i]);
       }
     }
   })
@@ -563,7 +575,7 @@ function favorite(target, remove) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    if (remove === true) {
+    if (viewing === 'fav-timeline') {
       document.getElementById('fav-timeline').removeChild(item);
     }
     if (type === 'addFavorite') {
@@ -924,11 +936,17 @@ function goFollowers(target, card) {
   wantFollowers(who.dataset.handle, 'following', type)
 }
 // navigate to your hoots
-function goHoots() {
+function goHoots(who) {
+  var where = 'your-hoots';
+  var card = 'card';
+  if (who !== me) {
+    where = 'visit-timeline';
+    card = 'visit-card'
+  }
   resetMenu();
-  show('your-hoots');
-  showCard('card');
-  wantLine(me, 'your-hoots', me, 'tweets');
+  show(where);
+  showCard(card);
+  wantLine(who, 'your-hoots', who, 'tweets');
 }
 // navigate home
 function goHome() {
@@ -975,6 +993,13 @@ function goMessages() {
   wantList();
   viewing = 'msg-timeline';
 }
+// bubble up to 'data-card-handle'
+function toData(target, attribute) {
+  while (!target.dataset[attribute]) {
+    target = target.parentNode;
+  }
+  return target.getAttribute('data-' + attribute);
+}
 // toggle Back to Top button or reveal more tweets
 function onScroll() {
   var bottom = document.getElementById('recommended').parentNode;
@@ -1004,6 +1029,146 @@ function onScroll() {
     return
   }
 }
+// event listener: menu
+document.getElementById('menu').addEventListener('click', function(e) {
+  if (me === false && e.target.id !== 'login') {
+    $('.modal').modal('show');
+    return;
+  }
+  var what = e.target;
+  while (!what.id) {
+    what = what.parentNode;
+  }
+  if (what.id === 'home' && what.getAttribute('data-active') === 'false') {
+    goHome();
+    return;
+  }
+  if (what.id === 'notifications' && what.getAttribute('data-active') === 'false') {
+    goNotifications();
+    return;
+  }
+  if (what.id === 'favorites' && what.getAttribute('data-active') === 'false') {
+    goFavorites();
+    return;
+  }
+  if (what.id === 'messages' && what.getAttribute('data-active') === 'false') {
+    goMessages();
+    return;
+  }
+  if (what.id === 'hoot' && what.getAttribute('data-active') === 'false') {
+    resetMenu();
+    toggle('hoot');
+    return;
+  }
+  if (what.id === 'hoot' && what.getAttribute('data-active') === 'true') {
+    resetMenu();
+    toggle('close');
+    return;
+  }
+  if (what.id === 'search') {
+    search(document.getElementById('search-input').value);
+    return;
+  }
+});
+// event listener: click
+document.addEventListener('click', function(e) {
+  // logging in or out
+  if (e.target.id === 'login') {
+    login();
+    return;
+  }
+  if (e.target.id === 'logout') {
+    logout();
+    return;
+  }
+  // submitting hoots
+  if (e.target.id === 'cancel-hoot') {
+    toggle('close');
+    return;
+  }
+  if (e.target.id === 'submit-hoot') {
+    tweet();
+    return;
+  }
+  if (e.target.id === 'submit-rehoot') {
+    retweet();
+    return;
+  }
+  // timeline related
+  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
+    wantRetweet(e.target);
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
+    favorite(e.target);
+    return;
+  }
+  if (e.target.dataset.visit || e.target.dataset.visit) {
+    var who = toData(e.target, 'handle');
+    goVisit(who);
+    return;
+  }
+  if (e.target.dataset.trend || e.target.parentNode.dataset.trend) {
+    var input = toData(e.target, 'trend')
+    search(input);
+    return;
+  }
+  if (e.target.id === 'top' || e.target.parentNode === 'top') {
+    window.scrollTo(0, 0);
+    return;
+  }
+  // card related
+  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
+    var where = 'card';
+    if (toData(e.target, 'handle') !== me) { where = 'visit-card' }
+    goFollowers(e.target, where);
+    return;
+  }
+  if (e.target.dataset.hoots || e.target.parentNode.dataset.hoots) {
+    var who = toData(e.target, 'handle');
+    goHoots(who);
+    return;
+  }
+  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
+    who = toData(e.target, 'handle');
+    goMessages();
+    $('#new-dropdown').trigger('click');
+    document.getElementById('msg-new').value = '@' + who;
+    return;
+  }
+  if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
+    follow(e.target);
+    return;
+  }
+  // message related
+  if (e.target.dataset.convoList) {
+    var id = e.target.getAttribute('data-convo-id');
+    document.getElementById('msg-here').setAttribute('data-convo-id', id);
+    document.getElementById('msg-here').classList.remove('hidden');
+    convoReset();
+    inConvo(e.target.textContent);
+    wantMessages(id);
+    e.target.classList.add('active');
+    return;
+  }
+  if (e.target.id === 'msg-filter' || e.target.parentNode.id === 'msg-filter') {
+    document.getElementById('msg-search').value = '';
+    clearFilter();
+    wantList();
+    return;
+  }
+  if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
+    var id = document.getElementById('msg-here').getAttribute('data-convo-id');
+    modifyConvo(me, id, 'msgLeave');
+    show('msg-timeline');
+    return;
+  }
+  if (e.target.id === 'msg-send' || e.target.parentNode.id === 'msg-send') {
+    reply();
+    return;
+  }
+})
 // event listener: enter key
 document.addEventListener('keydown', function(e) {
   if (e.keyCode == 13) {
@@ -1057,258 +1222,10 @@ document.addEventListener('keydown', function(e) {
       reply();
       return;
     }
-  } else {
-    return;
   }
 })
-// event listener: login
-document.getElementById('login').addEventListener('click', login)
-// event listener: logout
-document.getElementById('logout').addEventListener('click', logout)
-
-// event listener: menu
-document.getElementById('menu').addEventListener('click', function(e) {
-  if (me === false) {
-    $('.modal').modal('show');
-    return;
-  }
-  var what = e.target;
-  while (!what.id) {
-    what = what.parentNode;
-  }
-  if (what.id === 'home' && what.getAttribute('data-active') === 'false') {
-    goHome();
-    return;
-  }
-  if (what.id === 'notifications' && what.getAttribute('data-active') === 'false') {
-    goNotifications();
-    return;
-  }
-  if (what.id === 'favorites' && what.getAttribute('data-active') === 'false') {
-    goFavorites();
-    return;
-  }
-  if (what.id === 'messages' && what.getAttribute('data-active') === 'false') {
-    goMessages();
-    return;
-  }
-  if (what.id === 'hoot' && what.getAttribute('data-active') === 'false') {
-    resetMenu();
-    toggle('hoot');
-    return;
-  }
-  if (what.id === 'hoot' && what.getAttribute('data-active') === 'true') {
-    resetMenu();
-    toggle('close');
-    return;
-  }
-  if (what.id === 'search') {
-    search(document.getElementById('search-input').value);
-    return;
-  }
-});
-
-// event listener: new hoot form
-document.getElementById('new-hoot').addEventListener('click', function(e) {
-  if (e.target.id === 'cancel-hoot') {
-    toggle('close');
-  }
-  if (e.target.id === 'submit-hoot') {
-    tweet();
-  }
-  if (e.target.id === 'submit-rehoot') {
-    retweet();
-  }
-})
-
-// event listener: your card
-document.getElementById('card').addEventListener('click', function(e) {
-  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
-    goFollowers(e.target, 'card');
-  }
-  if (e.target.dataset.hoots || e.target.parentNode.dataset.hoots) {
-    goHoots();
-  }
-})
-// event listener: visitor card
-document.getElementById('visit-card').addEventListener('click', function(e) {
-  if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
-    follow(e.target);
-  }
-  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
-    goFollowers(e.target, 'visit-card');
-  }
-  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
-    who = e.target.parentNode;
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goMessages();
-    $('#new-dropdown').trigger('click');
-    document.getElementById('msg-new').value = '@' + who;
-  }
-})
-// event listener: trending
-document.getElementById('trending').addEventListener('click', function(e) {
-  if (e.target.dataset.trend || e.target.parentNode.dataset.trend) {
-    var input = e.target;
-    while (!input.dataset.trend) {
-      input = input.parentNode;
-    }
-    search(input.getAttribute('data-trend'));
-  }
-})
-// event listener: following/follower list
-document.getElementById('following').addEventListener('click', function(e) {
-  if (e.target.dataset.followText || e.target.parentNode.dataset.followText) {
-    follow(e.target);
-  }
-  if (e.target.dataset.go || e.target.parentNode.dataset.go) {
-    goFollowers(e.target, 'visit-card');
-  }
-  if (e.target.dataset.visit) {
-    who = e.target.parentNode
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goVisit(who);
-  }
-  if (e.target.dataset.sendMsg || e.target.parentNode.dataset.sendMsg) {
-    who = e.target.parentNode;
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goMessages();
-    $('#new-dropdown').trigger('click');
-    document.getElementById('msg-new').value = '@' + who;
-  }
-})
-// event listener: search results
-document.getElementById('search-results').addEventListener('click', function(e) {
-  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    wantRetweet(e.target);
-  }
-  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
-    favorite(e.target);
-  }
-  if (e.target.dataset.visit) {
-    who = e.target.parentNode
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goVisit(who);
-  }
-})
-// event listener: home timeline
-document.getElementById('your-timeline').addEventListener('click', function(e) {
-  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    wantRetweet(e.target);
-  }
-  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
-    favorite(e.target);
-  }
-  if (e.target.dataset.visit) {
-    who = e.target.parentNode
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goVisit(who);
-  }
-})
-// event listener: your hoots timeline
-document.getElementById('your-hoots').addEventListener('click', function(e) {
-  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    wantRetweet(e.target);
-  }
-  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
-    favorite(e.target);
-  }
-  if (e.target.dataset.visit) {
-    who = e.target.parentNode
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goVisit(who);
-  }
-})
-// event listener: visit timeline
-document.getElementById('visit-timeline').addEventListener('click', function(e) {
-  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    wantRetweet(e.target);
-  }
-  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
-    favorite(e.target);
-  }
-  if (e.target.dataset.visit) {
-    who = e.target.parentNode
-    while (!who.dataset.handle) {
-      who = who.parentNode;
-    }
-    who = who.getAttribute('data-handle');
-    goVisit(who);
-  }
-})
-// event listener: notifications
-document.getElementById('note-timeline').addEventListener('click', function(e) {
-  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    wantRetweet(e.target);
-  }
-  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
-    favorite(e.target);
-  }
-})
-// event listener: favorites
-document.getElementById('fav-timeline').addEventListener('click', function(e) {
-  if (e.target.dataset.retweet || e.target.parentNode.dataset.retweet) {
-    wantRetweet(e.target);
-  }
-  if (e.target.dataset.fav || e.target.parentNode.dataset.fav) {
-    favorite(e.target, true);
-  }
-})
-// event listener: messages
-document.getElementById('msg-timeline').addEventListener('click', function(e) {
-  if (e.target.dataset.convoList) {
-    var id = e.target.getAttribute('data-convo-id');
-    document.getElementById('msg-here').setAttribute('data-convo-id', id);
-    document.getElementById('msg-here').classList.remove('hidden');
-    convoReset();
-    inConvo(e.target.textContent);
-    wantMessages(id);
-    e.target.classList.add('active');
-    return;
-  }
-  if (e.target.id === 'msg-filter' || e.target.parentNode.id === 'msg-filter') {
-    document.getElementById('msg-search').value = '';
-    clearFilter();
-    wantList();
-    return;
-  }
-  if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
-    var id = document.getElementById('msg-here').getAttribute('data-convo-id');
-    modifyConvo(me, id, 'msgLeave');
-    show('msg-timeline');
-    return;
-  }
-  if (e.target.id === 'msg-send' || e.target.parentNode.id === 'msg-send') {
-    reply();
-    return;
-  }
-})
-// who is logged in
-var me = false;
-// for revealing tweets
-var showScroll = false;
-var remainingLine = [];
-var viewing = '';
 // event listener: scroll
-window.document.addEventListener('scroll', onScroll);
+document.addEventListener('scroll', onScroll);
 // on load: check for cookies
 window.onload = function() {
   var xhr = new XMLHttpRequest();
@@ -1334,5 +1251,11 @@ window.onload = function() {
     }
   })
 }
+// who is logged in
+var me = false;
+// for revealing tweets
+var showScroll = false;
+var remainingLine = [];
+var viewing = '';
 // semantic
 $('.ui.dropdown').dropdown();
