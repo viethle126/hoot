@@ -449,7 +449,7 @@ app.post('/msgInvite', jSonParser, function(req, res) {
 })
 
 app.post('/msgLeave', jSonParser, function(req, res) {
-  convo.leave(req.body.user, req.body.id);
+  convo.leave(req.body.users, req.body.id);
   res.send();
 })
 
