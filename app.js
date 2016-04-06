@@ -100,6 +100,44 @@ function timeline(user, me, type) {
   tweets = _.sortBy(tweets, 'sort');
   return tweets;
 }
+// count duplicates in an array
+function countDupes(element, array, count) {
+  if (array.indexOf(element) !== -1) {
+    count++;
+    array.splice(array.indexOf(element), 1);
+    countDupes(element, array, count);
+  } else {
+    return count;
+  }
+}
+// determine suggestion score
+function findAffinity(cycled, pushed) {
+  array.forEach(function(element, index, array) {
+    var count = countDupes(element, total, 0);
+    var user = {
+      handle: element,
+      count: count
+    }
+    sorted.push(user);
+  })
+}
+// suggest users most commonly followed by your followers
+function suggest(who) {
+  var total = [];
+  var unique = [];
+  var sorted = [];
+  users[who].following.forEach(function(element, index, array) {
+    users[element].following.forEach(function(element, index, array) {
+      whoTheyFollow.push(element);
+      if (unique.indexOf(element) === -1) {
+        unique.push(element);
+      }
+    })
+  })
+  findAffinity(unique, sorted);
+  sorted = _.sortBy(sorted, 'count');
+  return sorted;
+}
 // push mentions
 function pushMentions(mentions, hoot) {
   mentions.forEach(function(element, index, array) {
