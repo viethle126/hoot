@@ -977,19 +977,20 @@ function goMessages() {
 }
 // toggle Back to Top button or reveal more tweets
 function onScroll() {
+  var bottom = document.getElementById('recommended').parentNode;
+  var bottomY = bottom.getBoundingClientRect().bottom;
   var max = $(document).height() - $(window).height();
   var current = window.scrollY;
 
-  if (current > 450 && showScroll === false) {
+  if (bottomY < 200 && showScroll === false) {
     showScroll = true;
     document.getElementById('top').classList.remove('hidden');
   }
-  if (current < 60 && showScroll === true) {
+  if (bottomY > 200 && showScroll === true) {
     showScroll = false;
     document.getElementById('top').classList.add('hidden');
   }
   if (current > max * .9 && viewing !== 'msg-timeline') {
-    console.log('hit breaking point');
     var displayed = remainingLine.length;
     if (displayed > 20) { displayed = 20 } // show up to 20 more
     for (var i = 0; i < displayed; i++) {
@@ -1003,16 +1004,68 @@ function onScroll() {
     return
   }
 }
+// event listener: enter key
+document.addEventListener('keydown', function(e) {
+  if (e.keyCode == 13) {
+    if (e.target.id === 'password') {
+      login();
+      return;
+    }
+    if (e.target.id === 'search-input' && e.target.value !== '') {
+      search(document.getElementById('search-input').value);
+      return;
+    }
+    if (e.target.id === 'hoot-content' && e.target.value !== '') {
+      if ($('#submit-rehoot').hasClass('hidden')) {
+        tweet();
+        return;
+      }
+      if ($('#submit-hoot').hasClass('hidden')) {
+        retweet();
+        return;
+      }
+    }
+    if (e.target.id === 'msg-search' && e.target.value !== '') {
+      var input = document.getElementById('msg-search').value;
+      var parsed = parseUsers(input);
+      addFilter(input);
+      wantList(parsed);
+      return;
+    }
+    if (e.target.id === 'msg-new' && e.target.value !== '') {
+      var input = document.getElementById('msg-new').value;
+      var parsed = parseUsers(input);
+      parsed.push(me);
+      createConvo(parsed);
+      document.getElementById('msg-new').value = '';
+      $('body').trigger('click');
+      return;
+    }
+    if (e.target.id === 'msg-include' && e.target.value !== '') {
+      var id = document.getElementById('msg-here').getAttribute('data-convo-id');
+      var input = document.getElementById('msg-include').value;
+      var parsed = parseUsers(input);
+      modifyConvo(parsed, id, 'msgInvite');
+      wantList();
+      wantMessages(id);
+      activateConvo(id);
+      document.getElementById('msg-include').value = '';
+      $('body').trigger('click');
+      return;
+    }
+    if (e.target.id === 'msg-send-input' && e.target.value !== '') {
+      reply();
+      return;
+    }
+  } else {
+    return;
+  }
+})
 // event listener: login
 document.getElementById('login').addEventListener('click', login)
 // event listener: logout
 document.getElementById('logout').addEventListener('click', logout)
-// event listener: log in, enter key
-document.getElementById('password').addEventListener('keydown', function(e) {
-	if (e.keyCode == 13) {
-    login();
-	}
-});
+
 // event listener: menu
 document.getElementById('menu').addEventListener('click', function(e) {
   if (me === false) {
@@ -1054,12 +1107,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
     return;
   }
 });
-// event listener: search, enter key
-document.getElementById('search-input').addEventListener('keydown', function(e) {
-  if (e.keyCode == 13) {
-    search(document.getElementById('search-input').value);
-  }
-})
+
 // event listener: new hoot form
 document.getElementById('new-hoot').addEventListener('click', function(e) {
   if (e.target.id === 'cancel-hoot') {
@@ -1072,15 +1120,7 @@ document.getElementById('new-hoot').addEventListener('click', function(e) {
     retweet();
   }
 })
-// event listener: submit hoot/rehoot, enter key
-document.getElementById('hoot-content').addEventListener('keydown', function(e) {
-	if (e.keyCode == 13 && $('#submit-rehoot').hasClass('hidden')) {
-    tweet();
-	}
-  if (e.keyCode == 13 && $('#submit-hoot').hasClass('hidden')) {
-    retweet();
-	}
-});
+
 // event listener: your card
 document.getElementById('card').addEventListener('click', function(e) {
   if (e.target.dataset.go || e.target.parentNode.dataset.go) {
@@ -1259,46 +1299,6 @@ document.getElementById('msg-timeline').addEventListener('click', function(e) {
   if (e.target.id === 'msg-send' || e.target.parentNode.id === 'msg-send') {
     reply();
     return;
-  }
-})
-// event listener: filter conversation, enter
-document.getElementById('msg-search').addEventListener('keydown', function(e) {
-	if (e.keyCode == 13) {
-    var input = document.getElementById('msg-search').value;
-    var parsed = parseUsers(input);
-    addFilter(input);
-    wantList(parsed);
-	}
-});
-// event listener: new conversation, enter
-document.getElementById('msg-new').addEventListener('keydown', function(e) {
-  if (e.keyCode == 13) {
-    var input = document.getElementById('msg-new').value;
-    var parsed = parseUsers(input);
-    parsed.push(me);
-    createConvo(parsed);
-    document.getElementById('msg-new').value = '';
-    $('body').trigger('click');
-  }
-});
-// event listener: invite user, enter
-document.getElementById('msg-include').addEventListener('keydown', function(e) {
-	if (e.keyCode == 13) {
-    var id = document.getElementById('msg-here').getAttribute('data-convo-id');
-    var input = document.getElementById('msg-include').value;
-    var parsed = parseUsers(input);
-    modifyConvo(parsed, id, 'msgInvite');
-    wantList();
-    wantMessages(id);
-    activateConvo(id);
-    document.getElementById('msg-include').value = '';
-    $('body').trigger('click');
-	}
-});
-// event listener: send message, enter
-document.getElementById('msg-send-input').addEventListener('keydown', function(e) {
-  if (e.keyCode == 13 && document.getElementById('msg-send-input').value !== '') {
-    reply();
   }
 })
 // who is logged in
