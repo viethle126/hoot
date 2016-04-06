@@ -105,6 +105,35 @@ function addTrend(data, size) {
   link.setAttribute('data-trend', data.name);
   trending.appendChild(link);
 }
+// request recommended
+function wantRecommended() {
+  var data = { user: me }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    //do something
+  })
+}
+// append recommended to recommended list
+function addRecommended(user) {
+  var list = document.getElementById('recommended');
+  var item = elemClass('div', 'item');
+  var image = elemClass('img', 'ui avatar image');
+  var content = elemClass('div', 'content');
+  var header = elemClass('div', 'header');
+  var headerText = document.createTextNode('@' + user);
+
+  header.appendChild(headerText);
+  content.appendChild(header);
+  image.setAttribute('src', '/images/' + user + '.jpg');
+  item.setAttribute('data-handle', user);
+  item.appendChild(image);
+  item.appendChild(content);
+  list.appendChild(item);
+}
 // search header
 function showQuery(input) {
   var results = document.getElementById('search-results');
