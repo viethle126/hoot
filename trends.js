@@ -4,6 +4,7 @@ var token = process.env.TWITTER_ACCESS_TOKEN_KEY;
 var secret = process.env.TWITTER_ACCESS_TOKEN_SECRET;
 
 var _ = require('underscore');
+var random = require('./random');
 var OAuth = require('OAuth');
 var oauth = new OAuth.OAuth(
   'https://api.twitter.com/oauth/request_token',
@@ -73,10 +74,11 @@ trends.request = function() {
     );
   })
   promise.then(function(data) {
+    console.log('Request for trending data received: ' + Date.now());
     trends.raw = JSON.parse(data);
     trends.sort();
     trends.giveStats();
-    console.log('Request for trending data received: ' + Date.now());
+    random.begin(trends.stats);
   })
   .catch(function(error) {
     console.log(error);

@@ -8,10 +8,8 @@ var users = require('./users');
 var convo = require('./convo');
 var trends = require('./trends');
 var timestamp = require('./timestamp');
-var random = require('./random');
 // request trends, generate random hoots
 trends.request();
-random.begin(); // will move this into trends.js to incorporate trends later
 // add string to cookie
 function extendCookie(count, cookie) {
   var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
@@ -121,7 +119,7 @@ function parseUsers(input) {
 }
 // split search string into components
 function parseSearch(input) {
-  var string = input.split(/(@[a-z\d-]+)/);
+  var string = input.toLowerCase().split(/(@[a-z\d-]+)/);
   var stripped = []
   string.forEach(function(element, index, array) {
     if (element[0] === ' ' && element.search(/@([a-z\d-]+)/) === -1) {
@@ -152,11 +150,13 @@ function search(input, home) {
   })
   users.keys.forEach(function(element, index, array) {
     users[element].tweets.forEach(function(element, index, array) {
-      if (element.content.search(reg) !== -1) {
-        byString.push(element);
+      if (element.content.toLowerCase().search(reg) !== -1) {
+        byString.push(prepare(home, element));
       }
     })
   })
+  byUser = _.sortBy(byUser, 'sort').reverse();
+  byString = _.sortBy(byString, 'sort').reverse();
   return { byUser: byUser, byString: byString }
 }
 // check if users exist, return error if any fail
@@ -176,11 +176,6 @@ app.use(function(req, res, next) {
 })
 
 app.use(cookieParser());
-
-// for testing
-app.get('/trends', function(req, res) {
-  res.send(trends.stats);
-})
 
 app.get('/landing', function(req, res) {
   var payload = [];
@@ -237,6 +232,10 @@ app.post('/logout', function(req, res) {
   res.clearCookie('session');
   res.clearCookie('user');
   res.send();
+})
+
+app.get('/trends', function(req, res) {
+  res.send(trends.stats);
 })
 
 app.post('/search', jSonParser, function(req, res) {
@@ -311,7 +310,6 @@ app.post('/addHoot', jSonParser, function(req, res) {
     id: users.id,
     date: timestamp.civilian(),
     content: content,
-    tags: [],
     mentions: parseUsers(content),
     retweet: 'None'
   }
@@ -339,7 +337,6 @@ app.post('/addRehoot', jSonParser, function(req, res) {
     id: users.id,
     date: timestamp.civilian(),
     content: content,
-    tags: [],
     mentions: parseUsers(content),
     retweet: rehoot
   }
