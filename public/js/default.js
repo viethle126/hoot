@@ -109,12 +109,15 @@ function addTrend(data, size) {
 function wantRecommended() {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/', true);
+  xhr.open('POST', '/recommended', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    //do something
+    var users = JSON.parse(xhr.response).reverse();
+    for (var i = 0; i < 5; i++) {
+      addRecommended(users[i].handle);
+    }
   })
 }
 // append recommended to recommended list
@@ -1282,8 +1285,10 @@ window.onload = function() {
       document.getElementById('dropdown').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
       document.getElementById('trending').parentNode.classList.remove('hidden');
+      document.getElementById('recommended').parentNode.classList.remove('hidden');
       wantCard(me, 'card', me);
       wantTrends();
+      wantRecommended();
       goHome();
       return me;
     }

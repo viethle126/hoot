@@ -105,14 +105,14 @@ function countDupes(element, array, count) {
   if (array.indexOf(element) !== -1) {
     count++;
     array.splice(array.indexOf(element), 1);
-    countDupes(element, array, count);
+    return countDupes(element, array, count);
   } else {
     return count;
   }
 }
 // determine suggestion score
-function findAffinity(cycled, pushed) {
-  array.forEach(function(element, index, array) {
+function findAffinity(total, unique, sorted) {
+  unique.forEach(function(element, index, array) {
     var count = countDupes(element, total, 0);
     var user = {
       handle: element,
@@ -120,6 +120,7 @@ function findAffinity(cycled, pushed) {
     }
     sorted.push(user);
   })
+  return sorted;
 }
 // suggest users most commonly followed by your followers
 function suggest(who) {
@@ -128,13 +129,15 @@ function suggest(who) {
   var sorted = [];
   users[who].following.forEach(function(element, index, array) {
     users[element].following.forEach(function(element, index, array) {
-      whoTheyFollow.push(element);
+      if (element !== who) { total.push(element) }
       if (unique.indexOf(element) === -1) {
-        unique.push(element);
+        if (users[who].following.indexOf(element) === -1 && element !== who) {
+          unique.push(element);
+        }
       }
     })
   })
-  findAffinity(unique, sorted);
+  sorted = findAffinity(total, unique, sorted);
   sorted = _.sortBy(sorted, 'count');
   return sorted;
 }
@@ -274,6 +277,10 @@ app.post('/logout', function(req, res) {
 
 app.get('/trends', function(req, res) {
   res.send(trends.stats);
+})
+
+app.post('/recommended', jSonParser, function(req, res) {
+  res.send(suggest(req.body.user));
 })
 
 app.post('/search', jSonParser, function(req, res) {
@@ -461,6 +468,7 @@ app.post('/msgSend', jSonParser, function(req, res) {
 
 app.use(express.static('public'));
 
-app.listen(8080, function() {
-  console.log('Connect to the server on http://localhost:8080');
+var port = process.env.PORT || 1337;
+app.listen(port, function() {
+  console.log('Connect to the server on port ' + port);
 })
