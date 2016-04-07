@@ -7,42 +7,13 @@ var app = express();
 var users = require('./data/users');
 var convo = require('./data/convo');
 var trends = require('./data/trends');
+var parse = require('./data/utility/parse');
 var timestamp = require('./data/utility/timestamp');
+// routes
+var login = require('./routes/login');
 // request trends, generate random hoots
 trends.request();
-// add string to cookie
-function extendCookie(count, cookie) {
-  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
-  var pick = Math.floor(Math.random() * 60) + 1;
 
-  if (count > 0) {
-    cookie+= chars[pick];
-    count--;
-    return extendCookie(count, cookie);
-  } else {
-    return cookie;
-  }
-}
-// generate cookie value
-function makeCookie() {
-  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
-  var pick = Math.floor(Math.random() * 60) + 1;
-  var cookie = chars[pick];
-  cookie = extendCookie(40, cookie);
-  return cookie;
-}
-// log in
-function login(user, password) {
-  if (users[user]) {
-    if (users[user].password === password) {
-      return 200;
-    } else {
-      return 403;
-    }
-  } else {
-    return 403;
-  }
-}
 // check favorite
 function heart(home, hoot) {
   if (users[home].favorites.indexOf(hoot) !== -1) {
@@ -147,40 +118,12 @@ function pushMentions(mentions, hoot) {
     users[element].notifications.push(hoot);
   })
 }
-// split mentions into array
-function parseUsers(input) {
-  var array = input.split(/(@[a-z\d-]+)/)
-  var mentions = [];
-  array.forEach(function(element, index, array) {
-    if (element.search(/@([a-z\d-]+)/) === 0) {
-      mentions.push(element.slice(1));
-    }
-  })
-  return mentions;
-}
-// split search string into components
-function parseSearch(input) {
-  var string = input.toLowerCase().split(/(@[a-z\d-]+)/);
-  var stripped = []
-  string.forEach(function(element, index, array) {
-    if (element[0] === ' ' && element.search(/@([a-z\d-]+)/) === -1) {
-      stripped.push(element.slice(1))
-      return;
-    }
-    if (element.search(/@([a-z\d-]+)/) === -1) {
-      stripped.push(element);
-      return;
-    }
-  })
-  string = stripped.join('');
-  return string;
-}
 // search for tweets by string, user or hashtag(implement later)
 function search(input, home) {
   var byUser = [];
   var byString = [];
-  var handles = parseUsers(input);
-  var string = parseSearch(input);
+  var handles = parse.users(input);
+  var string = parse.string(input);
   if (string === '') { string = 'foobar' }
   var reg = new RegExp('(' + string + ')');
   handles.forEach(function(element, index, array) {
@@ -210,7 +153,7 @@ function check(who) {
   })
   return error;
 }
-// call next() if user is logged in
+// verify that user is logged in with a valid cookie
 function verify(req, res, next) {
   if (req.cookies.user) {
     var user = req.cookies.user;
@@ -218,10 +161,10 @@ function verify(req, res, next) {
     if (users[user].cookies.indexOf(cookie) !== -1) {
       next();
     } else {
-      res.sendStatus(401);
+      res.status(401);
     }
   } else {
-    res.sendStatus(401);
+    res.status(401);
   }
 }
 
@@ -232,8 +175,20 @@ app.use(function(req, res, next) {
 
 app.use(cookieParser());
 
-app.get('/status', verify, function(req, res) {
-  res.send();
+app.use('/login', login);
+
+app.get('/status', function(req, res) {
+  if (req.cookies.user) {
+    var user = req.cookies.user;
+    var cookie = req.cookies.session;
+    if (users[user].cookies.indexOf(cookie) !== -1) {
+      res.sendStatus(240);
+    } else {
+      res.sendStatus(200);
+    }
+  } else {
+    res.sendStatus(200);
+  }
 });
 
 app.get('/landing', function(req, res) {
@@ -256,27 +211,6 @@ app.get('/landing', function(req, res) {
   payload = _.sortBy(payload, 'sort').reverse();
   payload = payload.slice(0, 30);
   res.send(payload);
-})
-
-app.post('/login', jSonParser, function(req, res) {
-  var user = req.body.user;
-  var password = req.body.password;
-  if (login(user, password) === 200) {
-    var cookie = makeCookie();
-    users[user].cookies.push(cookie),
-    res.cookie('user', user);
-    res.cookie('session', cookie);
-    res.sendStatus(200);
-  }
-  if (login(user, password) === 401) {
-    res.sendStatus(401);
-  }
-})
-
-app.post('/logout', verify, function(req, res) {
-  res.clearCookie('session');
-  res.clearCookie('user');
-  res.send();
 })
 
 app.get('/trends', verify, function(req, res) {
@@ -359,7 +293,7 @@ app.post('/addHoot', verify, jSonParser, function(req, res) {
     id: users.id,
     date: timestamp.civilian(),
     content: content,
-    mentions: parseUsers(content),
+    mentions: parse.users(content),
     retweet: 'None'
   }
   pushMentions(hoot.mentions, hoot);
@@ -386,7 +320,7 @@ app.post('/addRehoot', verify, jSonParser, function(req, res) {
     id: users.id,
     date: timestamp.civilian(),
     content: content,
-    mentions: parseUsers(content),
+    mentions: parse.users(content),
     retweet: rehoot
   }
   pushMentions(hoot.mentions, hoot);

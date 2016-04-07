@@ -61,7 +61,7 @@ function login() {
 // logout
 function logout() {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/logout', true);
+  xhr.open('POST', '/login/logout', true);
   xhr.send();
 
   xhr.addEventListener('load', function() {
@@ -1175,7 +1175,7 @@ document.addEventListener('keydown', function(e) {
       search(document.getElementById('search-input').value);
       return;
     }
-    if (e.target.id === 'hoot-content' && e.target.value !== '') {
+    if (e.target.id === 'hoot-content' && e.target.value.replace(/[\n\s]/g, '') !== '') {
       if ($('#submit-rehoot').hasClass('hidden')) {
         tweet();
         return;
@@ -1228,11 +1228,11 @@ window.onload = function() {
   xhr.send();
 
   xhr.addEventListener('load', function() {
-    if (xhr.status === 401) {
+    if (xhr.status === 200) {
       wantLanding();
       return;
     }
-    if (xhr.status === 200) {
+    if (xhr.status === 240) {
       me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
       document.getElementById('dropdown').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
