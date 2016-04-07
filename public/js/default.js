@@ -1224,15 +1224,15 @@ document.addEventListener('scroll', onScroll);
 // on load: check for cookies
 window.onload = function() {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/check', true);
+  xhr.open('GET', '/status', true);
   xhr.send();
 
   xhr.addEventListener('load', function() {
-    if (xhr.status === 200) {
+    if (xhr.status === 401) {
       wantLanding();
       return;
     }
-    if (xhr.status === 240) {
+    if (xhr.status === 200) {
       me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
       document.getElementById('dropdown').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
