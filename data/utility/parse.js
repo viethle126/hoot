@@ -3,7 +3,7 @@ function parse(input) {
   function users(input) {
     var array = input.split(/(@[a-z\d-]+)/)
     var users = [];
-    split.forEach(function(element, index, array) {
+    array.forEach(function(element, index, array) {
       if (element.search(/@([a-z\d-]+)/) === 0) {
         users.push(element.slice(1));
       }

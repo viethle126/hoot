@@ -605,7 +605,7 @@ function checkFilter(convos, filter) {
 function wantConvos(filter) {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/msgList', true);
+  xhr.open('POST', 'messages/list', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -626,7 +626,7 @@ function wantConvos(filter) {
 function wantMessages(which) {
   var data = { id: which }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/msgGet', true);
+  xhr.open('POST', 'messages/get', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -653,7 +653,7 @@ function errorMessage() {
 function createConvo(users) {
   var data = { users: users }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/msgNew', true);
+  xhr.open('POST', 'messages/new', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -670,22 +670,21 @@ function createConvo(users) {
 function modifyConvo(who, which, type) {
   var data = { users: who, id: which }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/' + type, true);
+  xhr.open('POST', '/messages/' + type, true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    if (type === 'msgInvite' && xhr.status === 208) {
+    if (type === 'invite' && xhr.status === 208) {
       errorMessage();
     }
-    if (type === 'msgInvite'){
+    if (type === 'invite'){
       wantConvos();
       wantMessages(which);
     }
-    if (type === 'msgLeave') {
+    if (type === 'leave') {
       wantConvos();
       clearMessages();
-      inConvo('');
     }
   })
 }
@@ -697,7 +696,7 @@ function reply() {
     id: document.getElementById('msg-here').getAttribute('data-convo-id')
   }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/msgSend', true);
+  xhr.open('POST', 'messages/send', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -804,7 +803,12 @@ function clearFilter() {
   search.classList.remove('hidden');
 }
 // append list of users in conversation to header
-function inConvo(users) {
+function inConvo(id) {
+  var target = document.getElementById('msg-list').childNodes[1];
+  while (target.getAttribute('data-convo-id') !== id) {
+    target = target.nextSibling.nextSibling
+  }
+  var users = target.textContent;
   var header = document.getElementById('msg-header');
   var span = document.createElement('span');
   var user = document.createTextNode('In this thread: ' + users);
@@ -986,8 +990,8 @@ function goMessages() {
   viewing = 'msg-timeline';
 }
 // bubble up to find 'data-handle'
-function toData(target, attribute, altName) {
-  var data = altName || attribute;
+function toData(target, attribute) {
+  var data = attribute;
   while (!target.dataset[data]) {
     target = target.parentNode;
   }
@@ -1142,7 +1146,7 @@ document.addEventListener('click', function(e) {
     document.getElementById('msg-here').setAttribute('data-convo-id', id);
     document.getElementById('msg-here').classList.remove('hidden');
     convoReset();
-    inConvo(e.target.textContent);
+    inConvo(id);
     wantMessages(id);
     e.target.classList.add('active');
     return;
@@ -1155,7 +1159,7 @@ document.addEventListener('click', function(e) {
   }
   if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
     var id = document.getElementById('msg-here').getAttribute('data-convo-id');
-    modifyConvo(me, id, 'msgLeave');
+    modifyConvo(me, id, 'leave');
     show('msg-timeline');
     return;
   }
@@ -1205,7 +1209,7 @@ document.addEventListener('keydown', function(e) {
       var id = document.getElementById('msg-here').getAttribute('data-convo-id');
       var input = document.getElementById('msg-include').value;
       var parsed = parseUsers(input);
-      modifyConvo(parsed, id, 'msgInvite');
+      modifyConvo(parsed, id, 'invite');
       wantConvos();
       wantMessages(id);
       activeConvo(id);

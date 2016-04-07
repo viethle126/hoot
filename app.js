@@ -5,12 +5,13 @@ var _ = require('underscore');
 var app = express();
 // custom modules
 var users = require('./data/users');
-var convo = require('./data/convo');
+
 var trends = require('./data/trends');
 var parse = require('./data/utility/parse');
 var timestamp = require('./data/utility/timestamp');
 // routes
 var login = require('./routes/login');
+var messages = require('./routes/messages');
 // request trends, generate random hoots
 trends.request();
 
@@ -144,15 +145,7 @@ function search(input, home) {
   return { byUser: byUser, byString: byString }
 }
 // check if users exist, return error if any fail
-function check(who) {
-  var error = false;
-  who.forEach(function(element, index, array) {
-    if (users.check(element) === false) {
-      error = true;
-    }
-  })
-  return error;
-}
+
 // verify that user is logged in with a valid cookie
 function verify(req, res, next) {
   if (req.cookies.user) {
@@ -174,8 +167,8 @@ app.use(function(req, res, next) {
 })
 
 app.use(cookieParser());
-
 app.use('/login', login);
+app.use('/messages', messages);
 
 app.get('/status', function(req, res) {
   if (req.cookies.user) {
@@ -360,47 +353,6 @@ app.post('/removeFavorite', verify, jSonParser, function(req, res) {
       return;
     }
   })
-  res.send();
-})
-
-app.post('/msgNew', verify, jSonParser, function(req, res) {
-  if (check(req.body.users) === true) {
-    res.sendStatus(208);
-  } else {
-    convo.new(req.body.users);
-    var data = {
-      id: convo.id() - 1
-    }
-    res.send(data);
-  }
-})
-
-app.post('/msgInvite', verify, jSonParser, function(req, res) {
-  if (check(req.body.users) === true) {
-    res.sendStatus(208);
-  } else {
-    req.body.users.forEach(function(element, index, array) {
-      convo.invite(element, req.body.id);
-    })
-    res.send();
-  }
-})
-
-app.post('/msgLeave', verify, jSonParser, function(req, res) {
-  convo.leave(req.body.users, req.body.id);
-  res.send();
-})
-
-app.post('/msgList', verify, jSonParser, function(req, res) {
-  res.send(convo.list(req.body.user));
-})
-
-app.post('/msgGet', verify, jSonParser, function(req, res) {
-  res.send(convo.get(Number(req.body.id)));
-})
-
-app.post('/msgSend', verify, jSonParser, function(req, res) {
-  convo.send(req.body);
   res.send();
 })
 
