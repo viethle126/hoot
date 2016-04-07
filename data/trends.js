@@ -4,7 +4,7 @@ var token = process.env.TWITTER_ACCESS_TOKEN_KEY;
 var secret = process.env.TWITTER_ACCESS_TOKEN_SECRET;
 
 var _ = require('underscore');
-var random = require('./data/utility/random');
+var random = require('./utility/random');
 var OAuth = require('OAuth');
 var oauth = new OAuth.OAuth(
   'https://api.twitter.com/oauth/request_token',

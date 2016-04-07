@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var timestamp = require('./data/utility/timestamp');
+var timestamp = require('./utility/timestamp');
 // end modules
 var id = 0;
 var convo = [];
