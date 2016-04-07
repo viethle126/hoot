@@ -4,10 +4,10 @@ var cookieParser = require('cookie-parser');
 var _ = require('underscore');
 var app = express();
 // custom modules
-var users = require('./users');
-var convo = require('./convo');
-var trends = require('./trends');
-var timestamp = require('./timestamp');
+var users = require('./data/users');
+var convo = require('./data/convo');
+var trends = require('./data/trends');
+var timestamp = require('./data/utility/timestamp');
 // request trends, generate random hoots
 trends.request();
 // add string to cookie
@@ -210,6 +210,20 @@ function check(who) {
   })
   return error;
 }
+// call next() if user is logged in
+function verify(req, res, next) {
+  if (req.cookies.user) {
+    var user = req.cookies.user;
+    var cookie = req.cookies.session;
+    if (users[user].cookies.indexOf(cookie) !== -1) {
+      next();
+    } else {
+      res.sendStatus(401);
+    }
+  } else {
+    res.sendStatus(401);
+  }
+}
 
 app.use(function(req, res, next) {
   console.log(req.url);
@@ -217,6 +231,10 @@ app.use(function(req, res, next) {
 })
 
 app.use(cookieParser());
+
+app.get('/status', verify, function(req, res) {
+  res.send();
+});
 
 app.get('/landing', function(req, res) {
   var payload = [];
@@ -240,20 +258,6 @@ app.get('/landing', function(req, res) {
   res.send(payload);
 })
 
-app.get('/check', function(req, res) {
-  if (req.cookies.user) {
-    var user = req.cookies.user;
-    var cookie = req.cookies.session;
-    if (users[user].cookies.indexOf(cookie) !== -1) {
-      res.sendStatus(240);
-    } else {
-      res.sendStatus(200);
-    }
-  } else {
-    res.sendStatus(200);
-  }
-})
-
 app.post('/login', jSonParser, function(req, res) {
   var user = req.body.user;
   var password = req.body.password;
@@ -264,34 +268,34 @@ app.post('/login', jSonParser, function(req, res) {
     res.cookie('session', cookie);
     res.sendStatus(200);
   }
-  if (login(user, password) === 403) {
-    res.sendStatus(403);
+  if (login(user, password) === 401) {
+    res.sendStatus(401);
   }
 })
 
-app.post('/logout', function(req, res) {
+app.post('/logout', verify, function(req, res) {
   res.clearCookie('session');
   res.clearCookie('user');
   res.send();
 })
 
-app.get('/trends', function(req, res) {
+app.get('/trends', verify, function(req, res) {
   res.send(trends.stats);
 })
 
-app.post('/recommended', jSonParser, function(req, res) {
+app.post('/recommended', verify, jSonParser, function(req, res) {
   res.send(suggest(req.body.user));
 })
 
-app.post('/search', jSonParser, function(req, res) {
+app.post('/search', verify, jSonParser, function(req, res) {
   res.send(search(req.body.search, req.body.home));
 })
 
-app.post('/timeline', jSonParser, function(req, res) {
+app.post('/timeline', verify, jSonParser, function(req, res) {
   res.send(timeline(req.body.handle, req.body.home, req.body.type));
 })
 
-app.post('/card', jSonParser, function(req, res) {
+app.post('/card', verify, jSonParser, function(req, res) {
   var user = req.body.handle;
   var me = req.body.home;
   var youFollow = false;
@@ -308,7 +312,7 @@ app.post('/card', jSonParser, function(req, res) {
   res.send(data);
 })
 
-app.post('/follow', jSonParser, function(req, res) {
+app.post('/follow', verify, jSonParser, function(req, res) {
   var handle = req.body.handle;
   var me = req.body.home;
   users[me].following.push(handle);
@@ -316,7 +320,7 @@ app.post('/follow', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/unfollow', jSonParser, function(req, res) {
+app.post('/unfollow', verify, jSonParser, function(req, res) {
   var handle = req.body.handle;
   var me = req.body.home;
   users[me].following.splice(users[me].following.indexOf(handle), 1);
@@ -324,7 +328,7 @@ app.post('/unfollow', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/followers', jSonParser, function(req, res) {
+app.post('/followers', verify, jSonParser, function(req, res) {
   var user = req.body.me;
   var type = req.body.type;
   var youFollow = false;
@@ -345,7 +349,7 @@ app.post('/followers', jSonParser, function(req, res) {
   res.send(payload);
 })
 
-app.post('/addHoot', jSonParser, function(req, res) {
+app.post('/addHoot', verify, jSonParser, function(req, res) {
   users.id++
   var handle = req.body.handle;
   var content = req.body.content;
@@ -363,7 +367,7 @@ app.post('/addHoot', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/addRehoot', jSonParser, function(req, res) {
+app.post('/addRehoot', verify, jSonParser, function(req, res) {
   users.id++
   var rehoot = {};
   var rehootId = Number(req.body.rehootId);
@@ -390,7 +394,7 @@ app.post('/addRehoot', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/rehoot', jSonParser, function(req, res) {
+app.post('/rehoot', verify, jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   var payload = {};
@@ -400,7 +404,7 @@ app.post('/rehoot', jSonParser, function(req, res) {
   res.send(payload);
 })
 
-app.post('/addFavorite', jSonParser, function(req, res) {
+app.post('/addFavorite', verify, jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   var me = req.body.home;
@@ -413,7 +417,7 @@ app.post('/addFavorite', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/removeFavorite', jSonParser, function(req, res) {
+app.post('/removeFavorite', verify, jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   users[handle].favorites.forEach(function(element, index, array) {
@@ -425,7 +429,7 @@ app.post('/removeFavorite', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/msgNew', jSonParser, function(req, res) {
+app.post('/msgNew', verify, jSonParser, function(req, res) {
   if (check(req.body.users) === true) {
     res.sendStatus(208);
   } else {
@@ -437,7 +441,7 @@ app.post('/msgNew', jSonParser, function(req, res) {
   }
 })
 
-app.post('/msgInvite', jSonParser, function(req, res) {
+app.post('/msgInvite', verify, jSonParser, function(req, res) {
   if (check(req.body.users) === true) {
     res.sendStatus(208);
   } else {
@@ -448,20 +452,20 @@ app.post('/msgInvite', jSonParser, function(req, res) {
   }
 })
 
-app.post('/msgLeave', jSonParser, function(req, res) {
+app.post('/msgLeave', verify, jSonParser, function(req, res) {
   convo.leave(req.body.users, req.body.id);
   res.send();
 })
 
-app.post('/msgList', jSonParser, function(req, res) {
+app.post('/msgList', verify, jSonParser, function(req, res) {
   res.send(convo.list(req.body.user));
 })
 
-app.post('/msgGet', jSonParser, function(req, res) {
+app.post('/msgGet', verify, jSonParser, function(req, res) {
   res.send(convo.get(Number(req.body.id)));
 })
 
-app.post('/msgSend', jSonParser, function(req, res) {
+app.post('/msgSend', verify, jSonParser, function(req, res) {
   convo.send(req.body);
   res.send();
 })
