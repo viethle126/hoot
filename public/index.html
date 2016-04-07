@@ -21,10 +21,9 @@
   <!-- top banner  -->
   <div id="masthead">
     <div class="ui container">
-      <a class="ui left floated inverted button hidden" id="logout">Log out</a>
-      <a class="ui left floated inverted button hidden">Sign up</a>
-      <div class="ui floating inverted dropdown button" id="dropdown">
-        <span class="text">Login</span>
+      <div class="ui basic inverted dropdown button" id="dropdown">
+        <i class="lock icon"></i>
+        <span class="text">Log in</span>
         <div class="menu">
           <div class="header">Username</div>
           <div class="ui left input">
@@ -65,6 +64,9 @@
       <a class="item" id="messages" data-active="false">
         <i class="mail icon"></i>Messages
       </a>
+      <a class="item hidden" id="logout" data-active="false">
+        <i class="rocket icon"></i>Log out
+      </a>
       <div class="wider right item">
         <div class="ui icon input">
           <input class="prompt" type="text" placeholder="search..." id="search-input">
@@ -84,10 +86,10 @@
     <!-- left container  -->
     <div class="four wide column">
       <!-- your card -->
-      <div class="ui card hidden" id="card" data-card-handle="none">
+      <div class="ui card hidden" id="card">
       </div>
       <!-- other card -->
-      <div class="ui card hidden" id="visit-card" data-card-handle="none">
+      <div class="ui card hidden" id="visit-card">
       </div>
       <!-- trending -->
       <div class="ui segment hidden">

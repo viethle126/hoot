@@ -54,7 +54,7 @@ function login() {
       document.getElementById('fail').classList.remove('hidden');
       setTimeout(function() {
         document.getElementById('fail').classList.add('hidden');
-      }, 3000)
+      }, 4000)
     }
   })
 }
@@ -143,10 +143,8 @@ function addRecommended(user) {
 }
 // search header
 function showHeader(what, where) {
-  console.log(what);
-  console.log(where);
   var location = document.getElementById(where);
-  var message = elemClass('h1', 'ui header');
+  var message = elemClass('h3', 'ui header');
   var header = elemClass('div', 'header');
   var headerText = document.createTextNode(what);
   header.appendChild(headerText);
@@ -320,7 +318,6 @@ function addNote(data) {
   container.setAttribute('id', 'note');
   addTweet(data, 'note');
   container.removeAttribute('id');
-  //if (data.retweet !== 'None') { timeline.removeChild(container) }
 }
 // add compact tweets
 function addSmall(data) {
@@ -369,13 +366,13 @@ function wantLine(user, where, homeuser, type) {
   xhr.send(JSON.stringify(data));
 
   xhr.addEventListener('load', function() {
-    if (where === 'note-timeline') {
-      showHeader('Notifications:', 'note-timeline');
-    }
-    if (where === 'fav-timeline') {
-      showHeader('Favorites:', 'fav-timeline');
-    }
     var tweets = JSON.parse(xhr.responseText).reverse();
+    if (tweets.length === 0 && where === 'note-timeline') {
+      showHeader('You have no notifications', 'note-timeline');
+    }
+    if (tweets.length === 0 && where === 'fav-timeline') {
+      showHeader('You have no favorites', 'fav-timeline');
+    }
     remainingLine = tweets.slice(20);
     var displayed = tweets.length;
     if (displayed > 20) { displayed = 20 } // show up to 20
@@ -400,7 +397,7 @@ function card(data, where) {
   var handleSpan = elemClass('span', 'date');
   var handleText = document.createTextNode('@' + data.handle);
   var breakOne = document.createElement('br');
-  var countSpan = elemClass('span', 'date');
+  var countSpan = elemClass('a', 'date');
   var write = elemClass('i', 'edit icon icon');
   var writeText = document.createTextNode(data.tweets + ' Hoots');
   var breakTwo = document.createElement('br');
@@ -422,10 +419,6 @@ function card(data, where) {
   var follower = elemClass('i', 'users icon');
   var followerText = document.createTextNode(data.followers);
 
-  if (data.handle === me) {
-    countSpan = elemClass('a', 'date');
-    countSpan.setAttribute('data-hoots', true);
-  }
   followingLink.setAttribute('data-go', 'following');
   followingLink.appendChild(following);
   followingLink.appendChild(followingText)
@@ -441,14 +434,15 @@ function card(data, where) {
   unfollow.setAttribute('data-follow-text', 'Unfollow'); // use later
   segment.appendChild(follow);
   segment.appendChild(unfollow);
-  if (data.handle !== data.me) { desc.appendChild(segment) }
+  if (data.handle !== me) { desc.appendChild(segment) }
   handleSpan.appendChild(handleText);
+  countSpan.setAttribute('data-hoots', true);
   countSpan.appendChild(write);
   countSpan.appendChild(writeText);
   meta.appendChild(handleSpan);
   meta.appendChild(breakOne);
   meta.appendChild(countSpan);
-  if (data.handle !== data.me) {
+  if (data.handle !== me) {
     msgLink.setAttribute('data-send-msg', true);
     msgLink.appendChild(msg);
     msgLink.appendChild(msgText);
@@ -465,7 +459,8 @@ function card(data, where) {
   card.appendChild(content);
   card.appendChild(extra);
   card.setAttribute('data-handle', data.handle);
-  if (where === 'foobar') {
+
+  if (data.handle !== me) {
     image.setAttribute('data-visit', 1);
     header.setAttribute('data-visit', 1);
     handleSpan.setAttribute('data-visit', 1);
@@ -517,14 +512,10 @@ function follow(target) {
   if (!target.dataset.followText) {
     target = target.parentNode;
   }
+  var who = toData(target, 'handle');
   var action = target.dataset.followText.toLowerCase();
-  var who = target.parentNode;
   var follow = target.parentNode.childNodes[0];
   var unfollow = target.parentNode.childNodes[1];
-  while (!who.dataset.handle) {
-    who = who.parentNode;
-  }
-  who = who.getAttribute('data-handle');
   var data = { handle: who, home: me }
 
   var xhr = new XMLHttpRequest();
@@ -577,6 +568,9 @@ function favorite(target, remove) {
   xhr.addEventListener('load', function() {
     if (viewing === 'fav-timeline') {
       document.getElementById('fav-timeline').removeChild(item);
+      if (document.getElementById('fav-timeline').childNodes.length === 0) {
+        showHeader('You have no favorites', 'fav-timeline');
+      }
     }
     if (type === 'addFavorite') {
       heart.setAttribute('class', 'heart icon');
@@ -608,7 +602,7 @@ function checkFilter(convos, filter) {
   return convos;
 }
 // request list of conversations
-function wantList(filter) {
+function wantConvos(filter) {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/msgList', true);
@@ -668,7 +662,7 @@ function createConvo(users) {
       errorMessage();
     } else {
       var id = JSON.parse(xhr.responseText).id
-      wantList()
+      wantConvos()
     }
   })
 }
@@ -685,11 +679,11 @@ function modifyConvo(who, which, type) {
       errorMessage();
     }
     if (type === 'msgInvite'){
-      wantList();
+      wantConvos();
       wantMessages(which);
     }
     if (type === 'msgLeave') {
-      wantList();
+      wantConvos();
       clearMessages();
       inConvo('');
     }
@@ -745,7 +739,7 @@ function convoReset() {
   }
 }
 // set convo active state
-function activateConvo(id) {
+function activeConvo(id) {
   var conversations = document.getElementById('msg-list');
   var nodes = conversations.childNodes;
   for (var i = 0; i < nodes.length; i++) {
@@ -831,7 +825,7 @@ function resetMenu() {
   })
 }
 // set menu active state
-function activate(item) {
+function activeMenu(item) {
   document.getElementById(item).setAttribute('data-active', 'true');
   document.getElementById(item).classList.add('active');
 }
@@ -918,22 +912,17 @@ function showCard(element) {
 }
 // navigate to following/followers
 function goFollowers(target, card) {
-  var target = target;
-  if (!target.dataset.go) {
-    target = target.parentNode;
-  }
-  var type = target.dataset.go
-  var who = target;
-  while (!who.dataset.handle) {
-    who = who.parentNode;
-  }
+  var type = toData(target, 'go');
+  var who = toData(target, 'handle');
   resetMenu();
   show('following');
   if (card === 'visit-card') {
-    wantCard(who.dataset.handle, 'visit-card', me);
+    if (document.getElementById('visit-card').getAttribute('data-handle') !== who) {
+      wantCard(who, 'visit-card', me);
+    }
   }
   showCard(card);
-  wantFollowers(who.dataset.handle, 'following', type)
+  wantFollowers(who, 'following', type)
 }
 // navigate to your hoots
 function goHoots(who) {
@@ -947,11 +936,12 @@ function goHoots(who) {
   show(where);
   showCard(card);
   wantLine(who, 'your-hoots', who, 'tweets');
+  viewing = 'your-hoots'
 }
 // navigate home
 function goHome() {
   resetMenu();
-  activate('home');
+  activeMenu('home');
   show('your-timeline');
   showCard('card');
   wantLine(me, 'your-timeline', me, 'home');
@@ -962,14 +952,16 @@ function goVisit(who) {
   resetMenu();
   show('visit-timeline');
   showCard('visit-card');
-  wantCard(who, 'visit-card', me);
+  if (document.getElementById('visit-card').getAttribute('data-handle') !== who) {
+    wantCard(who, 'visit-card', me);
+  }
   wantLine(who, 'visit-timeline', me, 'tweets');
   viewing = 'visit-timeline';
 }
 // navigate to notifications
 function goNotifications() {
   resetMenu();
-  activate('notifications');
+  activeMenu('notifications');
   show('note-timeline');
   showCard('card');
   wantLine(me, 'note-timeline', me, 'notifications');
@@ -978,7 +970,7 @@ function goNotifications() {
 // navigate to favorites
 function goFavorites() {
   resetMenu();
-  activate('favorites');
+  activeMenu('favorites');
   show('fav-timeline');
   showCard('card');
   wantLine('favorites', 'fav-timeline', me, 'favorites');
@@ -987,15 +979,16 @@ function goFavorites() {
 // navigate to favorites
 function goMessages() {
   resetMenu();
-  activate('messages');
+  activeMenu('messages');
   show('msg-timeline');
   showCard('card');
-  wantList();
+  wantConvos();
   viewing = 'msg-timeline';
 }
-// bubble up to 'data-card-handle'
-function toData(target, attribute) {
-  while (!target.dataset[attribute]) {
+// bubble up to find 'data-handle'
+function toData(target, attribute, altName) {
+  var data = altName || attribute;
+  while (!target.dataset[data]) {
     target = target.parentNode;
   }
   return target.getAttribute('data-' + attribute);
@@ -1007,26 +1000,28 @@ function onScroll() {
   var max = $(document).height() - $(window).height();
   var current = window.scrollY;
 
-  if (bottomY < 200 && showScroll === false) {
-    showScroll = true;
-    document.getElementById('top').classList.remove('hidden');
-  }
-  if (bottomY > 200 && showScroll === true) {
-    showScroll = false;
-    document.getElementById('top').classList.add('hidden');
-  }
-  if (current > max * .9 && viewing !== 'msg-timeline') {
-    var displayed = remainingLine.length;
-    if (displayed > 20) { displayed = 20 } // show up to 20 more
-    for (var i = 0; i < displayed; i++) {
-      if (viewing !== 'note-timeline') {
-        addTweet(remainingLine[i], viewing)
-      } else {
-        addNote(remainingLine[i])
-      }
+  if (me !== false) {
+    if (bottomY < 200 && showScroll === false) {
+      showScroll = true;
+      document.getElementById('top').classList.remove('hidden');
     }
-    remainingLine = remainingLine.slice(20);
-    return
+    if (bottomY > 200 && showScroll === true) {
+      showScroll = false;
+      document.getElementById('top').classList.add('hidden');
+    }
+    if (current > max * .9 && viewing !== 'msg-timeline') {
+      var displayed = remainingLine.length;
+      if (displayed > 20) { displayed = 20 } // show up to 20 more
+      for (var i = 0; i < displayed; i++) {
+        if (viewing !== 'note-timeline') {
+          addTweet(remainingLine[i], viewing)
+        } else {
+          addNote(remainingLine[i])
+        }
+      }
+      remainingLine = remainingLine.slice(20);
+      return
+    }
   }
 }
 // event listener: menu
@@ -1155,7 +1150,7 @@ document.addEventListener('click', function(e) {
   if (e.target.id === 'msg-filter' || e.target.parentNode.id === 'msg-filter') {
     document.getElementById('msg-search').value = '';
     clearFilter();
-    wantList();
+    wantConvos();
     return;
   }
   if (e.target.id === 'msg-leave' || e.target.parentNode.id === 'msg-leave') {
@@ -1194,7 +1189,7 @@ document.addEventListener('keydown', function(e) {
       var input = document.getElementById('msg-search').value;
       var parsed = parseUsers(input);
       addFilter(input);
-      wantList(parsed);
+      wantConvos(parsed);
       return;
     }
     if (e.target.id === 'msg-new' && e.target.value !== '') {
@@ -1211,9 +1206,9 @@ document.addEventListener('keydown', function(e) {
       var input = document.getElementById('msg-include').value;
       var parsed = parseUsers(input);
       modifyConvo(parsed, id, 'msgInvite');
-      wantList();
+      wantConvos();
       wantMessages(id);
-      activateConvo(id);
+      activeConvo(id);
       document.getElementById('msg-include').value = '';
       $('body').trigger('click');
       return;
