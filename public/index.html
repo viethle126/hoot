@@ -22,7 +22,7 @@
   <div id="masthead">
     <div class="ui container">
       <div class="ui basic inverted dropdown button" id="dropdown">
-        <i class="lock icon"></i>
+        <i class="sign in icon"></i>
         <span class="text">Log in</span>
         <div class="menu">
           <div class="header">Username</div>
@@ -39,6 +39,33 @@
           <div class="ui left input">
             <span class="hidden" id="fail">
               Wrong ID/password
+            </span>
+          </div>
+          <span class="item hidden"></span>
+        </div>
+      </div>
+      <div class="ui basic inverted dropdown button" id="signup">
+        <i class="world icon"></i>
+        <span class="text">Sign up</span>
+        <div class="menu">
+          <div class="header">Full name</div>
+          <div class="ui left input">
+            <input type="text" id="regfull">
+          </div>
+          <div class="header">Username</div>
+          <div class="ui left input">
+            <input type="text" id="regname">
+          </div>
+          <div class="header">Password</div>
+          <div class="ui left input">
+            <input type="password" id="regpass">
+          </div>
+          <div class="ui left input">
+            <button class="ui basic violet button" type="submit" id="regbutton">Sign up</button>
+          </div>
+          <div class="ui left input">
+            <span class="hidden" id="taken">
+              Invalid or name is taken
             </span>
           </div>
           <span class="item hidden"></span>
