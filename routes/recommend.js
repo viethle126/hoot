@@ -20,6 +20,9 @@ function recommend(who) {
       }
     })
   })
+  if (unique.length === 0) {
+    unique = random(unique);
+  }
   sorted = findAffinity(total, unique, sorted);
   sorted = _.sortBy(sorted, 'count');
   return sorted;
@@ -45,6 +48,13 @@ function countDupes(element, array, count) {
   } else {
     return count;
   }
+}
+// suggest random users if user isn't following anyone
+function random(unique) {
+  unique.push(users.keys[Math.floor(Math.random() * users.keys.length)]);
+  unique.push(users.keys[Math.floor(Math.random() * users.keys.length)]);
+  unique.push(users.keys[Math.floor(Math.random() * users.keys.length)]);
+  return unique;
 }
 
 router.post('/', jSonParser, function(req, res) {

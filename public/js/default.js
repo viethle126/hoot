@@ -387,11 +387,14 @@ function wantLine(user, where, homeuser, type) {
 
   xhr.addEventListener('load', function() {
     var tweets = JSON.parse(xhr.responseText).reverse();
-    if (tweets.length === 0 && where === 'note-timeline') {
-      addHeader('You have no notifications', 'note-timeline');
-    }
-    if (tweets.length === 0 && where === 'fav-timeline') {
-      addHeader('You have no favorites', 'fav-timeline');
+    if (tweets.length === 0) {
+      if (where === 'note-timeline') {
+        addHeader('You have no notifications', 'note-timeline');
+      } else if (where === 'fav-timeline') {
+        addHeader('You have no favorites', 'fav-timeline');
+      } else {
+        addHeader('You have no hoots to show', where);
+      }
     }
     remainingLine = tweets.slice(20);
     var displayed = tweets.length;
