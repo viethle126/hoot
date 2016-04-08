@@ -127,6 +127,31 @@ function clearAlerts() {
     alert(count);
   })
 }
+// request alerts after five minutes if user is still active
+(function alarm() {
+  var active = false;
+  document.onmousemove = function() {
+    if (active === false) {
+      active = true;
+      return active;
+    }
+  }
+  document.onkeypress = function() {
+    if (active === false) {
+      active = true;
+      return active;
+    }
+  }
+  setTimeout(function() {
+    if (active === true) {
+      wantAlerts();
+      alarm();
+      return;
+    } else {
+      return;
+    }
+  }, 300000);
+})()
 // XHR: request trends
 function wantTrends() {
   var xhr = new XMLHttpRequest();
