@@ -6,6 +6,7 @@ var users = require('./data/users');
 // routes
 var landing = require('./routes/landing');
 var login = require('./routes/login');
+var alerts = require('./routes/alerts');
 var card = require('./routes/card');
 var timeline = require('./routes/timeline');
 var tweets = require('./routes/tweets');
@@ -36,6 +37,7 @@ app.use(function(req, res, next) {
 app.use(cookieParser());
 app.use('/landing', landing);
 app.use('/login', login);
+app.use('/alerts', verify, alerts);
 app.use('/card', verify, card);
 app.use('/timeline', verify, timeline);
 app.use('/tweets', verify, tweets);
