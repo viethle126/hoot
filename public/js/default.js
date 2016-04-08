@@ -114,6 +114,19 @@ function wantAlerts() {
     alert(count);
   })
 }
+// XHR: clear alerts
+function clearAlerts() {
+  var data = { user: me }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/alerts/clear', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    var count = JSON.parse(xhr.response).alerts;
+    alert(count);
+  })
+}
 // XHR: request trends
 function wantTrends() {
   var xhr = new XMLHttpRequest();
@@ -1114,6 +1127,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
   }
   if (what.id === 'notifications' && what.getAttribute('data-active') === 'false') {
     goNotifications();
+    clearAlerts();
     return;
   }
   if (what.id === 'favorites' && what.getAttribute('data-active') === 'false') {

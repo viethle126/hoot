@@ -10,6 +10,7 @@ function addMentions(mentions, tweet) {
   mentions.forEach(function(element, index, array) {
     if (users.check(element) === true) {
       users[element].notifications.push(tweet);
+      users[element].alerts++
     }
   })
 }

@@ -12,4 +12,13 @@ router.post('/', jSonParser, function(req, res) {
   res.send(data);
 })
 
+router.post('/clear', jSonParser, function(req, res) {
+  var user = req.body.user;
+  users[user].alerts = 0;
+  var data = {
+    alerts: users[user].alerts
+  }
+  res.send(data);
+})
+
 module.exports = router;
