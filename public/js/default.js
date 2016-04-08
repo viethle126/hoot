@@ -1,15 +1,16 @@
+// make element with attribute
 function elemAttribute(elem, name, value) {
   var element = document.createElement(elem);
   element.setAttribute(name, value);
   return element;
 }
-
+// make element with classes
 function elemClass(elem, classes) {
   var element = document.createElement(elem);
   element.className = classes;
   return element;
 }
-// parse handles into array
+// : parse handles into array
 function parseUsers(input) {
   var array = input.split(/(@[a-z\d-]+)/)
   var users = [];
@@ -20,23 +21,19 @@ function parseUsers(input) {
   })
   return users;
 }
-// clear child elements
-function remove(element, count) {
+// remove child nodes
+function clear(id, count) {
+  var element = document.getElementById(id);
+  var count = count || element.childNodes.length;
   if (count > 0) {
     count--;
     element.childNodes[0].remove();
-    remove(element, count);
+    clear(id, count);
   } else {
     return;
   }
 }
-// determine how many child elements to remove
-function clear(id) {
-  var element = document.getElementById(id);
-  var count = element.childNodes.length;
-  remove(element, count);
-}
-// login
+// XHR: login
 function login() {
   var data = {
     user: document.getElementById('username').value,
@@ -58,7 +55,7 @@ function login() {
     }
   })
 }
-// logout
+// XHR: logout
 function logout() {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/login/logout', true);
@@ -68,7 +65,7 @@ function logout() {
     document.location.reload(true);
   })
 }
-// request trends
+// XHR: request trends
 function wantTrends() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/trends', true);
@@ -82,18 +79,6 @@ function wantTrends() {
     }
   })
 }
-// determine header size
-function trendSize(data) {
-  if (data.percent > 15) {
-    return 'h2';
-  } else if (data.percent > 10) {
-    return 'h3';
-  } else if (data.percent > 5) {
-    return 'h4';
-  } else {
-    return 'h5';
-  }
-}
 // append trend to trending list
 function addTrend(data, size) {
   var trending = document.getElementById('trending');
@@ -105,7 +90,19 @@ function addTrend(data, size) {
   link.setAttribute('data-trend', data.name);
   trending.appendChild(link);
 }
-// request recommended
+// set trend text size based on percentage
+function trendSize(data) {
+  if (data.percent > 15) {
+    return 'h2';
+  } else if (data.percent > 10) {
+    return 'h3';
+  } else if (data.percent > 5) {
+    return 'h4';
+  } else {
+    return 'h5';
+  }
+}
+// XHR: request recommended
 function wantRecommended() {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
@@ -141,8 +138,8 @@ function addRecommended(user) {
   item.appendChild(content);
   list.appendChild(item);
 }
-// search header
-function showHeader(what, where) {
+// append header
+function addHeader(what, where) {
   var location = document.getElementById(where);
   var message = elemClass('h3', 'ui header');
   var header = elemClass('div', 'header');
@@ -151,7 +148,7 @@ function showHeader(what, where) {
   message.appendChild(header);
   location.appendChild(message);
 }
-// search
+// XHR: submit search
 function search(input) {
   var data = { search: input, home: me }
   var xhr = new XMLHttpRequest();
@@ -165,7 +162,7 @@ function search(input) {
     clear('search-results');
     show('search-results');
     showCard('card');
-    showHeader('Showing search results for: ' + input, 'search-results');
+    addHeader('Showing search results for: ' + input, 'search-results');
 
     var payload = JSON.parse(xhr.responseText);
     payload.byUser.forEach(function(element, index, array) {
@@ -176,7 +173,7 @@ function search(input) {
     })
   })
 }
-// submit tweet
+// XHR: submit tweet
 function tweet() {
   var data = {
     content: document.getElementById('hoot-content').value,
@@ -192,7 +189,7 @@ function tweet() {
     toggle('success');
   })
 }
-// submit retweet
+// XHR: submit retweet
 function retweet() {
   var item = document.getElementById('rehoot-here').childNodes[0];
   var data = {
@@ -212,7 +209,32 @@ function retweet() {
     toggle('success');
   })
 }
-// add tweet to timeline
+// XHR: request retweet data
+function wantRetweet(target) {
+  toggle('rehoot');
+  var item = target.parentNode;
+  while (!item.dataset.handle) {
+    item = item.parentNode;
+  }
+  var data = {
+    handle: item.getAttribute('data-handle'),
+    id: item.getAttribute('data-hoot-id')
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'tweets/getRetweet', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    var payload = JSON.parse(xhr.responseText);
+    var stacked = document.getElementById('rehoot-here');
+    while (stacked.hasChildNodes()) {
+      stacked.removeChild(stacked.firstChild);
+    }
+    addTweet(payload, 'rehoot-here');
+  })
+}
+// append tweet to timeline
 function addTweet(data, where) {
   var timeline = document.getElementById(where);
   var item = elemClass('div', 'item');
@@ -275,51 +297,7 @@ function addTweet(data, where) {
     content.removeChild(extra);
   }
 }
-// request retweet data
-function wantRetweet(target) {
-  toggle('rehoot');
-  var item = target.parentNode;
-  while (!item.dataset.handle) {
-    item = item.parentNode;
-  }
-  var data = {
-    handle: item.getAttribute('data-handle'),
-    id: item.getAttribute('data-hoot-id')
-  }
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'tweets/getRetweet', true);
-  xhr.setRequestHeader('Content-type', 'application/json');
-  xhr.send(JSON.stringify(data));
-
-  xhr.addEventListener('load', function() {
-    var payload = JSON.parse(xhr.responseText);
-    var stacked = document.getElementById('rehoot-here');
-    while (stacked.hasChildNodes()) {
-      stacked.removeChild(stacked.firstChild);
-    }
-    addTweet(payload, 'rehoot-here');
-  })
-}
-// add notes to timeline
-function addNote(data) {
-  var timeline = document.getElementById('note-timeline');
-  var container = elemClass('div', 'ui raised segment items');
-  var message = elemClass('div', 'ui compact floating violet message');
-  var icon = elemClass('i', 'twitch icon');
-  var content = elemClass('div', 'content');
-  var span = document.createElement('span');
-  var spanText = document.createTextNode(data.name + ' (@' + data.handle + ') mentioned you in a hoot:')
-  span.appendChild(spanText);
-  content.appendChild(icon);
-  content.appendChild(span);
-  message.appendChild(content);
-  container.appendChild(message);
-  timeline.appendChild(container);
-  container.setAttribute('id', 'note');
-  addTweet(data, 'note');
-  container.removeAttribute('id');
-}
-// add compact tweets
+// append compact tweets (landing)
 function addSmall(data) {
   var landing = document.getElementById('landing');
   var card = elemClass('div', 'card');
@@ -343,7 +321,26 @@ function addSmall(data) {
   card.appendChild(content);
   landing.appendChild(card);
 }
-// request landing page
+// append notifications to timeline
+function addNote(data) {
+  var timeline = document.getElementById('note-timeline');
+  var container = elemClass('div', 'ui raised segment items');
+  var message = elemClass('div', 'ui compact floating violet message');
+  var icon = elemClass('i', 'twitch icon');
+  var content = elemClass('div', 'content');
+  var span = document.createElement('span');
+  var spanText = document.createTextNode(data.name + ' (@' + data.handle + ') mentioned you in a hoot:')
+  span.appendChild(spanText);
+  content.appendChild(icon);
+  content.appendChild(span);
+  message.appendChild(content);
+  container.appendChild(message);
+  timeline.appendChild(container);
+  container.setAttribute('id', 'note');
+  addTweet(data, 'note');
+  container.removeAttribute('id');
+}
+// XHR: request landing page
 function wantLanding() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/landing', true);
@@ -356,7 +353,7 @@ function wantLanding() {
     })
   })
 }
-// request timeline
+// XHR: request timeline
 function wantLine(user, where, homeuser, type) {
   clear(where);
   var data = { handle: user, home: homeuser, type: type }
@@ -368,10 +365,10 @@ function wantLine(user, where, homeuser, type) {
   xhr.addEventListener('load', function() {
     var tweets = JSON.parse(xhr.responseText).reverse();
     if (tweets.length === 0 && where === 'note-timeline') {
-      showHeader('You have no notifications', 'note-timeline');
+      addHeader('You have no notifications', 'note-timeline');
     }
     if (tweets.length === 0 && where === 'fav-timeline') {
-      showHeader('You have no favorites', 'fav-timeline');
+      addHeader('You have no favorites', 'fav-timeline');
     }
     remainingLine = tweets.slice(20);
     var displayed = tweets.length;
@@ -385,11 +382,11 @@ function wantLine(user, where, homeuser, type) {
     }
   })
 }
-// create card
+// append card
 function card(data, where) {
   var card = document.getElementById(where);
   var imageDiv = elemClass('div', 'image');
-  var image = elemAttribute('img', 'src', 'images/' + data.handle + '.jpg');
+  var image = elemAttribute('img', 'src', data.image);
   var content = elemClass('div', 'content');
   var header = elemClass('div', 'header');
   var headerText = document.createTextNode(data.name);
@@ -472,7 +469,7 @@ function card(data, where) {
     unfollow.classList.add('hidden');
   }
 }
-// request card
+// XHR: request card
 function wantCard(user, where, me) {
   clear(where);
   var data = { handle: user, home: me }
@@ -486,7 +483,7 @@ function wantCard(user, where, me) {
     card(content, where);
   })
 }
-// request followers or following
+// XHR: request list of followers or following
 function wantFollowers(me, where, type) {
   clear(where);
   var data = { me: me, type: type }
@@ -506,7 +503,7 @@ function wantFollowers(me, where, type) {
     })
   })
 }
-// follow/unfollow users
+// XHR: submit follow/unfollow
 function follow(target) {
   var target = target;
   if (!target.dataset.followText) {
@@ -534,7 +531,7 @@ function follow(target) {
     wantCard(me, 'card', me)
   })
 }
-// add/remove favorites
+// XHR: add/remove favorites
 function favorite(target, remove) {
   var target = target;
   var heart = target;
@@ -569,7 +566,7 @@ function favorite(target, remove) {
     if (viewing === 'fav-timeline') {
       document.getElementById('fav-timeline').removeChild(item);
       if (document.getElementById('fav-timeline').childNodes.length === 0) {
-        showHeader('You have no favorites', 'fav-timeline');
+        addHeader('You have no favorites', 'fav-timeline');
       }
     }
     if (type === 'add') {
@@ -581,14 +578,14 @@ function favorite(target, remove) {
     }
   })
 }
-// remove me from list of users
+// : remove me from list of users
 function prepConvo(convos) {
   convos.forEach(function(element, index, array) {
     element.users.splice(element.users.indexOf(me), 1);
   })
   return convos;
 }
-// match filter criteria
+// : match convo user filter
 function checkFilter(convos, filter) {
   filter.forEach(function(element, index, array) {
     var checking = element;
@@ -601,7 +598,7 @@ function checkFilter(convos, filter) {
   })
   return convos;
 }
-// request list of conversations
+// XHR: request list of conversations
 function wantConvos(filter) {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
@@ -622,7 +619,7 @@ function wantConvos(filter) {
     })
   })
 }
-// request messages from a conversation
+// XHR: request messages from a conversation
 function wantMessages(which) {
   var data = { id: which }
   var xhr = new XMLHttpRequest();
@@ -640,7 +637,7 @@ function wantMessages(which) {
     inConvo(which);
   })
 }
-// create error message
+// append error message
 function errorMessage() {
   document.getElementById('msg-search').parentNode.parentNode.classList.add('hidden');
   document.getElementById('msg-filter').classList.add('hidden');
@@ -651,7 +648,7 @@ function errorMessage() {
     document.getElementById('msg-error').classList.add('hidden');
   }, 4000);
 }
-// create new conversation
+// XHR: submit new conversation
 function createConvo(users) {
   var data = { users: users }
   var xhr = new XMLHttpRequest();
@@ -668,7 +665,7 @@ function createConvo(users) {
     }
   })
 }
-// invite user to conversation or leave conversation
+// XHR: submit conversation modifications
 function modifyConvo(who, which, type) {
   var data = { users: who, id: which }
   var xhr = new XMLHttpRequest();
@@ -690,7 +687,7 @@ function modifyConvo(who, which, type) {
     }
   })
 }
-// send reply
+// XHR: submit reply
 function reply() {
   var data = {
     user: me,
@@ -776,7 +773,7 @@ function addMessage(data) {
   item.appendChild(content);
   messages.appendChild(item);
 }
-// remove message nodes
+// clear messages
 function clearMessages() {
   var messages = document.getElementById('msg-here');
   var nodes = messages.childNodes;
@@ -795,7 +792,7 @@ function addFilter(users) {
   filter.classList.remove('hidden');
   search.classList.add('hidden');
 }
-// remove filter node
+// clear filter
 function clearFilter() {
   var search = document.getElementById('msg-search').parentNode.parentNode;
   var filter = document.getElementById('msg-filter');
@@ -804,9 +801,8 @@ function clearFilter() {
   filter.classList.add('hidden');
   search.classList.remove('hidden');
 }
-// append list of users in conversation to header
+// append list of users in conversation
 function inConvo(id) {
-  console.log('testing');
   var target = document.getElementById('msg-list').childNodes[1];
   while (target.getAttribute('data-convo-id') !== id) {
     target = target.nextSibling.nextSibling
