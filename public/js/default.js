@@ -10,7 +10,7 @@ function elemClass(elem, classes) {
   element.className = classes;
   return element;
 }
-// : parse handles into array
+// parse handles into array
 function parseUsers(input) {
   var array = input.split(/(@[a-z\d-]+)/)
   var users = [];
@@ -20,6 +20,23 @@ function parseUsers(input) {
     }
   })
   return users;
+}
+// remove trends (to replace with links)
+function parseTrends(input) {
+  var array = input.split(/(#[a-z\d-]+)/);
+  var string = [];
+  array.forEach(function(element, index, array) {
+    if (element[0] === ' ' && element.search(/#([a-z\d-]+)/) === -1) {
+      string.push(element.slice(1))
+      return;
+    }
+    if (element.search(/#([a-z\d-]+)/) === -1) {
+      string.push(element);
+      return;
+    }
+  })
+  string = string.join('');
+  return string;
 }
 // remove child nodes
 function clear(id, count) {
@@ -604,14 +621,14 @@ function favorite(target, remove) {
     }
   })
 }
-// : remove me from list of users
+// remove me from list of users
 function prepConvo(convos) {
   convos.forEach(function(element, index, array) {
     element.users.splice(element.users.indexOf(me), 1);
   })
   return convos;
 }
-// : match convo user filter
+// match convo user filter
 function checkFilter(convos, filter) {
   filter.forEach(function(element, index, array) {
     var checking = element;

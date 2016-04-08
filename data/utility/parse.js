@@ -1,7 +1,7 @@
 function parse(input) {
   // extract users from a string into an array
   function users(input) {
-    var array = input.split(/(@[a-z\d-]+)/)
+    var array = input.split(/(@[a-z\d-]+)/);
     var users = [];
     array.forEach(function(element, index, array) {
       if (element.search(/@([a-z\d-]+)/) === 0) {
@@ -9,6 +9,17 @@ function parse(input) {
       }
     })
     return users;
+  }
+  // extract users from a string into an array
+  function trends(input) {
+    var array = input.split(/(#[a-z\d-]+)/);
+    var trends = [];
+    array.forEach(function(element, index, array) {
+      if (element.search(/#([a-z\d-]+)/) === 0) {
+        trends.push(element);
+      }
+    })
+    return trends;
   }
   // remove users from a string
   function string(input) {

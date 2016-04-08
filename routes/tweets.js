@@ -23,6 +23,7 @@ router.post('/addTweet', jSonParser, function(req, res) {
     date: timestamp.civilian(),
     content: content,
     mentions: parse.users(content),
+    tags: parse.trends(content),
     retweet: 'None'
   }
   addMentions(tweet.mentions, tweet);
@@ -50,6 +51,7 @@ router.post('/addRetweet', jSonParser, function(req, res) {
     date: timestamp.civilian(),
     content: content,
     mentions: parse.users(content),
+    tags: parse.trends(content),
     retweet: retweet
   }
   addMentions(tweet.mentions, tweet);
