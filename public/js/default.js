@@ -101,6 +101,19 @@ function signup() {
     }
   })
 }
+// XHR: request alerts
+function wantAlerts() {
+  var data = { user: me }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/alerts', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    var count = JSON.parse(xhr.response).alerts;
+    alert(count);
+  })
+}
 // XHR: request trends
 function wantTrends() {
   var xhr = new XMLHttpRequest();
@@ -415,7 +428,7 @@ function wantLine(user, where, homeuser, type) {
       } else if (where === 'fav-timeline') {
         addHeader('You have no favorites', 'fav-timeline');
       } else {
-        addHeader('You have no hoots to show', where);
+        addHeader('You have no hoots', where);
       }
     }
     remainingLine = tweets.slice(20);
@@ -428,6 +441,7 @@ function wantLine(user, where, homeuser, type) {
         addNote(tweets[i]);
       }
     }
+    wantAlerts();
   })
 }
 // append card
@@ -879,6 +893,15 @@ function resetMenu() {
 function activeMenu(item) {
   document.getElementById(item).setAttribute('data-active', 'true');
   document.getElementById(item).classList.add('active');
+}
+// set alert
+function alert(count) {
+  document.getElementById('alerts').textContent = count;
+  if (count > 0) {
+    document.getElementById('alerts').classList.add('violet');
+  } else {
+    document.getElementById('alerts').classList.remove('violet');
+  }
 }
 // set hoot form state
 function toggle(state) {

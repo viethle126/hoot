@@ -5,7 +5,7 @@ var jSonParser = require('body-parser').json();
 var users = require('../data/users');
 
 router.post('/', jSonParser, function(req, res) {
-  var user = req.body.user,
+  var user = req.body.user;
   var data = {
     alerts: users[user].alerts
   }
