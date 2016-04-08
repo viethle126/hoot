@@ -7,10 +7,14 @@ var parse = require('../data/utility/parse');
 var timestamp = require('../data/utility/timestamp');
 
 function addMentions(mentions, tweet) {
+  var unique = [];
   mentions.forEach(function(element, index, array) {
     if (users.check(element) === true) {
-      users[element].notifications.push(tweet);
-      users[element].alerts++
+      if (unique.indexOf(element) === -1) {
+        unique.push(element);
+        users[element].notifications.push(tweet);
+        users[element].alerts++
+      }
     }
   })
 }

@@ -1125,7 +1125,7 @@ document.getElementById('menu').addEventListener('click', function(e) {
     goHome();
     return;
   }
-  if (what.id === 'notifications' && what.getAttribute('data-active') === 'false') {
+  if (what.id === 'notifications') {
     goNotifications();
     clearAlerts();
     return;
