@@ -65,6 +65,29 @@ function logout() {
     document.location.reload(true);
   })
 }
+// XHR: sign up
+function signup() {
+  var data = {
+    full: document.getElementById('regfull').value,
+    user: document.getElementById('regname').value,
+    password: document.getElementById('regpass').value
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/login/signup', true);
+  xhr.setRequestHeader('Content-type', 'application/json');
+  xhr.send(JSON.stringify(data));
+
+  xhr.addEventListener('load', function() {
+    if (xhr.status === 200) {
+      document.location.reload(true)
+    } else {
+      document.getElementById('taken').classList.remove('hidden');
+      setTimeout(function() {
+        document.getElementById('taken').classList.add('hidden');
+      }, 4000)
+    }
+  })
+}
 // XHR: request trends
 function wantTrends() {
   var xhr = new XMLHttpRequest();
@@ -1079,6 +1102,10 @@ document.addEventListener('click', function(e) {
     logout();
     return;
   }
+  if (e.target.id === 'regbutton') {
+    signup();
+    return;
+  }
   // submitting hoots
   if (e.target.id === 'cancel-hoot') {
     toggle('close');
@@ -1174,6 +1201,10 @@ document.addEventListener('keydown', function(e) {
       login();
       return;
     }
+    if (e.target.id === 'regpass') {
+      signup();
+      return;
+    }
     if (e.target.id === 'search-input' && e.target.value !== '') {
       search(document.getElementById('search-input').value);
       return;
@@ -1237,6 +1268,7 @@ window.onload = function() {
     if (xhr.status === 240) {
       me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
       document.getElementById('dropdown').classList.add('hidden');
+      document.getElementById('signup').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
       document.getElementById('trending').parentNode.classList.remove('hidden');
       document.getElementById('recommended').parentNode.classList.remove('hidden');
