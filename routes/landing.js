@@ -15,6 +15,7 @@ router.get('/', function(req, res) {
           name: element.name,
           id: element.id,
           handle: element.handle,
+          image: users[element.handle].image,
           date: element.date,
           content: element.content,
           sort: fixed,
@@ -28,7 +29,7 @@ router.get('/', function(req, res) {
 })
 
 router.get('/status', function(req, res) {
-  if (req.cookies.user) {
+  if (req.cookies.user && users.keys.indexOf(req.cookies.user) !== -1) {
     var user = req.cookies.user;
     var cookie = req.cookies.session;
     if (users[user].cookies.indexOf(cookie) !== -1) {

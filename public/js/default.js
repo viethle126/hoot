@@ -262,7 +262,7 @@ function addTweet(data, where) {
   var timeline = document.getElementById(where);
   var item = elemClass('div', 'item');
   var imageDiv = elemClass('div', 'ui tiny image');
-  var image = elemAttribute('img', 'src', 'images/' + data.handle + '.jpg');
+  var image = elemAttribute('img', 'src', data.image);
   var content = elemClass('div', 'content');
   var header = elemClass('div', 'header');
   var headerText = document.createTextNode(data.name);
@@ -336,7 +336,7 @@ function addSmall(data) {
   desc.appendChild(descText);
   meta.appendChild(metaText);
   header.appendChild(headerText);
-  image.setAttribute('src', 'images/' + data.handle + '.jpg');
+  image.setAttribute('src', data.image);
   content.appendChild(image);
   content.appendChild(header);
   content.appendChild(meta);

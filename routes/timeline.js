@@ -48,6 +48,7 @@ function prepare(home, tweet) {
     name: tweet.name,
     id: tweet.id,
     handle: tweet.handle,
+    image: users[tweet.handle].image,
     date: tweet.date,
     content: tweet.content,
     sort: timestamp.military(tweet.date),

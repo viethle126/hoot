@@ -12,6 +12,7 @@ router.post('/', jSonParser, function(req, res) {
   var data = {
     name: users[user].name,
     handle: users[user].handle,
+    image: users[user].image,
     tweets: users[user].tweets.length,
     followers: users[user].followers.length,
     following: users[user].following.length,
