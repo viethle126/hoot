@@ -39,6 +39,29 @@ function login(user, password) {
   }
 }
 
+// sign up
+function signup(data) {
+  if (users.keys.indexOf(data.user) !== -1) {
+    return 422;
+  } else {
+    users[data.user] = {
+      password: data.password,
+      name: data.full,
+      handle: data.user,
+      image: 'images/default.jpg',
+      tweets: [],
+      followers: [],
+      following: [],
+      notifications: [],
+      favorites: [],
+      cookies: [],
+      alerts: 0
+    }
+    users.updateKeys();
+    return;
+  }
+}
+
 router.use(cookieParser());
 
 router.post('/', jSonParser, function(req, res) {
@@ -60,6 +83,15 @@ router.post('/logout', function(req, res) {
   res.clearCookie('session');
   res.clearCookie('user');
   res.send();
+})
+
+router.post('/signup', jSonParser, function(req, res) {
+  signup(req.body);
+  var cookie = makeCookie();
+  users[req.body.user].cookies.push(cookie);
+  res.cookie('user', req.body.user);
+  res.cookie('session', cookie);
+  res.sendStatus(200);
 })
 
 module.exports = router;
