@@ -114,6 +114,7 @@ function random() {
       date: date(),
       content: content(trend),
       mentions: [],
+      tags: [trend],
       retweet: 'None'
     })
     if (quantity > 0) {

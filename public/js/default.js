@@ -12,10 +12,10 @@ function elemClass(elem, classes) {
 }
 // parse handles into array
 function parseUsers(input) {
-  var array = input.split(/(@[a-z\d-]+)/)
+  var array = input.split(/(@[a-z\d-]+)/i)
   var users = [];
   array.forEach(function(element, index, array) {
-    if (element.search(/@([a-z\d-]+)/) === 0) {
+    if (element.search(/@([a-z\d-]+)/i) === 0) {
       users.push(element.slice(1));
     }
   })
@@ -23,14 +23,10 @@ function parseUsers(input) {
 }
 // remove trends (to replace with links)
 function parseTrends(input) {
-  var array = input.split(/(#[a-z\d-]+)/);
+  var array = input.split(/(#[a-z\d-]+)/i);
   var string = [];
   array.forEach(function(element, index, array) {
-    if (element[0] === ' ' && element.search(/#([a-z\d-]+)/) === -1) {
-      string.push(element.slice(1))
-      return;
-    }
-    if (element.search(/#([a-z\d-]+)/) === -1) {
+    if (element.search(/#([a-z\d-]+)/i) === -1) {
       string.push(element);
       return;
     }
@@ -288,7 +284,7 @@ function addTweet(data, where) {
   var spanText = document.createTextNode('@' + data.handle + ' - ' + data.date);
   var desc = elemClass('div', 'description');
   var para = document.createElement('p');
-  var paraText = document.createTextNode(data.content);
+  var paraText = document.createTextNode(parseTrends(data.content));
   var extra = elemClass('div', 'extra');
   var retweetLink = elemAttribute('a', 'data-retweet', 'false');
   var retweet = elemClass('i', 'retweet icon');
@@ -321,6 +317,15 @@ function addTweet(data, where) {
   item.setAttribute('data-handle', data.handle);
   timeline.appendChild(item);
 
+  data.tags.forEach(function(element, index, array) {
+    if (element[0] === '#') {
+      var tag = document.createElement('a');
+      var tagText = document.createTextNode(element);
+      tag.setAttribute('data-trend', element);
+      tag.appendChild(tagText);
+      para.appendChild(tag);
+    }
+  })
   if (data.retweet !== 'None') {
     var retweeted = document.createTextNode(data.name + ' rehoots:')
     var stacked = elemClass('div', 'ui raised stacked segment items');
@@ -1286,7 +1291,7 @@ window.onload = function() {
       return;
     }
     if (xhr.status === 240) {
-      me = /user=([a-z\d-]+)/.exec(document.cookie)[1];
+      me = /user=([a-z\d-]+)/i.exec(document.cookie)[1];
       document.getElementById('dropdown').classList.add('hidden');
       document.getElementById('signup').classList.add('hidden');
       document.getElementById('logout').classList.remove('hidden');
