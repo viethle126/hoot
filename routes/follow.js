@@ -15,6 +15,7 @@ router.post('/list', jSonParser, function(req, res) {
     payload.push({
       name: users[element].name,
       handle: users[element].handle,
+      image: users[element].image,
       tweets: users[element].tweets.length,
       followers: users[element].followers.length,
       following: users[element].following.length,

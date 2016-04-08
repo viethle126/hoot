@@ -8,7 +8,9 @@ var timestamp = require('../data/utility/timestamp');
 
 function addMentions(mentions, tweet) {
   mentions.forEach(function(element, index, array) {
-    users[element].notifications.push(tweet);
+    if (users.check(element) === true) {
+      users[element].notifications.push(tweet);
+    }
   })
 }
 
@@ -64,7 +66,18 @@ router.post('/getRetweet', jSonParser, function(req, res) {
   var id = Number(req.body.id);
   var payload = {};
   users[handle].tweets.forEach(function(element, index, array) {
-    if (element.id === id) { payload = element }
+    if (element.id === id) {
+      payload = {
+        name: element.name,
+        id: element.id,
+        handle: element.handle,
+        image: users[element.handle].image,
+        date: element.date,
+        content: element.content,
+        tags: element.tags,
+        retweet: 'None'
+      }
+    }
   })
   res.send(payload);
 })

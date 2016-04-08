@@ -167,8 +167,8 @@ function addRecommended(user) {
   header.setAttribute('data-visit', 1);
   header.appendChild(headerText);
   content.appendChild(header);
-  image.setAttribute('data-visit', 1);
   image.setAttribute('src', '/images/' + user + '.jpg');
+  item.setAttribute('data-visit', 1);
   item.setAttribute('data-handle', user);
   item.appendChild(image);
   item.appendChild(content);
@@ -1154,7 +1154,7 @@ document.addEventListener('click', function(e) {
     favorite(e.target);
     return;
   }
-  if (e.target.dataset.visit || e.target.dataset.visit) {
+  if (e.target.dataset.visit || e.target.parentNode.dataset.visit) {
     var who = toData(e.target, 'handle');
     goVisit(who);
     return;
