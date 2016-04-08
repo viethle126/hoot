@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var jSonParser = require('body-parser').json();
+var _ = require('underscore');
 // custom modules
 var users = require('../data/users');
 
@@ -47,7 +48,7 @@ function countDupes(element, array, count) {
 }
 
 router.post('/', jSonParser, function(req, res) {
-  res.send(suggest(req.body.user));
+  res.send(recommend(req.body.user));
 })
 
 module.exports = router;

@@ -12,7 +12,7 @@ function addMentions(mentions, tweet) {
   })
 }
 
-router.post('/addTweet', verify, jSonParser, function(req, res) {
+router.post('/addTweet', jSonParser, function(req, res) {
   users.id++
   var handle = req.body.handle;
   var content = req.body.content;
@@ -30,7 +30,7 @@ router.post('/addTweet', verify, jSonParser, function(req, res) {
   res.send();
 })
 
-router.post('/addRetweet', verify, jSonParser, function(req, res) {
+router.post('/addRetweet', jSonParser, function(req, res) {
   users.id++
   var retweet = {};
   var retweetId = Number(req.body.retweetId);
@@ -57,7 +57,7 @@ router.post('/addRetweet', verify, jSonParser, function(req, res) {
   res.send();
 })
 
-router.post('/getRetweet', verify, jSonParser, function(req, res) {
+router.post('/getRetweet', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   var payload = {};

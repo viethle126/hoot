@@ -3,7 +3,7 @@ var router = express.Router();
 var _ = require('underscore');
 // custom modules
 var users = require('../data/users');
-var timestamp = require('./data/utility/timestamp');
+var timestamp = require('../data/utility/timestamp');
 
 router.get('/', function(req, res) {
   var payload = [];
@@ -27,7 +27,7 @@ router.get('/', function(req, res) {
   res.send(payload);
 })
 
-app.get('/status', function(req, res) {
+router.get('/status', function(req, res) {
   if (req.cookies.user) {
     var user = req.cookies.user;
     var cookie = req.cookies.session;

@@ -4,7 +4,7 @@ var jSonParser = require('body-parser').json();
 // custom modules
 var users = require('../data/users');
 
-app.post('/add', jSonParser, function(req, res) {
+router.post('/add', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   var me = req.body.home;
@@ -17,7 +17,7 @@ app.post('/add', jSonParser, function(req, res) {
   res.send();
 })
 
-app.post('/remove', jSonParser, function(req, res) {
+router.post('/remove', jSonParser, function(req, res) {
   var handle = req.body.handle;
   var id = Number(req.body.id);
   users[handle].favorites.forEach(function(element, index, array) {

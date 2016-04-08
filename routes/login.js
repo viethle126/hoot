@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var jSonParser = require('body-parser').json();
+var cookieParser = require('cookie-parser');
+// custom modules
 var users = require('../data/users');
 
 // add string to cookie
@@ -36,6 +38,8 @@ function login(user, password) {
     return 403;
   }
 }
+
+router.use(cookieParser());
 
 router.post('/', jSonParser, function(req, res) {
   var user = req.body.user;

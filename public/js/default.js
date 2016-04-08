@@ -109,7 +109,7 @@ function addTrend(data, size) {
 function wantRecommended() {
   var data = { user: me }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/recommended', true);
+  xhr.open('POST', '/recommend', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -155,7 +155,7 @@ function showHeader(what, where) {
 function search(input) {
   var data = { search: input, home: me }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/search', true);
+  xhr.open('POST', '/timeline/search', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -183,7 +183,7 @@ function tweet() {
     handle: me
   }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/addHoot', true);
+  xhr.open('POST', '/tweets/addTweet', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -198,12 +198,12 @@ function retweet() {
   var data = {
     content: document.getElementById('hoot-content').value,
     handle: me,
-    rehootId: item.getAttribute('data-hoot-id'),
-    rehootHandle: item.getAttribute('data-handle')
+    retweetId: item.getAttribute('data-hoot-id'),
+    retweetHandle: item.getAttribute('data-handle')
   }
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/addRehoot', true);
+  xhr.open('POST', 'tweets/addRetweet', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -287,7 +287,7 @@ function wantRetweet(target) {
     id: item.getAttribute('data-hoot-id')
   }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/rehoot', true);
+  xhr.open('POST', 'tweets/getRetweet', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -491,7 +491,7 @@ function wantFollowers(me, where, type) {
   clear(where);
   var data = { me: me, type: type }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/followers', true);
+  xhr.open('POST', '/follow/list', true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -519,7 +519,7 @@ function follow(target) {
   var data = { handle: who, home: me }
 
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/' + action, true);
+  xhr.open('POST', '/follow/' + action, true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -548,10 +548,10 @@ function favorite(target, remove) {
   var type = '';
   var handle = '';
   if (target.getAttribute('data-fav') === 'false') {
-    type = "addFavorite";
+    type = "add";
     handle = item.getAttribute('data-handle');
   } else {
-    type = "removeFavorite";
+    type = "remove";
     handle = me;
   }
 
@@ -561,7 +561,7 @@ function favorite(target, remove) {
     home: me
   }
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', '/' + type, true);
+  xhr.open('POST', '/favorite/' + type, true);
   xhr.setRequestHeader('Content-type', 'application/json');
   xhr.send(JSON.stringify(data));
 
@@ -572,7 +572,7 @@ function favorite(target, remove) {
         showHeader('You have no favorites', 'fav-timeline');
       }
     }
-    if (type === 'addFavorite') {
+    if (type === 'add') {
       heart.setAttribute('class', 'heart icon');
       target.setAttribute('data-fav', 'true');
     } else {
@@ -636,6 +636,8 @@ function wantMessages(which) {
     messages.forEach(function(element, index, array) {
       addMessage(element);
     })
+    activeConvo(which);
+    inConvo(which);
   })
 }
 // create error message
@@ -804,6 +806,7 @@ function clearFilter() {
 }
 // append list of users in conversation to header
 function inConvo(id) {
+  console.log('testing');
   var target = document.getElementById('msg-list').childNodes[1];
   while (target.getAttribute('data-convo-id') !== id) {
     target = target.nextSibling.nextSibling
@@ -1212,7 +1215,6 @@ document.addEventListener('keydown', function(e) {
       modifyConvo(parsed, id, 'invite');
       wantConvos();
       wantMessages(id);
-      activeConvo(id);
       document.getElementById('msg-include').value = '';
       $('body').trigger('click');
       return;
@@ -1228,7 +1230,7 @@ document.addEventListener('scroll', onScroll);
 // on load: check for cookies
 window.onload = function() {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/status', true);
+  xhr.open('GET', '/landing/status', true);
   xhr.send();
 
   xhr.addEventListener('load', function() {
