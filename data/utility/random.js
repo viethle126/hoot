@@ -80,6 +80,26 @@ function random() {
     return randomMonth + '/' + randomDay + '/' + 2016 + ' ' + randomTime;
   }
 
+  function addFavorite(user, pick) {
+    var fav = Math.floor(Math.random() * users[pick].tweets.length);
+    users[user].favorites.push(users[pick].tweets[fav]);
+  }
+
+  function favorites() {
+    users.keys.forEach(function(element, index, array) {
+      var count = Math.floor(Math.random() * 3) + 3;
+      var pool = users.keys.slice();
+      pool.splice(pool.indexOf(element), 1);
+      while (count > 0) {
+        var pick = pool[Math.floor(Math.random() * pool.length)];
+        pool.splice(pool.indexOf(pick), 1);
+        count--;
+        addFavorite(element, pick);
+      }
+      return;
+    })
+  }
+
   function pushMention(user, data) {
     if (user !== undefined) {
       users[user].notifications.push(data);
@@ -129,7 +149,7 @@ function random() {
   function tweet(who, quantity) {
     quantity--;
     users.id++;
-    var mention = pickMention();
+    var mention = pickMention(who);
     var trend = pickTrend();
     var data = {
       name: users[who].name,
@@ -173,6 +193,7 @@ function random() {
       tweet(element, quantity);
       follow(element, clone, count);
     })
+    favorites();
   }
 
   return {
