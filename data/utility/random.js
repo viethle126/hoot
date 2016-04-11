@@ -83,6 +83,9 @@ function random() {
 
   function addFavorite(user, pick) {
     var fav = Math.floor(Math.random() * users[pick].tweets.length);
+    while (users[pick].tweets[fav].retweet !== 'None') {
+      fav = Math.floor(Math.random() * users[pick].tweets.length);
+    }
     users[user].favorites.push(users[pick].tweets[fav]);
   }
 
