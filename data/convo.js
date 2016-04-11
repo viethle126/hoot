@@ -5,7 +5,7 @@ var id = 0;
 var convo = [];
 // start new conversation
 convo.new = function(who) {
-  users = _.sortBy(who);
+  var users = _.sortBy(who);
   var add = {
     id: id,
     users: users,
