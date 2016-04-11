@@ -146,6 +146,23 @@ function random() {
     return trending[pick];
   }
 
+  function pickRetweet(who) {
+    var retweet = 'None';
+    if (Math.random() < 0.2) {
+      var id = Math.floor(Math.random() * users.id) + 1;
+      users.keys.forEach(function(element, index, array) {
+        if (element !== who) {
+          users[element].tweets.forEach(function(element, index, array) {
+            if (element.id === id && element.retweet === 'None') {
+              retweet = element;
+            }
+          })
+        }
+      })
+    }
+    return retweet;
+  }
+
   function tweet(who, quantity) {
     quantity--;
     users.id++;
@@ -159,7 +176,7 @@ function random() {
       content: content(mention, trend),
       mentions: mention,
       tags: [trend],
-      retweet: 'None'
+      retweet: pickRetweet(who)
     }
     users[who].tweets.push(data);
     pushMention(mention[0], data);
