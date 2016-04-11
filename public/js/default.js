@@ -402,7 +402,7 @@ function addNote(data) {
   var timeline = document.getElementById('note-timeline');
   var container = elemClass('div', 'ui raised segment items');
   var message = elemClass('div', 'ui compact floating violet message');
-  var icon = elemClass('i', 'twitch icon');
+  var icon = elemClass('i', 'quote left icon');
   var content = elemClass('div', 'content');
   var span = document.createElement('span');
   var spanText = document.createTextNode(data.name + ' (@' + data.handle + ') mentioned you in a hoot:')
@@ -999,7 +999,7 @@ function toggle(state) {
 }
 // show content
 function show(element) {
-  document.getElementById('landing').parentNode.classList.add('hidden');
+  document.getElementById('landing').classList.add('hidden');
   document.getElementById('new-hoot').classList.add('hidden');
   document.getElementById('following').classList.add('hidden');
   document.getElementById('search-results').classList.add('hidden');

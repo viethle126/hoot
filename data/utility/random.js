@@ -28,10 +28,12 @@ function random() {
     return capitalize(content + '.');
   }
 
-  function content(trend) {
+  function content(mention, trend) {
     var start = Math.floor(Math.random() * 380);
     var length = Math.floor(Math.random() * 15) + 6;
-    return cut(start, length) + ' ' + trend;
+    var user = '';
+    if (mention[0] !== undefined) { user = ' @' + mention[0] }
+    return cut(start, length) + user + ' ' + trend;
   }
 
   function month() {
@@ -78,6 +80,27 @@ function random() {
     return randomMonth + '/' + randomDay + '/' + 2016 + ' ' + randomTime;
   }
 
+  function pushMention(user, data) {
+    if (user !== undefined) {
+      users[user].notifications.push(data);
+      users[user].alerts++;
+    } else {
+      return;
+    }
+  }
+
+  function pickMention(who) {
+    var mention = [];
+    var pick = users.keys[Math.floor(Math.random() * users.keys.length)];
+    while (pick === who) {
+      pick = users.keys[Math.floor(Math.random() * users.keys.length)];
+    }
+    if (Math.random() < 0.2) {
+      mention.push(pick);
+    }
+    return mention;
+  }
+
   function pushTrends(trend, count) {
     if (count > 0) {
       count--;
@@ -105,18 +128,21 @@ function random() {
 
   function tweet(who, quantity) {
     quantity--;
-    users.id++
+    users.id++;
+    var mention = pickMention();
     var trend = pickTrend();
-    users[who].tweets.push({
+    var data = {
       name: users[who].name,
       handle: who,
       id: users.id,
       date: date(),
-      content: content(trend),
-      mentions: [],
+      content: content(mention, trend),
+      mentions: mention,
       tags: [trend],
       retweet: 'None'
-    })
+    }
+    users[who].tweets.push(data);
+    pushMention(mention[0], data);
     if (quantity > 0) {
       tweet(who, quantity);
     } else {
