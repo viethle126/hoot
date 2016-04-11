@@ -21,19 +21,6 @@ function parseUsers(input) {
   })
   return users;
 }
-// remove trends (to replace with links)
-function parseTrends(input) {
-  var array = input.split(/(#[a-z\d-]+)/i);
-  var string = [];
-  array.forEach(function(element, index, array) {
-    if (element.search(/#([a-z\d-]+)/i) === -1) {
-      string.push(element);
-      return;
-    }
-  })
-  string = string.join('');
-  return string;
-}
 // remove child nodes
 function clear(id, count) {
   var element = document.getElementById(id);
@@ -335,22 +322,20 @@ function addTweet(data, where) {
   var spanText = document.createTextNode('@' + data.handle + ' - ' + data.date);
   var desc = elemClass('div', 'description');
   var para = document.createElement('p');
-  var paraText = document.createTextNode(parseTrends(data.content));
   var extra = elemClass('div', 'extra');
   var retweetLink = elemAttribute('a', 'data-retweet', 'false');
   var retweet = elemClass('i', 'retweet icon');
   var favLink = elemAttribute('a', 'data-fav', 'false');
   var fav = elemClass('i', 'empty heart icon');
+  var split = data.content.split(/(#[a-z\d-]+)/i);
+  split.forEach(function(element, index, array) {
+    para.appendChild(addContent(element));
+  })
 
-  if (data.fav === true) {
-    fav.setAttribute('class', 'heart icon');
-    favLink.setAttribute('data-fav', 'true');
-  }
   retweetLink.appendChild(retweet);
   favLink.appendChild(fav);
   extra.appendChild(retweetLink);
   extra.appendChild(favLink);
-  para.appendChild(paraText);
   desc.appendChild(para);
   span.appendChild(spanText);
   meta.appendChild(span);
@@ -368,15 +353,6 @@ function addTweet(data, where) {
   item.setAttribute('data-handle', data.handle);
   timeline.appendChild(item);
 
-  data.tags.forEach(function(element, index, array) {
-    if (element[0] === '#') {
-      var tag = document.createElement('a');
-      var tagText = document.createTextNode(element);
-      tag.setAttribute('data-trend', element);
-      tag.appendChild(tagText);
-      para.appendChild(tag);
-    }
-  })
   if (data.retweet !== 'None') {
     var retweeted = document.createTextNode(data.name + ' rehoots:')
     var stacked = elemClass('div', 'ui raised stacked segment items');
@@ -388,6 +364,10 @@ function addTweet(data, where) {
     addTweet(data.retweet, 'temporary');
     stacked.removeAttribute('id');
     return;
+  }
+  if (data.fav === true) {
+    fav.setAttribute('class', 'heart icon');
+    favLink.setAttribute('data-fav', 'true');
   }
   if (where === 'rehoot-here') {
     content.removeChild(extra);
@@ -435,6 +415,19 @@ function addNote(data) {
   container.setAttribute('id', 'note');
   addTweet(data, 'note');
   container.removeAttribute('id');
+}
+// append tweet content to tweets
+function addContent(element) {
+  if (element[0] === '#') {
+    var link = document.createElement('a');
+    var content = document.createTextNode(element);
+    link.setAttribute('data-trend', element);
+    link.appendChild(content);
+    return link;
+  } else {
+    var string = document.createTextNode(element);
+    return string;
+  }
 }
 // XHR: request landing page
 function wantLanding() {
