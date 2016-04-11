@@ -355,16 +355,14 @@ function addTweet(data, where) {
 
   if (data.picture !== 'None' && data.picture !== undefined) {
     var picture = elemClass('img', 'ui fluid image tweet');
-    var divider = elemClass('img', 'divider');
     picture.setAttribute('src', data.picture);
     picture.setAttribute('data-hoot-id', data.id);
     timeline.appendChild(picture);
-    timeline.appendChild(divider);
   }
 
   if (data.retweet !== 'None') {
     var retweeted = document.createTextNode(data.name + ' rehoots:')
-    var stacked = elemClass('div', 'ui raised stacked segment items');
+    var stacked = elemClass('div', 'ui raised segment items retweet');
     header.appendChild(retweeted);
     header.removeChild(headerText);
     content.removeChild(extra);
@@ -415,7 +413,7 @@ function addSmall(data, where) {
 // append notifications to timeline
 function addNote(data) {
   var timeline = document.getElementById('note-timeline');
-  var container = elemClass('div', 'ui raised segment items');
+  var container = elemClass('div', 'ui segment items');
   var message = elemClass('div', 'ui compact floating violet message');
   var icon = elemClass('i', 'quote left icon');
   var content = elemClass('div', 'content');
@@ -453,11 +451,15 @@ function wantLanding() {
   xhr.addEventListener('load', function() {
     var tweets = JSON.parse(xhr.responseText);
     var landing = document.getElementsByClassName('landing');
+    var displayed = tweets.length;
+    if (displayed > 30) { displayed = 30 } // show up to 30
     for (var i = 0; i < tweets.length; i += 3) {
       addSmall(tweets[i], landing[0]);
       addSmall(tweets[i + 1], landing[1]);
       addSmall(tweets[i + 2], landing[2]);
     }
+    remainingLine = tweets.slice(30);
+    viewing = 'landing';
   })
 }
 // XHR: request timeline
@@ -1146,6 +1148,20 @@ function onScroll() {
         }
       }
       remainingLine = remainingLine.slice(20);
+      return
+    }
+  }
+  if (me === false) {
+    if (current > max * .7 && viewing === 'landing') {
+      var landing = document.getElementsByClassName('landing');
+      var displayed = remainingLine.length;
+      if (displayed > 30) { displayed = 30 } // show up to 30 more
+      for (var i = 0; i < displayed; i += 3) {
+        addSmall(remainingLine[i], landing[0]);
+        addSmall(remainingLine[i + 1], landing[1]);
+        addSmall(remainingLine[i + 2], landing[2]);
+      }
+      remainingLine = remainingLine.slice(30);
       return
     }
   }

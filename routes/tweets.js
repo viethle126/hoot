@@ -29,6 +29,7 @@ router.post('/addTweet', jSonParser, function(req, res) {
     id: users.id,
     date: timestamp.civilian(),
     content: content,
+    picture: 'None',
     mentions: parse.users(content),
     tags: parse.trends(content),
     retweet: 'None'
@@ -57,6 +58,7 @@ router.post('/addRetweet', jSonParser, function(req, res) {
     id: users.id,
     date: timestamp.civilian(),
     content: content,
+    picture: 'None',
     mentions: parse.users(content),
     tags: parse.trends(content),
     retweet: retweet
@@ -79,6 +81,7 @@ router.post('/getRetweet', jSonParser, function(req, res) {
         image: users[element.handle].image,
         date: element.date,
         content: element.content,
+        picture: element.picture,
         tags: element.tags,
         retweet: 'None'
       }

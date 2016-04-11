@@ -146,9 +146,9 @@ function random() {
     return trending[pick];
   }
 
-  function pickRetweet(who) {
+  function pickRetweet(who, picture) {
     var retweet = 'None';
-    if (Math.random() < 0.2) {
+    if (Math.random() < 0.2 && picture === 'None') {
       var id = Math.floor(Math.random() * users.id) + 1;
       users.keys.forEach(function(element, index, array) {
         if (element !== who) {
@@ -163,6 +163,15 @@ function random() {
     return retweet;
   }
 
+  function picture() {
+    var picture = 'None';
+    if (Math.random() < 0.25) {
+      var pick = Math.floor(Math.random() * 76) + 1;
+      picture = 'images/random/' + pick + '.jpg';
+    }
+    return picture;
+  }
+
   function tweet(who, quantity) {
     quantity--;
     users.id++;
@@ -174,10 +183,12 @@ function random() {
       id: users.id,
       date: date(),
       content: content(mention, trend),
+      picture: picture(),
       mentions: mention,
       tags: [trend],
-      retweet: pickRetweet(who)
+      retweet: 'None'
     }
+    data.retweet = pickRetweet(who, data.picture);
     users[who].tweets.push(data);
     pushMention(mention[0], data);
     if (quantity > 0) {

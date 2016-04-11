@@ -25,6 +25,10 @@ body {
   padding-bottom: 14px;
 }
 
+.retweet {
+  background-color: #fcfcfc !important;
+}
+
 #masthead {
   padding-top: 20px;
   height: 200px;

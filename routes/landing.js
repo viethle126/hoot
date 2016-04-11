@@ -18,13 +18,14 @@ router.get('/', function(req, res) {
           image: users[element.handle].image,
           date: element.date,
           content: element.content,
+          picture: element.picture,
           sort: fixed,
         })
       })
     }
   })
   payload = _.sortBy(payload, 'sort').reverse();
-  payload = payload.slice(0, 30);
+  payload = payload.slice(0, 150);
   res.send(payload);
 })
 

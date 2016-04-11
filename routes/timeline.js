@@ -51,6 +51,7 @@ function prepare(home, tweet) {
     image: users[tweet.handle].image,
     date: tweet.date,
     content: tweet.content,
+    picture: tweet.picture,
     tags: tweet.tags,
     sort: timestamp.military(tweet.date),
     fav: checkFav(home, tweet),
