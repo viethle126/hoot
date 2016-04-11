@@ -509,9 +509,10 @@ function card(data, where) {
   var follower = elemClass('i', 'users icon');
   var followerText = document.createTextNode(data.followers);
 
+  followingLink.setAttribute('id', 'following-count');
   followingLink.setAttribute('data-go', 'following');
   followingLink.appendChild(following);
-  followingLink.appendChild(followingText)
+  followingLink.appendChild(followingText);
   followerLink.setAttribute('data-go', 'followers');
   followerLink.appendChild(follower);
   followerLink.appendChild(followerText);
@@ -606,6 +607,7 @@ function follow(target) {
   var action = target.dataset.followText.toLowerCase();
   var follow = target.parentNode.childNodes[0];
   var unfollow = target.parentNode.childNodes[1];
+  var following = document.getElementById('following-count').childNodes[1];
   var data = { handle: who, home: me }
 
   var xhr = new XMLHttpRequest();
@@ -617,11 +619,12 @@ function follow(target) {
     if (action === 'follow') {
       follow.classList.add('hidden');
       unfollow.classList.remove('hidden');
+      following.textContent++;
     } else {
       unfollow.classList.add('hidden');
       follow.classList.remove('hidden');
+      following.textContent--;
     }
-    wantCard(me, 'card', me)
   })
 }
 // XHR: add/remove favorites
