@@ -353,6 +353,15 @@ function addTweet(data, where) {
   item.setAttribute('data-handle', data.handle);
   timeline.appendChild(item);
 
+  if (data.picture !== 'None' && data.picture !== undefined) {
+    var picture = elemClass('img', 'ui fluid image tweet');
+    var divider = elemClass('img', 'divider');
+    picture.setAttribute('src', data.picture);
+    picture.setAttribute('data-hoot-id', data.id);
+    timeline.appendChild(picture);
+    timeline.appendChild(divider);
+  }
+
   if (data.retweet !== 'None') {
     var retweeted = document.createTextNode(data.name + ' rehoots:')
     var stacked = elemClass('div', 'ui raised stacked segment items');
@@ -374,9 +383,8 @@ function addTweet(data, where) {
   }
 }
 // append compact tweets (landing)
-function addSmall(data) {
-  var landing = document.getElementById('landing');
-  var card = elemClass('div', 'card');
+function addSmall(data, where) {
+  var card = elemClass('div', 'ui card auto-width');
   var content = elemClass('div', 'content');
   var image = elemClass('img', 'ui left floated mini image');
   var header = elemClass('div', 'header');
@@ -385,6 +393,13 @@ function addSmall(data) {
   var metaText = document.createTextNode('@' + data.handle + ' - ' + data.date);
   var desc = elemClass('div', 'description');
   var descText = document.createTextNode(data.content);
+
+  if (data.picture !== 'None' && data.picture !== undefined) {
+    container = elemClass('div', 'image');
+    picture = elemAttribute('img', 'src', data.picture);
+    container.appendChild(picture);
+    card.appendChild(container);
+  }
 
   desc.appendChild(descText);
   meta.appendChild(metaText);
@@ -395,7 +410,7 @@ function addSmall(data) {
   content.appendChild(meta);
   content.appendChild(desc);
   card.appendChild(content);
-  landing.appendChild(card);
+  where.appendChild(card);
 }
 // append notifications to timeline
 function addNote(data) {
@@ -436,10 +451,13 @@ function wantLanding() {
   xhr.send();
 
   xhr.addEventListener('load', function() {
-    var tweets = JSON.parse(xhr.responseText)
-    tweets.forEach(function(element, index, array) {
-      addSmall(element);
-    })
+    var tweets = JSON.parse(xhr.responseText);
+    var landing = document.getElementsByClassName('landing');
+    for (var i = 0; i < tweets.length; i += 3) {
+      addSmall(tweets[i], landing[0]);
+      addSmall(tweets[i + 1], landing[1]);
+      addSmall(tweets[i + 2], landing[2]);
+    }
   })
 }
 // XHR: request timeline

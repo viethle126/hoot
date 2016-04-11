@@ -2,16 +2,27 @@ body {
   background-color: #f5f8fa;
 }
 
-button[data-follow-text]:after {
-  content: attr(data-follow-text);
-}
-
 .hidden {
   display: none !important;
 }
 
 .wider {
   width: 30%;
+}
+
+.wrapper {
+  margin-top: 0px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 1200px !important;
+}
+
+.auto-width {
+  width: auto !important;
+}
+
+.tweet {
+  padding-bottom: 14px;
 }
 
 #masthead {
@@ -21,13 +32,6 @@ button[data-follow-text]:after {
   background-size: cover;
 }
 
-#wrapper {
-  margin-top: 0px;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1200px;
-}
-
 #visit-card {
   margin-top: 0px;
 }
@@ -35,6 +39,10 @@ button[data-follow-text]:after {
 #top {
   position: fixed;
   bottom: 50px;
+}
+
+[data-follow-text]:after {
+  content: attr(data-follow-text);
 }
 
 [data-visit]:hover {
