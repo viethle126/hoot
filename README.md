@@ -1,6 +1,6 @@
-# hoot: a Twitter clone
+# hoot: replicating Twitter
 
-![hoot](https://cloud.githubusercontent.com/assets/16697731/14445234/4af2b39a-0000-11e6-99c6-6b610a18fc18.png)
+![hoot](https://cloud.githubusercontent.com/assets/16697731/14448320/71ffc09c-001c-11e6-8af1-93a6876a58d8.png)
 
 **Features**
 * Log in or sign up
