@@ -680,6 +680,9 @@ function favorite(target, remove) {
 
   xhr.addEventListener('load', function() {
     if (viewing === 'fav-timeline') {
+      if (item.nextSibling && item.nextSibling.getAttribute('data-hoot-id') === item.getAttribute('data-hoot-id')) {
+        document.getElementById('fav-timeline').removeChild(item.nextSibling);
+      }
       document.getElementById('fav-timeline').removeChild(item);
       if (document.getElementById('fav-timeline').childNodes.length === 0) {
         addHeader('You have no favorites', 'fav-timeline');
