@@ -5,13 +5,14 @@ var jSonParser = require('body-parser').json();
 var users = require('../data/users');
 
 router.post('/list', jSonParser, function(req, res) {
-  var user = req.body.me;
+  var user = req.body.user;
+  var me = req.body.me;
   var type = req.body.type;
   var youFollow = false;
   var payload = [];
   users[user][type].forEach(function(element, index, array) {
     youFollow = false;
-    if (users[user].following.indexOf(element) !== -1) { youFollow = true }
+    if (users[element].followers.indexOf(me) !== -1) { youFollow = true }
     payload.push({
       name: users[element].name,
       handle: users[element].handle,

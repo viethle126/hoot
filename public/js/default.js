@@ -600,9 +600,9 @@ function wantCard(user, where, me) {
   })
 }
 // XHR: request list of followers or following
-function wantFollowers(me, where, type) {
+function wantFollowers(who, where, type) {
   clear(where);
-  var data = { me: me, type: type }
+  var data = { user: who, me: me, type: type }
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/follow/list', true);
   xhr.setRequestHeader('Content-type', 'application/json');
