@@ -232,6 +232,7 @@ function search(input) {
 
   xhr.addEventListener('load', function() {
     document.getElementById('search-input').value = '';
+    remainingLine = [];
     resetMenu();
     clear('search-results');
     show('search-results');
@@ -464,6 +465,7 @@ function wantLanding() {
 }
 // XHR: request timeline
 function wantLine(user, where, homeuser, type) {
+  remainingLine = [];
   clear(where);
   var data = { handle: user, home: homeuser, type: type }
   var xhr = new XMLHttpRequest();
