@@ -1,25 +1,25 @@
 var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
+var moment = require('moment');
+moment().format();
 // custom modules
 var users = require('../lib/users');
-var timestamp = require('../lib/utility/timestamp');
 
 router.get('/', function(req, res) {
   var payload = [];
   users.keys.forEach(function(element, index, array) {
     if (users[element].tweets) {
       users[element].tweets.forEach(function(element, index, array) {
-        var fixed = timestamp.military(element.date);
         payload.push({
           name: element.name,
           id: element.id,
           handle: element.handle,
           image: users[element.handle].image,
-          date: element.date,
+          date: moment(element.date).fromNow(),
           content: element.content,
           picture: element.picture,
-          sort: fixed,
+          sort: element.date
         })
       })
     }

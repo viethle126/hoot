@@ -4,7 +4,6 @@ var jSonParser = require('body-parser').json();
 // custom modules
 var users = require('../lib/users');
 var parse = require('../lib/utility/parse');
-var timestamp = require('../lib/utility/timestamp');
 
 function addMentions(mentions, tweet) {
   var unique = [];
@@ -27,7 +26,7 @@ router.post('/addTweet', jSonParser, function(req, res) {
     name: users[handle].name,
     handle: handle,
     id: users.id,
-    date: timestamp.civilian(),
+    date: Date.now(),
     content: content,
     picture: 'None',
     mentions: parse.users(content),
@@ -56,7 +55,7 @@ router.post('/addRetweet', jSonParser, function(req, res) {
     name: users[handle].name,
     handle: handle,
     id: users.id,
-    date: timestamp.civilian(),
+    date: Date.now(),
     content: content,
     picture: 'None',
     mentions: parse.users(content),
