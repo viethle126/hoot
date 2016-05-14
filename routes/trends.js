@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 // custom modules
-var trends = require('../data/trends');
+var trends = require('../lib/trends');
 trends.request();
 
 router.get('/', function(req, res) {

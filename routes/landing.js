@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
 // custom modules
-var users = require('../data/users');
-var timestamp = require('../data/utility/timestamp');
+var users = require('../lib/users');
+var timestamp = require('../lib/utility/timestamp');
 
 router.get('/', function(req, res) {
   var payload = [];
