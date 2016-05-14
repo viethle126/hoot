@@ -876,7 +876,7 @@ function addMessage(data) {
   var header = elemClass('div', 'header');
   var headerText = document.createTextNode('@' + data.user);
   var meta = elemClass('span', 'meta');
-  var metaText = document.createTextNode(' - ' + data.date);
+  var metaText = document.createTextNode(' - ' + data.moment);
   var desc = elemClass('div', 'description');
   var descText = document.createTextNode(data.content)
 

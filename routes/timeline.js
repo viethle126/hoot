@@ -2,10 +2,11 @@ var express = require('express');
 var router = express.Router();
 var jSonParser = require('body-parser').json();
 var _ = require('underscore');
+var moment = require('moment');
+moment().format();
 // custom modules
 var users = require('../lib/users');
 var parse = require('../lib/utility/parse');
-var timestamp = require('../lib/utility/timestamp');
 
 // return an array of tweets
 function timeline(user, me, type) {
@@ -49,11 +50,11 @@ function prepare(home, tweet) {
     id: tweet.id,
     handle: tweet.handle,
     image: users[tweet.handle].image,
-    date: tweet.date,
+    date: moment(tweet.date).fromNow(),
     content: tweet.content,
     picture: tweet.picture,
     tags: tweet.tags,
-    sort: timestamp.military(tweet.date),
+    sort: tweet.date,
     fav: checkFav(home, tweet),
     retweet: retweet,
   }
