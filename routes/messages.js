@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 var jSonParser = require('body-parser').json();
 // custom modules
-var users = require('../data/users');
-var convo = require('../data/convo');
+var users = require('../lib/users');
+var convo = require('../lib/convo');
 
 function check(who) {
   var error = false;

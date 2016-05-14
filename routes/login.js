@@ -3,7 +3,7 @@ var router = express.Router();
 var jSonParser = require('body-parser').json();
 var cookieParser = require('cookie-parser');
 // custom modules
-var users = require('../data/users');
+var users = require('../lib/users');
 
 // add string to cookie
 function extendCookie(count, cookie) {

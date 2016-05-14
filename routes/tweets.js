@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var jSonParser = require('body-parser').json();
 // custom modules
-var users = require('../data/users');
-var parse = require('../data/utility/parse');
-var timestamp = require('../data/utility/timestamp');
+var users = require('../lib/users');
+var parse = require('../lib/utility/parse');
+var timestamp = require('../lib/utility/timestamp');
 
 function addMentions(mentions, tweet) {
   var unique = [];

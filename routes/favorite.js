@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jSonParser = require('body-parser').json();
 // custom modules
-var users = require('../data/users');
+var users = require('../lib/users');
 
 router.post('/add', jSonParser, function(req, res) {
   var handle = req.body.handle;

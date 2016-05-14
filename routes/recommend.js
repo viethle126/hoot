@@ -3,7 +3,7 @@ var router = express.Router();
 var jSonParser = require('body-parser').json();
 var _ = require('underscore');
 // custom modules
-var users = require('../data/users');
+var users = require('../lib/users');
 
 // recommend users most commonly followed by your followers
 function recommend(who) {

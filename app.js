@@ -2,7 +2,7 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var app = express();
 // custom modules
-var users = require('./data/users');
+var users = require('./lib/users');
 // routes
 var landing = require('./routes/landing');
 var login = require('./routes/login');
